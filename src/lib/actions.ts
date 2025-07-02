@@ -44,7 +44,7 @@ export async function saveStoryAction(data: { title: string; content: string; th
     const { title, content, theme } = validatedFields.data;
 
     try {
-        const imageResult = await generateStoryImage({ storyTheme: `A child's drawing about ${theme}` });
+        const imageResult = await generateStoryImage({ prompt: content });
         
         const excerpt = content.length > 100 ? content.substring(0, 100) + '...' : content;
 

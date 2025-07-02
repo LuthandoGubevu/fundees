@@ -3,7 +3,7 @@
 'use server';
 
 /**
- * @fileOverview Generates a placeholder image reflecting an African context for a story.
+ * @fileOverview Generates an image for a story.
  *
  * - generateStoryImage - A function that generates an image for a story.
  * - GenerateStoryImageInput - The input type for the generateStoryImage function.
@@ -14,7 +14,7 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const GenerateStoryImageInputSchema = z.object({
-  storyTheme: z.string().describe('The theme of the story to generate an image for. This should be an African theme.'),
+  prompt: z.string().describe('The prompt for the image generation, based on the story content.'),
 });
 export type GenerateStoryImageInput = z.infer<typeof GenerateStoryImageInputSchema>;
 
@@ -27,13 +27,6 @@ export async function generateStoryImage(input: GenerateStoryImageInput): Promis
   return generateStoryImageFlow(input);
 }
 
-const generateStoryImagePrompt = ai.definePrompt({
-  name: 'generateStoryImagePrompt',
-  input: {schema: GenerateStoryImageInputSchema},
-  output: {schema: GenerateStoryImageOutputSchema},
-  prompt: `Generate a visually stunning and culturally relevant image that captures the essence of an African story theme: {{{storyTheme}}}. The image should be suitable as a placeholder for a story and reflect the rich cultural heritage of Africa.`,
-});
-
 const generateStoryImageFlow = ai.defineFlow(
   {
     name: 'generateStoryImageFlow',
@@ -43,7 +36,7 @@ const generateStoryImageFlow = ai.defineFlow(
   async input => {
     const {media} = await ai.generate({
       model: 'googleai/gemini-2.0-flash-preview-image-generation',
-      prompt: input.storyTheme,
+      prompt: `A child's drawing illustrating the following story: ${input.prompt}`,
       config: {
         responseModalities: ['TEXT', 'IMAGE'],
       },
