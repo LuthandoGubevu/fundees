@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useAuth } from '@/contexts/auth-context';
@@ -6,24 +5,69 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Award, BookOpen, Heart, Pencil, Sparkles, Star, Users } from 'lucide-react';
+import { AlertTriangle, Award, BookOpen, Heart, Pencil, Sparkles, Star, Users } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { getStoriesByAuthor } from '@/lib/firestore';
 import type { Story } from '@/lib/types';
 
+function MissingIndexCard({ link }: { link: string }) {
+  return (
+    <Card className="bg-destructive/10 border-destructive text-destructive p-4">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-destructive">
+          <AlertTriangle className="h-6 w-6" />
+          Action Required: Missing Database Index
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="text-destructive/90 space-y-4">
+        <p>
+          To fetch your stories, a specific database index is required. This is a one-time setup step in Firebase.
+        </p>
+        <p>
+          Please click the button below. It will open the Firebase Console with the correct index configuration pre-filled for you. Using the link is the best way to avoid mistakes.
+        </p>
+        <Button asChild variant="destructive">
+          <a href={link} target="_blank" rel="noopener noreferrer">
+            Create Firestore Index
+          </a>
+        </Button>
+         <p className="text-xs mt-2">After creating the index, it may take a few minutes to become active. Please refresh this page after a moment.</p>
+      </CardContent>
+    </Card>
+  );
+}
+
+
 export default function DashboardPage() {
   const { user, isLoading } = useAuth();
   const [myStories, setMyStories] = useState<Story[]>([]);
   const [isStoriesLoading, setIsStoriesLoading] = useState(true);
+  const [storiesError, setStoriesError] = useState<string | null>(null);
+  const [indexLink, setIndexLink] = useState<string | null>(null);
+
 
   useEffect(() => {
     if (user) {
       setIsStoriesLoading(true);
-      getStoriesByAuthor(user.id).then(userStories => {
-        setMyStories(userStories);
-        setIsStoriesLoading(false);
-      });
+      setStoriesError(null);
+      setIndexLink(null);
+      
+      getStoriesByAuthor(user.id)
+        .then(userStories => {
+          setMyStories(userStories);
+        })
+        .catch((error: any) => {
+            if (error.message?.startsWith('MISSING_INDEX::')) {
+                setIndexLink(error.message.split('::')[1]);
+            } else {
+                console.error("Dashboard stories error:", error);
+                setStoriesError("Could not load your stories right now.");
+            }
+        })
+        .finally(() => {
+            setIsStoriesLoading(false);
+        });
     }
   }, [user]);
 
@@ -91,6 +135,10 @@ export default function DashboardPage() {
                             <Skeleton className="w-40 h-48 rounded-lg" />
                             <Skeleton className="w-40 h-48 rounded-lg" />
                         </div>
+                    ) : indexLink ? (
+                        <MissingIndexCard link={indexLink} />
+                    ) : storiesError ? (
+                         <div className="text-center py-4 text-destructive">{storiesError}</div>
                     ) : myStories.length > 0 ? (
                         <div className="flex overflow-x-auto space-x-4 pb-2 -mx-4 px-4">
                         {myStories.map(story => (

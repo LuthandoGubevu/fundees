@@ -30,6 +30,15 @@ function transformStoryDoc(doc: any) {
     } as Story;
 }
 
+function extractIndexCreationLink(errorMessage: string): string | null {
+    const regex = /(https:\/\/console\.firebase\.google\.com\S+)/;
+    const match = errorMessage.match(regex);
+    if (!match) return null;
+    // The URL might have a trailing period, let's remove it.
+    return match[0].replace(/\.$/, '');
+}
+
+
 // --- User Functions ---
 export async function getUserByEmail(email: string): Promise<User | null> {
   try {
@@ -94,6 +103,16 @@ export async function getStoriesByAuthor(authorId: string): Promise<Story[]> {
         const storySnapshot = await getDocs(q);
         return storySnapshot.docs.map(transformStoryDoc);
     } catch (error: any) {
+        if (
+            error.code === 'failed-precondition' &&
+            error.message &&
+            error.message.includes('requires an index')
+        ) {
+            const link = extractIndexCreationLink(error.message);
+            if (link) {
+                throw new Error(`MISSING_INDEX::${link}`);
+            }
+        }
         if (error.code === 'permission-denied') {
             console.warn('Firestore permission denied. Falling back to mock data for author ID:', authorId);
             return mockStories.filter(s => s.authorId === authorId);
