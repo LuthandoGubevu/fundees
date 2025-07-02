@@ -19,7 +19,7 @@ const GenerateStoryImageInputSchema = z.object({
 export type GenerateStoryImageInput = z.infer<typeof GenerateStoryImageInputSchema>;
 
 const GenerateStoryImageOutputSchema = z.object({
-  imageUrl: z.string().describe('The data URI of the generated image.'),
+  imageUrl: z.string().describe('The data URI of the generated image. Can be empty if generation fails.'),
 });
 export type GenerateStoryImageOutput = z.infer<typeof GenerateStoryImageOutputSchema>;
 
@@ -34,16 +34,23 @@ const generateStoryImageFlow = ai.defineFlow(
     outputSchema: GenerateStoryImageOutputSchema,
   },
   async input => {
-    const {media} = await ai.generate({
-      model: 'googleai/gemini-2.0-flash-preview-image-generation',
-      prompt: `A child's drawing illustrating the following story: ${input.prompt}`,
-      config: {
-        responseModalities: ['TEXT', 'IMAGE'],
-      },
-    });
+    try {
+      const {media} = await ai.generate({
+        model: 'googleai/gemini-2.0-flash-preview-image-generation',
+        prompt: `A child's drawing illustrating the following story: ${input.prompt}`,
+        config: {
+          responseModalities: ['TEXT', 'IMAGE'],
+        },
+      });
 
-    return {
-      imageUrl: media!.url,
-    };
+      // Return empty string if media is not generated to prevent a crash
+      return {
+        imageUrl: media?.url || '',
+      };
+    } catch (e) {
+      console.error('Image generation flow failed', e);
+      // Return an empty URL on error so the story can still be saved.
+      return {imageUrl: ''};
+    }
   }
 );

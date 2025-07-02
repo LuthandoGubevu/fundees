@@ -50,30 +50,41 @@ export async function saveStoryAction(data: z.infer<typeof saveStorySchema>) {
     }
     
     const { title, content, theme, author } = validatedFields.data;
+    const storyId = await getNewStoryId();
+    let downloadURL: string | undefined;
 
     try {
-        const storyId = await getNewStoryId();
-        const imagePath = `stories/${storyId}.png`;
-        const imageRef = ref(storage, imagePath);
+        // This block handles image generation and upload.
+        // It's wrapped in a try/catch so that if it fails,
+        // the story can still be saved without an image.
+        const imagePrompt = `A child-friendly, vibrant illustration for a story titled "${title}" with the theme "${theme}". The story is about: ${content.substring(0, 500)}`;
+        const imageResult = await generateStoryImage({ prompt: imagePrompt });
 
-        const imageResult = await generateStoryImage({ prompt: content });
-
-        if (!imageResult.imageUrl) {
-            throw new Error("The AI failed to generate an image.");
+        if (imageResult?.imageUrl) {
+            const imagePath = `stories/${storyId}.png`;
+            const imageRef = ref(storage, imagePath);
+            await uploadString(imageRef, imageResult.imageUrl, 'data_url');
+            downloadURL = await getDownloadURL(imageRef);
+        } else {
+            console.warn("AI image generation failed or returned no image. Proceeding to save story without an image.");
         }
-        
-        await uploadString(imageRef, imageResult.imageUrl, 'data_url');
-        const downloadURL = await getDownloadURL(imageRef);
-        
-        const excerpt = content.length > 100 ? content.substring(0, 100) + '...' : content;
+    } catch (e) {
+        // If image generation or upload fails, we log the error and continue.
+        // The user experience is that the story saves without a picture.
+        console.error("An error occurred during image generation/upload, story will be saved without an image:", e);
+    }
 
+    try {
+        // This block saves the story to Firestore.
+        // This is the critical part. If this fails, the whole action fails.
+        const excerpt = content.length > 100 ? content.substring(0, 100) + '...' : content;
         await addStory({
             id: storyId,
             title,
             content,
             theme,
             excerpt,
-            imageUrl: downloadURL,
+            imageUrl: downloadURL, // Can be undefined
             author: author.name,
             authorId: author.id,
             school: author.school,
@@ -89,10 +100,11 @@ export async function saveStoryAction(data: z.infer<typeof saveStorySchema>) {
         return { success: true };
 
     } catch (e: any) {
-        console.error(e);
+        console.error("Failed to save story to Firestore:", e);
         if (e.code === 'permission-denied' || (e.message && e.message.includes('permission-denied'))) {
-            throw new Error("Could not save to database. Please check your Firebase Storage rules.");
+            throw new Error("Could not save to database. Please check your Firebase Storage and Firestore rules.");
         }
-        throw new Error("Failed to save the story. The AI might be resting!");
+        // This is the error that will be displayed in the toast on failure.
+        throw new Error("Failed to save the story. Please try again.");
     }
 }
