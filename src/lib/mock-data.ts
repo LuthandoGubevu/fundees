@@ -1,6 +1,11 @@
 import type { Story } from './types';
 
-let stories: Story[] = [
+// Use a global variable to persist stories across hot reloads in dev.
+// In a real app, you'd use a database.
+const globalForStories = globalThis as unknown as { stories: Story[] | undefined };
+
+if (!globalForStories.stories) {
+  globalForStories.stories = [
   {
     id: '1',
     title: 'The First Fundee',
@@ -32,6 +37,10 @@ let stories: Story[] = [
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 5).toISOString(),
   },
 ];
+}
+
+const stories = globalForStories.stories!;
+
 
 // Wrap in functions to simulate async API calls
 export const getStories = async (): Promise<Story[]> => {
