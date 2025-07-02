@@ -1,0 +1,74 @@
+import { getStories } from "@/lib/mock-data";
+import { StoryCard } from "@/components/story/story-card";
+import { StoryCardSkeleton } from "@/components/story/story-card-skeleton";
+import { Suspense } from "react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
+
+export default function LibraryPage() {
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <div className="text-center mb-12">
+        <h1 className="font-headline text-5xl md:text-6xl font-bold text-foreground">Story Library</h1>
+        <p className="mt-4 text-lg text-foreground/80 max-w-2xl mx-auto">
+          Explore a universe of wonderful stories created by young authors just like you!
+        </p>
+      </div>
+
+      <div className="mb-8 p-4 bg-card/80 rounded-xl shadow-md">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+            <div className="relative lg:col-span-2">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Input placeholder="Search for stories..." className="pl-10" />
+            </div>
+          <FilterSelect placeholder="Filter by Grade" options={["1st Grade", "2nd Grade", "3rd Grade"]} />
+          <FilterSelect placeholder="Filter by Subject" options={["Reading", "Folklore", "Science"]} />
+          <FilterSelect placeholder="Filter by Language" options={["English", "Swahili", "Yoruba"]} />
+        </div>
+      </div>
+      
+      <Suspense fallback={<StoryGridSkeleton />}>
+        <StoryList />
+      </Suspense>
+    </div>
+  );
+}
+
+function FilterSelect({ placeholder, options }: { placeholder: string, options: string[] }) {
+    return (
+        <div>
+            <Select>
+                <SelectTrigger>
+                    <SelectValue placeholder={placeholder} />
+                </SelectTrigger>
+                <SelectContent>
+                    {options.map(option => (
+                        <SelectItem key={option} value={option.toLowerCase()}>{option}</SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
+        </div>
+    );
+}
+
+async function StoryList() {
+  const stories = await getStories();
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+      {stories.map((story) => (
+        <StoryCard key={story.id} story={story} />
+      ))}
+    </div>
+  );
+}
+
+function StoryGridSkeleton() {
+    return (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            {Array.from({ length: 8 }).map((_, i) => (
+                <StoryCardSkeleton key={i} />
+            ))}
+        </div>
+    );
+}
