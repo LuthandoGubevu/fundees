@@ -36,7 +36,7 @@ export default function Home() {
       <div className="max-w-3xl mx-auto">
         <Sparkles className="mx-auto h-16 w-16 text-primary animate-pulse" />
         <h1 className="font-headline text-5xl md:text-7xl font-bold mt-4 text-foreground">
-          Welcome to Story Spark!
+          Welcome to Fundees!
         </h1>
         <p className="mt-6 text-lg md:text-xl text-foreground/80">
           Your magical place to create amazing stories, get answers to your curious questions, and explore a library full of adventures written by friends like you!

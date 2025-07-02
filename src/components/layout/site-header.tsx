@@ -24,7 +24,7 @@ export function SiteHeader() {
         <Link href="/" className="mr-6 flex items-center space-x-2">
           <BookHeart className="h-8 w-8 text-primary" />
           <span className="font-bold text-xl text-foreground font-headline">
-            Story Spark
+            Fundees
           </span>
         </Link>
         <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
@@ -60,7 +60,7 @@ export function SiteHeader() {
                 <div className="flex flex-col space-y-4 p-4">
                   <Link href="/" className="mr-6 flex items-center space-x-2 mb-4">
                      <BookHeart className="h-8 w-8 text-primary" />
-                     <span className="font-bold text-xl text-foreground font-headline">Story Spark</span>
+                     <span className="font-bold text-xl text-foreground font-headline">Fundees</span>
                   </Link>
                   {navLinks.map(({ href, label }) => (
                     <Link

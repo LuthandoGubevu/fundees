@@ -5,7 +5,7 @@ import { SiteHeader } from '@/components/layout/site-header';
 import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
-  title: 'Fundees: Story Spark',
+  title: 'Fundees',
   description: 'Spark your creativity with Fundees!',
 };
 
