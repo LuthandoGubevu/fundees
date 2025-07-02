@@ -17,6 +17,7 @@ import {
   limit,
   increment,
   Timestamp,
+  setDoc,
 } from 'firebase/firestore';
 import { revalidatePath } from 'next/cache';
 
@@ -119,18 +120,22 @@ export async function getStoryById(id: string): Promise<Story | null> {
   }
 }
 
-export async function addStory(story: Omit<Story, 'id' | 'createdAt'>): Promise<Story> {
-  const newStoryRef = await addDoc(collection(db, 'stories'), {
-    ...story,
+export function getNewStoryId(): string {
+  const storyRef = doc(collection(db, 'stories'));
+  return storyRef.id;
+}
+
+export async function addStory(story: Omit<Story, 'createdAt'>): Promise<Story> {
+  const { id, ...storyData } = story;
+  const storyRef = doc(db, 'stories', id);
+
+  await setDoc(storyRef, {
+    ...storyData,
     createdAt: serverTimestamp(),
   });
   
-  const newStory = await getDoc(newStoryRef);
-
-  revalidatePath('/library');
-  revalidatePath('/dashboard');
-
-  return transformStoryDoc(newStory);
+  const newStoryDoc = await getDoc(storyRef);
+  return transformStoryDoc(newStoryDoc);
 }
 
 // --- Like Functionality ---

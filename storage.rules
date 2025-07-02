@@ -1,0 +1,13 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Allow public read access to all story images
+    match /stories/{storyId} {
+      allow read;
+      // Allow writes only if a user is authenticated.
+      // Note: This will require implementing Firebase Authentication.
+      allow write: if request.auth != null;
+    }
+  }
+}
