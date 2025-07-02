@@ -69,17 +69,15 @@ export default function DashboardPage() {
     <div className="container mx-auto px-4 py-8 max-w-5xl">
       <div className="flex flex-col space-y-8">
         {/* Top Banner */}
-        <div className="bg-gradient-to-r from-blue-300 to-cyan-400 rounded-2xl p-4 md:p-6 shadow-lg flex items-center space-x-4">
-            <Image src="https://placehold.co/100x100.png" alt="User Avatar" width={64} height={64} className="w-16 h-16 rounded-full border-2 border-white" data-ai-hint="avatar profile" />
+        <div className="bg-gradient-to-r from-blue-300 to-cyan-400 rounded-2xl p-4 md:p-6 shadow-lg flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6">
+            <Image src="https://placehold.co/100x100.png" alt="User Avatar" width={64} height={64} className="w-16 h-16 rounded-full border-2 border-white flex-shrink-0" data-ai-hint="avatar profile" />
             <div className="flex-1">
-                <h1 className="text-2xl font-bold text-gray-800">Hi, {user.firstName}!</h1>
-                <p className="text-sm text-gray-700">Ready for a new adventure today?</p>
+                <h1 className="text-3xl font-bold text-gray-800">Hi, {user.firstName}!</h1>
+                <p className="text-sm text-gray-700 mt-1">Ready for a new adventure today?</p>
             </div>
-            <div className="text-right">
-                 <div className="flex items-center justify-end space-x-4 text-sm font-semibold text-gray-800">
-                    <span className="flex items-center gap-1.5"><Heart className="w-5 h-5 text-red-500" /> {totalLikes} Likes</span>
-                    <span className="flex items-center gap-1.5"><Users className="w-5 h-5" /> 0 Followers</span>
-                </div>
+            <div className="flex items-center gap-x-6 gap-y-2 text-sm font-semibold text-gray-800 self-start md:self-center pt-2 md:pt-0">
+                <span className="flex items-center gap-1.5"><Heart className="w-5 h-5 text-red-500" /> {totalLikes} Likes</span>
+                <span className="flex items-center gap-1.5"><Users className="w-5 h-5" /> 0 Followers</span>
             </div>
         </div>
 
@@ -89,11 +87,11 @@ export default function DashboardPage() {
                 <section className="bg-blue-50 rounded-xl p-4 shadow-md">
                     <h2 className="text-xl font-bold mb-4 text-gray-800">Your Story Creations</h2>
                     {myStories.length > 0 ? (
-                        <div className="flex overflow-x-auto space-x-4 pb-2">
+                        <div className="flex overflow-x-auto space-x-4 pb-2 -mx-4 px-4">
                         {myStories.map(story => (
                             <Link href={`/story/${story.id}`} key={story.id} className="block flex-shrink-0">
-                                <Card className="bg-white rounded-lg p-2 min-w-[140px] text-center shadow hover:shadow-xl transition-shadow">
-                                    <Image src={story.imageUrl || 'https://placehold.co/400x300.png'} alt={story.title} width={400} height={300} className="w-full h-20 object-cover rounded-md mb-2" data-ai-hint={story.theme.toLowerCase()} />
+                                <Card className="bg-white rounded-lg p-2 min-w-[160px] text-center shadow hover:shadow-xl transition-shadow">
+                                    <Image src={story.imageUrl || 'https://placehold.co/400x300.png'} alt={story.title} width={400} height={300} className="w-full h-24 object-cover rounded-md mb-2" data-ai-hint={story.theme.toLowerCase()} />
                                     <h3 className="text-sm font-medium truncate">{story.title}</h3>
                                     <span className="text-xs bg-yellow-100 text-yellow-800 rounded-full px-2 py-0.5 mt-1 inline-block">Draft</span>
                                 </Card>
@@ -112,11 +110,11 @@ export default function DashboardPage() {
                  {/* Creative Toolbox */}
                 <section>
                     <h2 className="text-xl font-bold mb-4 text-gray-800">Creative Toolbox</h2>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <ToolboxButton href="/create-story" icon={<Pencil />} label="Write Story" className="from-green-300 to-green-400" />
-                        <ToolboxButton href="/ask-ai" icon={<Sparkles />} label="Ask AI" className="from-blue-300 to-blue-400" />
-                        <ToolboxButton href="/library" icon={<BookOpen />} label="Library" className="from-orange-300 to-orange-400" />
-                        <ToolboxButton href="#" icon={<Award />} label="Goals" className="from-purple-300 to-purple-400" />
+                    <div className="grid grid-cols-2 gap-4">
+                        <ToolboxButton href="/create-story" icon={<Pencil className="w-8 h-8"/>} label="Write Story" className="from-green-300 to-green-400" />
+                        <ToolboxButton href="/ask-ai" icon={<Sparkles className="w-8 h-8"/>} label="Ask AI" className="from-blue-300 to-blue-400" />
+                        <ToolboxButton href="/library" icon={<BookOpen className="w-8 h-8"/>} label="Library" className="from-orange-300 to-orange-400" />
+                        <ToolboxButton href="#" icon={<Award className="w-8 h-8"/>} label="Goals" className="from-purple-300 to-purple-400" />
                     </div>
                 </section>
             </div>
@@ -151,7 +149,7 @@ export default function DashboardPage() {
 
 function ToolboxButton({ href, icon, label, className }: { href: string, icon: React.ReactNode, label: string, className: string }) {
     return (
-        <Link href={href} className={`bg-gradient-to-br ${className} rounded-lg p-3 shadow text-center text-sm font-semibold text-white hover:opacity-90 transition-opacity flex flex-col items-center justify-center space-y-1 h-24`}>
+        <Link href={href} className={`bg-gradient-to-br ${className} rounded-lg p-3 shadow text-center text-sm font-semibold text-white hover:opacity-90 transition-opacity flex flex-col items-center justify-center space-y-2 h-28`}>
             {icon}
             <span>{label}</span>
         </Link>
