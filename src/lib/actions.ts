@@ -32,19 +32,25 @@ const saveStorySchema = z.object({
     title: z.string().min(3, "Please enter a title."),
     content: z.string().min(10, "Your story is too short!"),
     theme: z.string(),
+    author: z.object({
+        id: z.string(),
+        name: z.string(),
+        school: z.string(),
+        grade: z.string(),
+    })
 });
 
-export async function saveStoryAction(data: { title: string; content: string; theme: string}) {
+export async function saveStoryAction(data: z.infer<typeof saveStorySchema>) {
     const validatedFields = saveStorySchema.safeParse(data);
 
     if (!validatedFields.success) {
         throw new Error("Invalid story data.");
     }
     
-    const { title, content, theme } = validatedFields.data;
+    const { title, content, theme, author } = validatedFields.data;
 
     try {
-        const imageResult = await generateStoryImage({ prompt: content });
+        const imageResult = await generateStoryImage({ prompt: `A child's drawing about: ${content}` });
         
         const excerpt = content.length > 100 ? content.substring(0, 100) + '...' : content;
 
@@ -54,12 +60,13 @@ export async function saveStoryAction(data: { title: string; content: string; th
             theme,
             excerpt,
             imageUrl: imageResult.imageUrl,
-            // Mock data for other fields
-            author: 'A new author',
-            grade: '2nd Grade',
+            author: author.name,
+            authorId: author.id,
+            school: author.school,
+            grade: author.grade,
             subject: 'Creativity',
             language: 'English',
-            age: '7-8',
+            age: '7-8', // This is still mock data
         });
 
         revalidatePath('/library');

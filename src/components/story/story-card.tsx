@@ -5,7 +5,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Heart, Bookmark } from "lucide-react";
+import { Heart, Bookmark, School } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -28,12 +28,19 @@ export function StoryCard({ story }: { story: Story }) {
               />
           </div>
           <div className="p-4">
-              <div className="flex gap-2 mb-2">
+              <div className="flex flex-wrap gap-2 mb-2">
                   <Badge variant="outline" className="border-orange-400 text-orange-600">{story.age} yrs</Badge>
                   <Badge variant="outline" className="border-blue-400 text-blue-600">{story.grade}</Badge>
               </div>
               <CardTitle className="font-headline text-xl h-14 leading-tight">{story.title}</CardTitle>
-              <p className="text-sm text-muted-foreground mt-1">by {story.author}</p>
+              <div className="text-sm text-muted-foreground mt-1 space-y-1">
+                <p>by {story.author}</p>
+                {story.school && (
+                    <p className="flex items-center gap-1.5">
+                        <School className="h-4 w-4"/> {story.school}
+                    </p>
+                )}
+              </div>
           </div>
         </CardHeader>
         <CardContent className="flex-grow p-4 pt-0">
@@ -45,7 +52,7 @@ export function StoryCard({ story }: { story: Story }) {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => setIsLiked(!isLiked)}
+            onClick={(e) => { e.preventDefault(); setIsLiked(!isLiked); }}
             className="flex items-center gap-1.5"
             aria-label={isLiked ? "Unlike story" : "Like story"}
           >
@@ -55,7 +62,7 @@ export function StoryCard({ story }: { story: Story }) {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => setIsBookmarked(!isBookmarked)}
+            onClick={(e) => { e.preventDefault(); setIsBookmarked(!isBookmarked); }}
             aria-label={isBookmarked ? "Remove bookmark" : "Bookmark story"}
           >
             <Bookmark className={cn("h-5 w-5", isBookmarked ? "text-yellow-500 fill-current" : "text-muted-foreground")} />

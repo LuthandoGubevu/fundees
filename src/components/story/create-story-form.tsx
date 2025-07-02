@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Wand2, BookUp, Save, Loader2, AlertCircle, Lightbulb } from 'lucide-react';
 import type { SuggestStoryStructureOutput } from '@/ai/flows/suggest-story-structure';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/auth-context';
 
 
 const storyThemes = [
@@ -33,6 +34,7 @@ export function CreateStoryForm({ initialTheme }: { initialTheme?: string }) {
   const [isSaving, startSaving] = useTransition();
   const router = useRouter();
   const { toast } = useToast();
+  const { user } = useAuth();
 
   useEffect(() => {
     if (state.data) {
@@ -55,10 +57,29 @@ export function CreateStoryForm({ initialTheme }: { initialTheme?: string }) {
         })
         return;
     }
+
+    if (!user) {
+        toast({
+            title: "Not Logged In",
+            description: "You must be logged in to save a story.",
+            variant: "destructive"
+        })
+        return;
+    }
     
     startSaving(async () => {
         try {
-            await saveStoryAction({ title, content, theme: theme || "A wonderful adventure" });
+            await saveStoryAction({ 
+              title, 
+              content, 
+              theme: theme || "A wonderful adventure",
+              author: {
+                id: user.id,
+                name: `${user.firstName} ${user.lastName}`,
+                school: user.school,
+                grade: user.grade,
+              }
+            });
             toast({
                 title: "Hooray!",
                 description: "Your story has been saved and is on its way to the library!",

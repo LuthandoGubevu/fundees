@@ -1,8 +1,24 @@
-import type { Story } from './types';
+import type { Story, User } from './types';
 
-// Use a global variable to persist stories across hot reloads in dev.
+// Use a global variable to persist data across hot reloads in dev.
 // In a real app, you'd use a database.
 const globalForStories = globalThis as unknown as { stories: Story[] | undefined };
+const globalForUsers = globalThis as unknown as { users: User[] | undefined };
+
+if (!globalForUsers.users) {
+  globalForUsers.users = [
+    {
+        id: '1',
+        firstName: 'Amina',
+        lastName: 'Chike',
+        email: 'amina@school.com',
+        school: 'Sunshine Primary',
+        grade: '3rd Grade',
+        password: 'password123',
+    }
+  ];
+}
+const users = globalForUsers.users!;
 
 if (!globalForStories.stories) {
   globalForStories.stories = [
@@ -10,6 +26,7 @@ if (!globalForStories.stories) {
     id: '1',
     title: 'The First Fundee',
     author: 'The Fundees Team',
+    authorId: '0',
     grade: '2nd Grade',
     subject: 'Creativity',
     language: 'English',
@@ -24,7 +41,9 @@ if (!globalForStories.stories) {
   {
     id: '2',
     title: 'Anansi the Spider',
-    author: 'Amina',
+    author: 'Amina Chike',
+    authorId: '1',
+    school: 'Sunshine Primary',
     grade: '3rd Grade',
     subject: 'Folklore',
     language: 'English',
@@ -41,8 +60,31 @@ if (!globalForStories.stories) {
 
 const stories = globalForStories.stories!;
 
+// --- User Functions ---
 
-// Wrap in functions to simulate async API calls
+export const getUserByEmail = async (email: string): Promise<User | undefined> => {
+    return new Promise(resolve => {
+        setTimeout(() => {
+            resolve(users.find(user => user.email.toLowerCase() === email.toLowerCase()));
+        }, 300);
+    });
+};
+
+export const addUser = async (user: Omit<User, 'id'>): Promise<User> => {
+    return new Promise(resolve => {
+        setTimeout(() => {
+            const newUser: User = {
+                ...user,
+                id: globalThis.crypto.randomUUID(),
+            };
+            users.push(newUser);
+            resolve(newUser);
+        }, 300);
+    });
+};
+
+// --- Story Functions ---
+
 export const getStories = async (): Promise<Story[]> => {
   return new Promise(resolve => {
     setTimeout(() => {
@@ -60,12 +102,16 @@ export const getStoryById = async (id: string): Promise<Story | undefined> => {
 };
 
 export const addStory = async (story: Omit<Story, 'id' | 'createdAt' | 'likes'>): Promise<Story> => {
-  const newStory: Story = {
-    ...story,
-    id: globalThis.crypto.randomUUID(),
-    createdAt: new Date().toISOString(),
-    likes: 0,
-  };
-  stories.push(newStory);
-  return newStory;
+  return new Promise(resolve => {
+      setTimeout(() => {
+        const newStory: Story = {
+          ...story,
+          id: globalThis.crypto.randomUUID(),
+          createdAt: new Date().toISOString(),
+          likes: 0,
+        };
+        stories.push(newStory);
+        resolve(newStory);
+      }, 300);
+  });
 };
