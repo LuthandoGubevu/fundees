@@ -22,7 +22,7 @@ export function StoryCard({ story }: { story: Story }) {
                 alt={story.title}
                 fill
                 className="object-cover"
-                data-ai-hint="african story"
+                data-ai-hint={story.theme.toLowerCase()}
             />
         </div>
         <div className="p-4">
