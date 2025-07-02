@@ -50,7 +50,7 @@ export async function saveStoryAction(data: z.infer<typeof saveStorySchema>) {
     const { title, content, theme, author } = validatedFields.data;
 
     try {
-        const imageResult = await generateStoryImage({ prompt: `A child's drawing about: ${content}` });
+        const imageResult = await generateStoryImage({ prompt: content });
         
         const excerpt = content.length > 100 ? content.substring(0, 100) + '...' : content;
 
