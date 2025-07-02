@@ -15,6 +15,15 @@ if (!globalForUsers.users) {
         school: 'Sunshine Primary',
         grade: '3rd Grade',
         password: 'password123',
+    },
+    {
+        id: '2',
+        firstName: 'Luthando',
+        lastName: 'Cele',
+        email: 'luthando@school.com',
+        school: 'Future Stars Academy',
+        grade: '5th Grade',
+        password: 'password123',
     }
   ];
 }
@@ -55,6 +64,23 @@ if (!globalForStories.stories) {
     imageUrl: 'https://placehold.co/600x400.png',
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 5).toISOString(),
   },
+  {
+    id: '3',
+    title: 'The Talking Baobab Tree',
+    author: 'Luthando Cele',
+    authorId: '2',
+    school: 'Future Stars Academy',
+    grade: '5th Grade',
+    subject: 'Nature',
+    language: 'English',
+    excerpt: 'Luthando discovers an ancient baobab tree in the village that can speak, and it shares the secret of the changing seasons...',
+    content: 'In the heart of the village stood a giant baobab tree, its branches reaching for the sky like wise old arms. One sunny afternoon, while chasing a colourful butterfly, Luthando stumbled upon the tree. To his amazement, the tree whispered his name! The baobab shared ancient secrets about why the rains come and go, and how the stars are the campfires of the ancestors. Luthando promised to keep the tree\'s secret, becoming the guardian of its stories.',
+    likes: 15,
+    age: '9-10',
+    theme: 'Nature',
+    imageUrl: 'https://placehold.co/600x400.png',
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2).toISOString(),
+  }
 ];
 }
 
