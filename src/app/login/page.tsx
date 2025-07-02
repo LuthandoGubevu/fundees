@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { getUserByEmail } from '@/lib/mock-data';
+import { getUserByEmail } from '@/lib/firestore';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -30,16 +30,26 @@ export default function LoginPage() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const user = await getUserByEmail(email);
-
-    if (user && user.password === password) {
-      toast({ title: 'Success!', description: `Welcome back, ${user.firstName}!` });
-      login(user);
-    } else {
-      toast({
+    try {
+      const user = await getUserByEmail(email);
+  
+      // NOTE: This is a mock password check. In a real app, use Firebase Auth for security.
+      if (user && user.password === password) {
+        toast({ title: 'Success!', description: `Welcome back, ${user.firstName}!` });
+        login(user);
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Login Failed',
+          description: 'Invalid email or password.',
+        });
+        setIsSubmitting(false);
+      }
+    } catch (error) {
+       toast({
         variant: 'destructive',
-        title: 'Login Failed',
-        description: 'Invalid email or password.',
+        title: 'Login Error',
+        description: 'Could not connect to the database.',
       });
       setIsSubmitting(false);
     }

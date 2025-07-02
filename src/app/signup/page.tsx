@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/contexts/auth-context';
-import { addUser, getUserByEmail } from '@/lib/mock-data';
+import { addUser, getUserByEmail } from '@/lib/firestore';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -20,6 +20,7 @@ const formSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
   lastName: z.string().min(1, 'Last name is required'),
   email: z.string().email('Invalid email address').refine(async (email) => {
+    // Check if email already exists in Firestore
     const existingUser = await getUserByEmail(email);
     return !existingUser;
   }, 'This email is already in use'),
@@ -60,7 +61,8 @@ export default function SignUpPage() {
       toast({ title: 'Account Created!', description: 'Welcome to Fundees!' });
       login(newUser);
     } catch (error) {
-      toast({ variant: 'destructive', title: 'Sign Up Failed', description: 'Something went wrong.' });
+      console.error("Sign up error:", error);
+      toast({ variant: 'destructive', title: 'Sign Up Failed', description: 'Could not create account.' });
     }
   }
   
@@ -161,7 +163,7 @@ export default function SignUpPage() {
               )} />
 
               <Button type="submit" className="w-full h-12 text-lg" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? 'Creating Account...' : 'Sign Up'}
+                {form.formState.isSubmitting ? <Loader2 className="animate-spin" /> : 'Sign Up'}
               </Button>
             </form>
           </Form>

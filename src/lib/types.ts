@@ -6,6 +6,7 @@ export interface User {
   school: string;
   grade: string;
   password?: string; // Should not be stored in client-side state, but needed for mock lookup
+  totalLikes?: number;
 }
 
 export interface Story {
@@ -23,5 +24,5 @@ export interface Story {
   age: string;
   theme: string;
   imageUrl?: string;
-  createdAt: string;
+  createdAt: any; // Can be Timestamp from Firebase or string
 }

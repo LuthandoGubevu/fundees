@@ -3,7 +3,7 @@
 import { suggestStoryStructure } from '@/ai/flows/suggest-story-structure';
 import { generateStoryImage } from '@/ai/flows/generate-story-image';
 import { z } from 'zod';
-import { addStory } from './mock-data';
+import { addStory } from './firestore';
 import { revalidatePath } from 'next/cache';
 
 const structureSchema = z.object({
@@ -67,6 +67,7 @@ export async function saveStoryAction(data: z.infer<typeof saveStorySchema>) {
             subject: 'Creativity',
             language: 'English',
             age: '7-8', // This is still mock data
+            likes: 0,
         });
 
         revalidatePath('/library');

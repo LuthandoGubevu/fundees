@@ -9,21 +9,20 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Award, BookOpen, Heart, Pencil, Sparkles, Star, Users } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { getStories } from '@/lib/mock-data';
+import { getStoriesByAuthor } from '@/lib/firestore';
 import type { Story } from '@/lib/types';
 
 export default function DashboardPage() {
   const { user, isLoading } = useAuth();
   const [myStories, setMyStories] = useState<Story[]>([]);
-  const [totalLikes, setTotalLikes] = useState(0);
+  const [isStoriesLoading, setIsStoriesLoading] = useState(true);
 
   useEffect(() => {
     if (user) {
-      getStories().then(allStories => {
-        const userStories = allStories.filter(story => story.authorId === user.id);
+      setIsStoriesLoading(true);
+      getStoriesByAuthor(user.id).then(userStories => {
         setMyStories(userStories);
-        const likes = userStories.reduce((acc, story) => acc + story.likes, 0);
-        setTotalLikes(likes);
+        setIsStoriesLoading(false);
       });
     }
   }, [user]);
@@ -76,7 +75,7 @@ export default function DashboardPage() {
                 <p className="text-sm text-gray-700 mt-1">Ready for a new adventure today?</p>
             </div>
             <div className="flex items-center gap-x-6 gap-y-2 text-sm font-semibold text-gray-800 self-start md:self-center pt-2 md:pt-0">
-                <span className="flex items-center gap-1.5"><Heart className="w-5 h-5 text-red-500" /> {totalLikes} Likes</span>
+                <span className="flex items-center gap-1.5"><Heart className="w-5 h-5 text-red-500" /> {user.totalLikes || 0} Likes</span>
                 <span className="flex items-center gap-1.5"><Users className="w-5 h-5" /> 0 Followers</span>
             </div>
         </div>
@@ -86,14 +85,20 @@ export default function DashboardPage() {
                 {/* Your Story Creations */}
                 <section className="bg-blue-50 rounded-xl p-4 shadow-md">
                     <h2 className="text-xl font-bold mb-4 text-gray-800">Your Story Creations</h2>
-                    {myStories.length > 0 ? (
+                    {isStoriesLoading ? (
+                        <div className="flex overflow-x-auto space-x-4 pb-2 -mx-4 px-4">
+                            <Skeleton className="w-40 h-48 rounded-lg" />
+                            <Skeleton className="w-40 h-48 rounded-lg" />
+                            <Skeleton className="w-40 h-48 rounded-lg" />
+                        </div>
+                    ) : myStories.length > 0 ? (
                         <div className="flex overflow-x-auto space-x-4 pb-2 -mx-4 px-4">
                         {myStories.map(story => (
                             <Link href={`/story/${story.id}`} key={story.id} className="block flex-shrink-0">
-                                <Card className="bg-white rounded-lg p-2 min-w-[160px] text-center shadow hover:shadow-xl transition-shadow">
+                                <Card className="bg-white rounded-lg p-2 w-[160px] text-center shadow hover:shadow-xl transition-shadow">
                                     <Image src={story.imageUrl || 'https://placehold.co/400x300.png'} alt={story.title} width={400} height={300} className="w-full h-24 object-cover rounded-md mb-2" data-ai-hint={story.theme.toLowerCase()} />
                                     <h3 className="text-sm font-medium truncate">{story.title}</h3>
-                                    <span className="text-xs bg-yellow-100 text-yellow-800 rounded-full px-2 py-0.5 mt-1 inline-block">Draft</span>
+                                    <span className="text-xs bg-yellow-100 text-yellow-800 rounded-full px-2 py-0.5 mt-1 inline-block">Published</span>
                                 </Card>
                             </Link>
                         ))}
@@ -166,5 +171,3 @@ function AwardBadge({ icon, label, locked=false }: { icon: React.ReactNode, labe
         </div>
     )
 }
-
-    

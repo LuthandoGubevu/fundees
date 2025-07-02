@@ -1,0 +1,137 @@
+'use server';
+
+import { db } from '@/lib/firebase';
+import type { Story, User } from '@/lib/types';
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  getDoc,
+  addDoc,
+  doc,
+  runTransaction,
+  serverTimestamp,
+  orderBy,
+  limit,
+  increment,
+  Timestamp,
+} from 'firebase/firestore';
+import { revalidatePath } from 'next/cache';
+
+function transformStoryDoc(doc: any) {
+    const data = doc.data();
+    return {
+        id: doc.id,
+        ...data,
+        createdAt: data.createdAt instanceof Timestamp ? data.createdAt.toDate().toISOString() : data.createdAt,
+    } as Story;
+}
+
+// --- User Functions ---
+export async function getUserByEmail(email: string): Promise<User | null> {
+  const q = query(collection(db, 'users'), where('email', '==', email), limit(1));
+  const querySnapshot = await getDocs(q);
+  if (querySnapshot.empty) {
+    return null;
+  }
+  const userDoc = querySnapshot.docs[0];
+  // NOTE: This includes the mock password. Be careful in a real app.
+  return { id: userDoc.id, ...userDoc.data() } as User;
+}
+
+export async function addUser(userData: Omit<User, 'id'>): Promise<User> {
+    const { password } = userData;
+    const userToSave = {
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        email: userData.email,
+        school: userData.school,
+        grade: userData.grade,
+        totalLikes: 0,
+        createdAt: serverTimestamp(),
+        // In a real app, you'd hash the password or use Firebase Auth.
+        // For this prototype, we'll store it directly to simulate login.
+        password: password, 
+    };
+
+    const userRef = await addDoc(collection(db, 'users'), userToSave);
+    return { id: userRef.id, ...userData, totalLikes: 0 };
+}
+
+
+// --- Story Functions ---
+export async function getStories(): Promise<Story[]> {
+  const storiesCol = collection(db, 'stories');
+  const q = query(storiesCol, orderBy('createdAt', 'desc'));
+  const storySnapshot = await getDocs(q);
+  return storySnapshot.docs.map(transformStoryDoc);
+}
+
+export async function getStoriesByAuthor(authorId: string): Promise<Story[]> {
+    const storiesCol = collection(db, 'stories');
+    const q = query(storiesCol, where('authorId', '==', authorId), orderBy('createdAt', 'desc'));
+    const storySnapshot = await getDocs(q);
+    return storySnapshot.docs.map(transformStoryDoc);
+}
+
+export async function getStoryById(id: string): Promise<Story | null> {
+  const storyDocRef = doc(db, 'stories', id);
+  const storyDoc = await getDoc(storyDocRef);
+  if (!storyDoc.exists()) {
+    return null;
+  }
+  return transformStoryDoc(storyDoc);
+}
+
+export async function addStory(story: Omit<Story, 'id' | 'createdAt'>): Promise<Story> {
+  const newStoryRef = await addDoc(collection(db, 'stories'), {
+    ...story,
+    createdAt: serverTimestamp(),
+  });
+  
+  const newStory = await getDoc(newStoryRef);
+
+  revalidatePath('/library');
+  revalidatePath('/dashboard');
+
+  return transformStoryDoc(newStory);
+}
+
+// --- Like Functionality ---
+export async function toggleLikeStory(storyId: string, authorId: string, likerId: string) {
+    if (!likerId) {
+        throw new Error('You must be logged in to like a story.');
+    }
+
+    const storyRef = doc(db, 'stories', storyId);
+    const likeRef = doc(db, 'stories', storyId, 'likes', likerId);
+    // User might not exist in a test environment
+    const authorRef = authorId ? doc(db, 'users', authorId) : null;
+
+    try {
+        await runTransaction(db, async (transaction) => {
+            const likeDoc = await transaction.get(likeRef);
+            
+            if (likeDoc.exists()) {
+                // User has already liked, so unlike
+                transaction.delete(likeRef);
+                transaction.update(storyRef, { likes: increment(-1) });
+                if (authorRef) {
+                  transaction.update(authorRef, { totalLikes: increment(-1) });
+                }
+            } else {
+                // User has not liked, so like
+                transaction.set(likeRef, { createdAt: serverTimestamp(), userId: likerId });
+                transaction.update(storyRef, { likes: increment(1) });
+                if (authorRef) {
+                  transaction.update(authorRef, { totalLikes: increment(1) });
+                }
+            }
+        });
+
+    } catch (error) {
+        console.error("Transaction failed: ", error);
+        throw new Error("Could not update like status.");
+    }
+}

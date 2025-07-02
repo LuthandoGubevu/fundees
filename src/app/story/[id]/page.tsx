@@ -1,4 +1,4 @@
-import { getStoryById } from '@/lib/mock-data';
+import { getStoryById } from '@/lib/firestore';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
@@ -6,6 +6,7 @@ import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { format } from 'date-fns';
 
 export default async function StoryPage({ params }: { params: { id: string } }) {
   const story = await getStoryById(params.id);
@@ -13,6 +14,10 @@ export default async function StoryPage({ params }: { params: { id: string } }) 
   if (!story) {
     notFound();
   }
+  
+  const formattedDate = story.createdAt?.seconds 
+    ? format(new Date(story.createdAt.seconds * 1000), 'PPP') 
+    : 'a while ago';
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
@@ -41,7 +46,7 @@ export default async function StoryPage({ params }: { params: { id: string } }) 
             <div className="flex flex-wrap gap-2 text-sm text-muted-foreground mb-4">
               <span>by {story.author}</span>
               <span>&middot;</span>
-              <span>{new Date(story.createdAt).toLocaleDateString()}</span>
+              <span>{formattedDate}</span>
             </div>
              <div className="flex flex-wrap gap-2 mb-2">
                 <Badge variant="outline" className="border-orange-400 text-orange-600">{story.age} yrs</Badge>

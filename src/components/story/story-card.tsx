@@ -5,70 +5,115 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Heart, Bookmark, School } from "lucide-react";
-import { useState } from "react";
+import { Heart, School } from "lucide-react";
+import { useEffect, useState, useTransition } from "react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { useAuth } from "@/contexts/auth-context";
+import { toggleLikeStory } from "@/lib/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import { useToast } from "@/hooks/use-toast";
 
 export function StoryCard({ story }: { story: Story }) {
-  const [isLiked, setIsLiked] = useState(false);
-  const [isBookmarked, setIsBookmarked] = useState(false);
+  const { user, isAuthenticated } = useAuth();
+  const { toast } = useToast();
+  
+  const [likes, setLikes] = useState(story.likes);
+  const [hasLiked, setHasLiked] = useState(false);
+  const [isLiking, startLiking] = useTransition();
+
+  useEffect(() => {
+    // Listen for real-time updates on likes count
+    const storyUnsub = onSnapshot(doc(db, "stories", story.id), (doc) => {
+      const data = doc.data();
+      if (data && typeof data.likes === 'number') {
+        setLikes(data.likes);
+      }
+    });
+
+    // Listen for real-time updates on whether the current user has liked the story
+    let likeUnsub = () => {};
+    if (user?.id) {
+      likeUnsub = onSnapshot(doc(db, "stories", story.id, "likes", user.id), (doc) => {
+        setHasLiked(doc.exists());
+      });
+    } else {
+      setHasLiked(false);
+    }
+
+    return () => {
+      storyUnsub();
+      likeUnsub();
+    };
+  }, [story.id, user?.id]);
+
+  const handleLike = async () => {
+    if (!isAuthenticated || !user) {
+        toast({
+            variant: "destructive",
+            title: "Please login",
+            description: "You need to be logged in to like a story.",
+        });
+        return;
+    }
+    
+    startLiking(async () => {
+        try {
+            await toggleLikeStory(story.id, story.authorId, user.id);
+        } catch (error) {
+            console.error(error);
+            toast({
+                variant: "destructive",
+                title: "Something went wrong",
+                description: "Could not update your like. Please try again.",
+            });
+        }
+    });
+  };
 
   return (
-    <Card className="flex flex-col overflow-hidden rounded-2xl shadow-lg transform hover:-translate-y-2 transition-transform duration-300 bg-card">
-      <Link href={`/story/${story.id}`} className="flex flex-col flex-grow no-underline text-current">
+    <Card className="flex flex-col overflow-hidden rounded-xl shadow-md bg-white max-w-xs sm:max-w-sm w-full mx-auto transform hover:-translate-y-1 transition-transform duration-300">
+      <Link href={`/story/${story.id}`} className="flex flex-col flex-grow no-underline text-current p-3 space-y-2">
         <CardHeader className="p-0">
-          <div className="relative h-48 w-full">
+          <div className="relative h-32 w-full">
               <Image
                   src={story.imageUrl || "https://placehold.co/600x400.png"}
                   alt={story.title}
                   fill
-                  className="object-cover"
+                  className="object-cover rounded-lg"
                   data-ai-hint={story.theme.toLowerCase()}
               />
           </div>
-          <div className="p-4">
-              <div className="flex flex-wrap gap-2 mb-2">
-                  <Badge variant="outline" className="border-orange-400 text-orange-600">{story.age} yrs</Badge>
-                  <Badge variant="outline" className="border-blue-400 text-blue-600">{story.grade}</Badge>
-              </div>
-              <CardTitle className="font-headline text-xl h-14 leading-tight">{story.title}</CardTitle>
-              <div className="text-sm text-muted-foreground mt-1 space-y-1">
-                <p>by {story.author}</p>
-                {story.school && (
-                    <p className="flex items-center gap-1.5">
-                        <School className="h-4 w-4"/> {story.school}
-                    </p>
-                )}
-              </div>
-          </div>
         </CardHeader>
-        <CardContent className="flex-grow p-4 pt-0">
-          <p className="text-sm text-foreground/80 line-clamp-3">{story.excerpt}</p>
+        <CardContent className="p-0 flex-grow space-y-1.5">
+          <CardTitle className="font-semibold text-lg truncate">{story.title}</CardTitle>
+          <div className="text-sm text-muted-foreground space-y-1">
+            <p className="truncate">by {story.author}</p>
+            {story.school && (
+                <p className="flex items-center gap-1.5 truncate">
+                    <School className="h-4 w-4 flex-shrink-0"/> {story.school}
+                </p>
+            )}
+          </div>
+          <div className="flex flex-wrap gap-1.5 pt-1">
+              <Badge variant="outline" className="text-xs">{story.age} yrs</Badge>
+              <Badge variant="outline" className="text-xs">{story.grade}</Badge>
+          </div>
         </CardContent>
       </Link>
-      <CardFooter className="p-4 pt-0 flex justify-between items-center">
-        <div className="flex items-center gap-4">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={(e) => { e.preventDefault(); setIsLiked(!isLiked); }}
-            className="flex items-center gap-1.5"
-            aria-label={isLiked ? "Unlike story" : "Like story"}
-          >
-            <Heart className={cn("h-5 w-5", isLiked ? "text-red-500 fill-current" : "text-muted-foreground")} />
-            <span className="text-sm font-medium">{story.likes + (isLiked ? 1 : 0)}</span>
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={(e) => { e.preventDefault(); setIsBookmarked(!isBookmarked); }}
-            aria-label={isBookmarked ? "Remove bookmark" : "Bookmark story"}
-          >
-            <Bookmark className={cn("h-5 w-5", isBookmarked ? "text-yellow-500 fill-current" : "text-muted-foreground")} />
-          </Button>
-        </div>
-        
+      <CardFooter className="p-3 pt-1 flex justify-between items-center">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleLike}
+          disabled={isLiking || !isAuthenticated}
+          className="flex items-center space-x-1 text-red-500 hover:text-red-600 disabled:text-red-300 px-1"
+          aria-label={hasLiked ? "Unlike story" : "Like story"}
+        >
+          <Heart className={cn("h-5 w-5", hasLiked ? "fill-current" : "")} />
+          <span className="text-sm font-medium">{likes}</span>
+        </Button>
       </CardFooter>
     </Card>
   );

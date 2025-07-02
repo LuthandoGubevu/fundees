@@ -1,4 +1,4 @@
-import { getStories } from "@/lib/mock-data";
+import { getStories } from "@/lib/firestore";
 import { StoryCard } from "@/components/story/story-card";
 import { StoryCardSkeleton } from "@/components/story/story-card-skeleton";
 import { Suspense } from "react";
@@ -55,7 +55,7 @@ function FilterSelect({ placeholder, options }: { placeholder: string, options: 
 async function StoryList() {
   const stories = await getStories();
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center">
       {stories.map((story) => (
         <StoryCard key={story.id} story={story} />
       ))}
@@ -65,7 +65,7 @@ async function StoryList() {
 
 function StoryGridSkeleton() {
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center">
             {Array.from({ length: 8 }).map((_, i) => (
                 <StoryCardSkeleton key={i} />
             ))}
