@@ -2,6 +2,7 @@
 
 import { db } from '@/lib/firebase';
 import type { Story, User } from '@/lib/types';
+import { stories as mockStories, users as mockUsers } from '@/lib/mock-data';
 import {
   collection,
   query,
@@ -30,14 +31,23 @@ function transformStoryDoc(doc: any) {
 
 // --- User Functions ---
 export async function getUserByEmail(email: string): Promise<User | null> {
-  const q = query(collection(db, 'users'), where('email', '==', email), limit(1));
-  const querySnapshot = await getDocs(q);
-  if (querySnapshot.empty) {
-    return null;
+  try {
+    const q = query(collection(db, 'users'), where('email', '==', email), limit(1));
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.empty) {
+      return null;
+    }
+    const userDoc = querySnapshot.docs[0];
+    // NOTE: This includes the mock password. Be careful in a real app.
+    return { id: userDoc.id, ...userDoc.data() } as User;
+  } catch (error: any) {
+    if (error.code === 'permission-denied') {
+      console.warn('Firestore permission denied. Falling back to mock data for user email:', email);
+      const mockUser = mockUsers.find(u => u.email === email);
+      return mockUser || null;
+    }
+    throw error;
   }
-  const userDoc = querySnapshot.docs[0];
-  // NOTE: This includes the mock password. Be careful in a real app.
-  return { id: userDoc.id, ...userDoc.data() } as User;
 }
 
 export async function addUser(userData: Omit<User, 'id'>): Promise<User> {
@@ -62,26 +72,51 @@ export async function addUser(userData: Omit<User, 'id'>): Promise<User> {
 
 // --- Story Functions ---
 export async function getStories(): Promise<Story[]> {
-  const storiesCol = collection(db, 'stories');
-  const q = query(storiesCol, orderBy('createdAt', 'desc'));
-  const storySnapshot = await getDocs(q);
-  return storySnapshot.docs.map(transformStoryDoc);
+  try {
+    const storiesCol = collection(db, 'stories');
+    const q = query(storiesCol, orderBy('createdAt', 'desc'));
+    const storySnapshot = await getDocs(q);
+    return storySnapshot.docs.map(transformStoryDoc);
+  } catch (error: any) {
+    if (error.code === 'permission-denied') {
+      console.warn('Firestore permission denied. Falling back to mock data. Please enable the Firestore API in your Google Cloud project.');
+      return mockStories;
+    }
+    throw error;
+  }
 }
 
 export async function getStoriesByAuthor(authorId: string): Promise<Story[]> {
-    const storiesCol = collection(db, 'stories');
-    const q = query(storiesCol, where('authorId', '==', authorId), orderBy('createdAt', 'desc'));
-    const storySnapshot = await getDocs(q);
-    return storySnapshot.docs.map(transformStoryDoc);
+    try {
+        const storiesCol = collection(db, 'stories');
+        const q = query(storiesCol, where('authorId', '==', authorId), orderBy('createdAt', 'desc'));
+        const storySnapshot = await getDocs(q);
+        return storySnapshot.docs.map(transformStoryDoc);
+    } catch (error: any) {
+        if (error.code === 'permission-denied') {
+            console.warn('Firestore permission denied. Falling back to mock data for author ID:', authorId);
+            return mockStories.filter(s => s.authorId === authorId);
+        }
+        throw error;
+    }
 }
 
 export async function getStoryById(id: string): Promise<Story | null> {
-  const storyDocRef = doc(db, 'stories', id);
-  const storyDoc = await getDoc(storyDocRef);
-  if (!storyDoc.exists()) {
-    return null;
+  try {
+    const storyDocRef = doc(db, 'stories', id);
+    const storyDoc = await getDoc(storyDocRef);
+    if (!storyDoc.exists()) {
+      return null;
+    }
+    return transformStoryDoc(storyDoc);
+  } catch (error: any) {
+    if (error.code === 'permission-denied') {
+        console.warn('Firestore permission denied. Falling back to mock data for story ID:', id);
+        const mockStory = mockStories.find(s => s.id === id);
+        return mockStory || null;
+    }
+    throw error;
   }
-  return transformStoryDoc(storyDoc);
 }
 
 export async function addStory(story: Omit<Story, 'id' | 'createdAt'>): Promise<Story> {
@@ -130,8 +165,11 @@ export async function toggleLikeStory(storyId: string, authorId: string, likerId
             }
         });
 
-    } catch (error) {
+    } catch (error: any) {
         console.error("Transaction failed: ", error);
+        if (error.code === 'permission-denied') {
+            throw new Error("Could not like story. Please make sure the Firestore API is enabled in your Google Cloud project.");
+        }
         throw new Error("Could not update like status.");
     }
 }

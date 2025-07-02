@@ -73,8 +73,11 @@ export async function saveStoryAction(data: z.infer<typeof saveStorySchema>) {
         revalidatePath('/library');
         return { success: true };
 
-    } catch (e) {
+    } catch (e: any) {
         console.error(e);
+        if (e.code === 'permission-denied') {
+            throw new Error("Could not save to database. Please make sure the Firestore API is enabled in your Google Cloud project.");
+        }
         throw new Error("Failed to save the story. The AI might be resting!");
     }
 }
