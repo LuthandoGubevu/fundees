@@ -60,16 +60,12 @@ export const getStoryById = async (id: string): Promise<Story | undefined> => {
 };
 
 export const addStory = async (story: Omit<Story, 'id' | 'createdAt' | 'likes'>): Promise<Story> => {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      const newStory: Story = {
-        ...story,
-        id: (stories.length + 1).toString(),
-        createdAt: new Date().toISOString(),
-        likes: 0,
-      };
-      stories.push(newStory);
-      resolve(newStory);
-    }, 700);
-  });
+  const newStory: Story = {
+    ...story,
+    id: globalThis.crypto.randomUUID(),
+    createdAt: new Date().toISOString(),
+    likes: 0,
+  };
+  stories.push(newStory);
+  return newStory;
 };
