@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -12,6 +13,8 @@ import { useAuth } from '@/contexts/auth-context';
 import { addUser, getUserByEmail } from '@/lib/mock-data';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { Loader2 } from 'lucide-react';
 
 const formSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
@@ -30,8 +33,9 @@ const formSchema = z.object({
 });
 
 export default function SignUpPage() {
-  const { login } = useAuth();
+  const { login, isAuthenticated, isLoading: isAuthLoading } = useAuth();
   const { toast } = useToast();
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -44,6 +48,12 @@ export default function SignUpPage() {
     },
   });
 
+  useEffect(() => {
+    if (!isAuthLoading && isAuthenticated) {
+        router.push('/dashboard');
+    }
+  }, [isAuthenticated, isAuthLoading, router]);
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       const newUser = await addUser(values);
@@ -54,6 +64,14 @@ export default function SignUpPage() {
     }
   }
   
+  if (isAuthLoading || isAuthenticated) {
+    return (
+        <div className="container mx-auto flex min-h-[80vh] items-center justify-center">
+            <Loader2 className="h-16 w-16 animate-spin text-primary" />
+        </div>
+    );
+  }
+
   return (
      <div className="container mx-auto flex items-center justify-center py-8">
       <Card className="w-full max-w-lg bg-card/90 shadow-xl rounded-2xl">

@@ -34,18 +34,23 @@ export function SiteHeader() {
           </span>
         </Link>
         <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
-          {navLinks.map(({ href, label }) => (
-            <Link
-              key={label}
-              href={href}
-              className={cn(
-                "transition-colors hover:text-primary",
-                pathname === href ? "text-primary" : "text-foreground/80"
-              )}
-            >
-              {label}
-            </Link>
-          ))}
+          {navLinks.map(({ href, label }) => {
+            const isProtected = href === '/create-story' || href === '/ask-ai';
+            const finalHref = isProtected && !isLoading && !isAuthenticated ? '/login' : href;
+            
+            return (
+                <Link
+                key={label}
+                href={finalHref}
+                className={cn(
+                    "transition-colors hover:text-primary",
+                    pathname === href ? "text-primary" : "text-foreground/80"
+                )}
+                >
+                {label}
+                </Link>
+            )
+          })}
         </nav>
         <div className="flex flex-1 items-center justify-end space-x-2">
           {isLoading ? (
@@ -95,19 +100,24 @@ export function SiteHeader() {
                      <BookHeart className="h-8 w-8 text-primary" />
                      <span className="font-bold text-xl text-foreground font-headline">Fundees</span>
                   </Link>
-                  {navLinks.map(({ href, label }) => (
-                    <Link
-                      key={label}
-                      href={href}
-                      onClick={() => setIsSheetOpen(false)}
-                      className={cn(
-                        "text-lg transition-colors hover:text-primary",
-                        pathname === href ? "text-primary font-bold" : "text-foreground"
-                      )}
-                    >
-                      {label}
-                    </Link>
-                  ))}
+                  {navLinks.map(({ href, label }) => {
+                    const isProtected = href === '/create-story' || href === '/ask-ai';
+                    const finalHref = isProtected && !isLoading && !isAuthenticated ? '/login' : href;
+
+                    return (
+                        <Link
+                        key={label}
+                        href={finalHref}
+                        onClick={() => setIsSheetOpen(false)}
+                        className={cn(
+                            "text-lg transition-colors hover:text-primary",
+                            pathname === href ? "text-primary font-bold" : "text-foreground"
+                        )}
+                        >
+                        {label}
+                        </Link>
+                    )
+                  })}
                   <div className="border-t pt-4 space-y-2">
                     {isLoading ? <Skeleton className="h-10 w-full" /> : (
                        isAuthenticated && user ? (

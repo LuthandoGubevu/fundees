@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/auth-context';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,18 +10,25 @@ import { getUserByEmail } from '@/lib/mock-data';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { Loader2 } from 'lucide-react';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { login, isAuthenticated, isLoading: isAuthLoading } = useAuth();
   const { toast } = useToast();
   const router = useRouter();
 
+  useEffect(() => {
+    if (!isAuthLoading && isAuthenticated) {
+      router.push('/dashboard');
+    }
+  }, [isAuthenticated, isAuthLoading, router]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    setIsSubmitting(true);
 
     const user = await getUserByEmail(email);
 
@@ -34,9 +41,17 @@ export default function LoginPage() {
         title: 'Login Failed',
         description: 'Invalid email or password.',
       });
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
   };
+
+  if (isAuthLoading || isAuthenticated) {
+    return (
+      <div className="container mx-auto flex min-h-[80vh] items-center justify-center">
+        <Loader2 className="h-16 w-16 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto flex min-h-[80vh] items-center justify-center">
@@ -55,8 +70,8 @@ export default function LoginPage() {
               <Label htmlFor="password">Password</Label>
               <Input id="password" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required className="h-12"/>
             </div>
-            <Button type="submit" className="w-full h-12 text-lg" disabled={isLoading}>
-              {isLoading ? 'Logging in...' : 'Login'}
+            <Button type="submit" className="w-full h-12 text-lg" disabled={isSubmitting}>
+              {isSubmitting ? <Loader2 className="animate-spin" /> : 'Login'}
             </Button>
           </form>
           <p className="mt-4 text-center text-sm">
