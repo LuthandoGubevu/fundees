@@ -1,7 +1,6 @@
 'use client';
 
-import { useEffect, useState, useTransition } from 'react';
-import { useFormState } from 'react-dom';
+import { useActionState, useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { getStoryStructure, saveStoryAction } from '@/lib/actions';
 import { Button } from '@/components/ui/button';
@@ -30,7 +29,7 @@ export function CreateStoryForm({ initialTheme }: { initialTheme?: string }) {
   const [content, setContent] = useState('');
   const [structure, setStructure] = useState<SuggestStoryStructureOutput | null>(null);
 
-  const [state, formAction] = useFormState(getStoryStructure, { error: null, data: null });
+  const [state, formAction] = useActionState(getStoryStructure, { error: null, data: null });
   const [isSaving, startSaving] = useTransition();
   const router = useRouter();
   const { toast } = useToast();
