@@ -120,7 +120,7 @@ export async function getStoryById(id: string): Promise<Story | null> {
   }
 }
 
-export function getNewStoryId(): string {
+export async function getNewStoryId(): Promise<string> {
   const storyRef = doc(collection(db, 'stories'));
   return storyRef.id;
 }

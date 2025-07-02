@@ -52,7 +52,7 @@ export async function saveStoryAction(data: z.infer<typeof saveStorySchema>) {
     const { title, content, theme, author } = validatedFields.data;
 
     try {
-        const storyId = getNewStoryId();
+        const storyId = await getNewStoryId();
         const imagePath = `stories/${storyId}.png`;
         const imageRef = ref(storage, imagePath);
 
