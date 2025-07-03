@@ -8,8 +8,10 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { AlertTriangle, Award, BookOpen, Heart, Pencil, Sparkles, Star, Users } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { getStoriesByAuthor } from '@/lib/firestore';
 import type { Story } from '@/lib/types';
+import { collection, onSnapshot, orderBy, query, where } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { extractIndexCreationLink, transformStoryDoc } from '@/lib/firestore-utils';
 
 function MissingIndexCard({ link }: { link: string }) {
   return (
@@ -53,21 +55,33 @@ export default function DashboardPage() {
       setStoriesError(null);
       setIndexLink(null);
       
-      getStoriesByAuthor(user.id)
-        .then(userStories => {
-          setMyStories(userStories);
-        })
-        .catch((error: any) => {
-            if (error.message?.startsWith('MISSING_INDEX::')) {
-                setIndexLink(error.message.split('::')[1]);
-            } else {
-                console.error("Dashboard stories error:", error);
-                setStoriesError("Could not load your stories right now.");
-            }
-        })
-        .finally(() => {
-            setIsStoriesLoading(false);
-        });
+      const storiesCol = collection(db, 'stories');
+      const q = query(storiesCol, where('authorId', '==', user.id), orderBy('createdAt', 'desc'));
+
+      const unsubscribe = onSnapshot(q, 
+        (snapshot) => {
+          setMyStories(snapshot.docs.map(transformStoryDoc));
+          setIsStoriesLoading(false);
+          setStoriesError(null);
+          setIndexLink(null);
+        },
+        (error: any) => {
+          if (error.message?.includes('requires an index')) {
+              const link = extractIndexCreationLink(error.message);
+              if (link) {
+                  setIndexLink(link);
+              } else {
+                  setStoriesError("A database index is required. Please check the browser console for a link to create it.")
+              }
+          } else {
+              console.error("Dashboard stories error:", error);
+              setStoriesError("Could not load your stories right now.");
+          }
+          setIsStoriesLoading(false);
+        }
+      );
+
+      return () => unsubscribe(); // Cleanup listener on unmount
     }
   }, [user]);
 

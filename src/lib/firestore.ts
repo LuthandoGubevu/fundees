@@ -20,23 +20,7 @@ import {
   setDoc,
 } from 'firebase/firestore';
 import { revalidatePath } from 'next/cache';
-
-function transformStoryDoc(doc: any) {
-    const data = doc.data();
-    return {
-        id: doc.id,
-        ...data,
-        createdAt: data.createdAt instanceof Timestamp ? data.createdAt.toDate().toISOString() : data.createdAt,
-    } as Story;
-}
-
-function extractIndexCreationLink(errorMessage: string): string | null {
-    const regex = /(https:\/\/console\.firebase\.google\.com\S+)/;
-    const match = errorMessage.match(regex);
-    if (!match) return null;
-    // The URL might have a trailing period, let's remove it.
-    return match[0].replace(/\.$/, '');
-}
+import { extractIndexCreationLink, transformStoryDoc } from './firestore-utils';
 
 
 // --- User Functions ---
@@ -91,6 +75,16 @@ export async function getStories(): Promise<Story[]> {
     if (error.code === 'permission-denied') {
       console.warn('Firestore permission denied. Falling back to mock data. Please enable the Firestore API in your Google Cloud project.');
       return mockStories;
+    }
+     if (
+        error.code === 'failed-precondition' &&
+        error.message &&
+        error.message.includes('requires an index')
+    ) {
+        const link = extractIndexCreationLink(error.message);
+        if (link) {
+            throw new Error(`MISSING_INDEX::${link}`);
+        }
     }
     throw error;
   }
