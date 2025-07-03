@@ -84,7 +84,7 @@ export async function saveStoryAction(data: z.infer<typeof saveStorySchema>) {
             content,
             theme,
             excerpt,
-            imageUrl: downloadURL, // Can be undefined
+            imageUrl: downloadURL || '', // Default to empty string if undefined
             author: author.name,
             authorId: author.id,
             school: author.school,
