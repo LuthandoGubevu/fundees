@@ -1,3 +1,4 @@
+
 'use server';
 
 import { db } from '@/lib/firebase';
@@ -9,21 +10,32 @@ import {
   where,
   getDocs,
   getDoc,
-  addDoc,
   doc,
   runTransaction,
   serverTimestamp,
   orderBy,
   limit,
   increment,
-  Timestamp,
   setDoc,
 } from 'firebase/firestore';
-import { revalidatePath } from 'next/cache';
 import { extractIndexCreationLink, transformStoryDoc } from './firestore-utils';
 
 
 // --- User Functions ---
+export async function getUserById(id: string): Promise<User | null> {
+    try {
+        const userDocRef = doc(db, 'users', id);
+        const userDoc = await getDoc(userDocRef);
+        if (userDoc.exists()) {
+            return { id: userDoc.id, ...userDoc.data() } as User;
+        }
+        return null;
+    } catch (error) {
+        console.error("Error fetching user by ID:", error);
+        return null;
+    }
+}
+
 export async function getUserByEmail(email: string): Promise<User | null> {
   try {
     const q = query(collection(db, 'users'), where('email', '==', email), limit(1));
@@ -32,7 +44,6 @@ export async function getUserByEmail(email: string): Promise<User | null> {
       return null;
     }
     const userDoc = querySnapshot.docs[0];
-    // NOTE: This includes the mock password. Be careful in a real app.
     return { id: userDoc.id, ...userDoc.data() } as User;
   } catch (error: any) {
     if (error.code === 'permission-denied') {
@@ -44,23 +55,16 @@ export async function getUserByEmail(email: string): Promise<User | null> {
   }
 }
 
-export async function addUser(userData: Omit<User, 'id'>): Promise<User> {
-    const { password } = userData;
+export async function addUser(uid: string, userData: Omit<User, 'id' | 'totalLikes'>): Promise<User> {
     const userToSave = {
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        email: userData.email,
-        school: userData.school,
-        grade: userData.grade,
+        ...userData,
         totalLikes: 0,
         createdAt: serverTimestamp(),
-        // In a real app, you'd hash the password or use Firebase Auth.
-        // For this prototype, we'll store it directly to simulate login.
-        password: password, 
     };
 
-    const userRef = await addDoc(collection(db, 'users'), userToSave);
-    return { id: userRef.id, ...userData, totalLikes: 0 };
+    const userRef = doc(db, 'users', uid);
+    await setDoc(userRef, userToSave);
+    return { id: uid, ...userData, totalLikes: 0 };
 }
 
 

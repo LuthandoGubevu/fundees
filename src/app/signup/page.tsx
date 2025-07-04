@@ -10,20 +10,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/contexts/auth-context';
-import { addUser, getUserByEmail } from '@/lib/firestore';
+import { addUser } from '@/lib/firestore';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
 
 const formSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
   lastName: z.string().min(1, 'Last name is required'),
-  email: z.string().email('Invalid email address').refine(async (email) => {
-    // Check if email already exists in Firestore
-    const existingUser = await getUserByEmail(email);
-    return !existingUser;
-  }, 'This email is already in use'),
+  email: z.string().email('Invalid email address'),
   school: z.string().min(1, 'School name is required'),
   grade: z.string({ required_error: 'Please select a grade.' }),
   password: z.string().min(6, 'Password must be at least 6 characters'),
@@ -34,7 +32,7 @@ const formSchema = z.object({
 });
 
 export default function SignUpPage() {
-  const { login, isAuthenticated, isLoading: isAuthLoading } = useAuth();
+  const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
   const { toast } = useToast();
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -57,12 +55,28 @@ export default function SignUpPage() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      const newUser = await addUser(values);
+      // 1. Create user in Firebase Auth
+      const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
+      const user = userCredential.user;
+
+      // 2. Create user profile in Firestore
+      await addUser(user.uid, {
+        firstName: values.firstName,
+        lastName: values.lastName,
+        email: values.email,
+        school: values.school,
+        grade: values.grade,
+      });
+
       toast({ title: 'Account Created!', description: 'Welcome to Fundees!' });
-      login(newUser);
-    } catch (error) {
+      // onAuthStateChanged in AuthProvider will handle redirect
+    } catch (error: any) {
       console.error("Sign up error:", error);
-      toast({ variant: 'destructive', title: 'Sign Up Failed', description: 'Could not create account.' });
+      if (error.code === 'auth/email-already-in-use') {
+        form.setError('email', { type: 'manual', message: 'This email is already in use.' });
+      } else {
+        toast({ variant: 'destructive', title: 'Sign Up Failed', description: 'Could not create account.' });
+      }
     }
   }
   

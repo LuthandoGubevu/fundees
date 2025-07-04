@@ -3,10 +3,12 @@
 import { createContext, useContext, useState, ReactNode, useEffect, useCallback } from 'react';
 import type { User } from '@/lib/types';
 import { useRouter, usePathname } from 'next/navigation';
+import { onAuthStateChanged, signOut, type User as FirebaseUser } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
+import { getUserById } from '@/lib/firestore';
 
 interface AuthContextType {
   user: User | null;
-  login: (user: User) => void;
   logout: () => void;
   isAuthenticated: boolean;
   isLoading: boolean;
@@ -23,38 +25,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
   useEffect(() => {
-    // This effect runs once on mount to load the user from local storage.
-    try {
-      const storedUser = localStorage.getItem('fundees-user');
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
+      if (firebaseUser) {
+        // User is signed in, fetch profile from Firestore
+        const userProfile = await getUserById(firebaseUser.uid);
+        if (userProfile) {
+          setUser(userProfile);
+        } else {
+          // Profile doesn't exist yet (e.g., right after signup)
+          // The signup page should create the profile.
+          // For now, we can create a temporary user object.
+          setUser({
+            id: firebaseUser.uid,
+            email: firebaseUser.email!,
+            firstName: 'New',
+            lastName: 'User',
+            school: '',
+            grade: ''
+          });
+        }
+      } else {
+        // User is signed out
+        setUser(null);
       }
-    } catch (error) {
-        console.error("Could not parse user from localStorage", error)
-    } finally {
-        setIsLoading(false);
-    }
+      setIsLoading(false);
+    });
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
   }, []);
 
-  const login = useCallback((userData: User) => {
-    const { password, ...userToStore } = userData; // Never store password in state or storage
-    setUser(userToStore);
-     try {
-      localStorage.setItem('fundees-user', JSON.stringify(userToStore));
-    } catch (error) {
-        console.error("Could not save user to localStorage", error)
-    }
-    router.push('/dashboard');
-  }, [router]);
-
   const logout = useCallback(() => {
-    setUser(null);
-    try {
-        localStorage.removeItem('fundees-user');
-    } catch (error) {
-        console.error("Could not remove user from localStorage", error)
-    }
-    router.push('/');
+    signOut(auth).then(() => {
+      router.push('/');
+    });
   }, [router]);
 
   const isAuthenticated = !!user;
@@ -71,7 +75,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [isLoading, isAuthenticated, pathname, router]);
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isAuthenticated, isLoading }}>
+    <AuthContext.Provider value={{ user, logout, isAuthenticated, isLoading }}>
       {children}
     </AuthContext.Provider>
   );

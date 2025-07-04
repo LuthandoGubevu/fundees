@@ -6,17 +6,18 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { getUserByEmail } from '@/lib/firestore';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { login, isAuthenticated, isLoading: isAuthLoading } = useAuth();
+  const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
   const { toast } = useToast();
   const router = useRouter();
 
@@ -31,25 +32,18 @@ export default function LoginPage() {
     setIsSubmitting(true);
 
     try {
-      const user = await getUserByEmail(email);
-  
-      // NOTE: This is a mock password check. In a real app, use Firebase Auth for security.
-      if (user && user.password === password) {
-        toast({ title: 'Success!', description: `Welcome back, ${user.firstName}!` });
-        login(user);
-      } else {
-        toast({
-          variant: 'destructive',
-          title: 'Login Failed',
-          description: 'Invalid email or password.',
-        });
-        setIsSubmitting(false);
+      await signInWithEmailAndPassword(auth, email, password);
+      // The onAuthStateChanged listener in AuthProvider will handle the redirect
+      toast({ title: 'Success!', description: `Welcome back!` });
+    } catch (error: any) {
+      let description = 'An unknown error occurred.';
+      if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+        description = 'Invalid email or password.';
       }
-    } catch (error) {
-       toast({
+      toast({
         variant: 'destructive',
-        title: 'Login Error',
-        description: 'Could not connect to the database.',
+        title: 'Login Failed',
+        description,
       });
       setIsSubmitting(false);
     }

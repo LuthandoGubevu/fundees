@@ -5,7 +5,6 @@ export interface User {
   email: string;
   school: string;
   grade: string;
-  password?: string; // Should not be stored in client-side state, but needed for mock lookup
   totalLikes?: number;
 }
 
