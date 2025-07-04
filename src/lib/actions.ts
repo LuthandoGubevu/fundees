@@ -102,7 +102,7 @@ export async function saveStoryAction(data: z.infer<typeof saveStorySchema>) {
     } catch (e: any) {
         console.error("Failed to save story to Firestore:", e);
         if (e.code === 'permission-denied' || (e.message && e.message.includes('permission-denied'))) {
-            throw new Error("Could not save to database. Please check your Firebase Storage and Firestore rules.");
+            throw new Error("Permission denied. Could not save story to the database. Please check your Firestore security rules in the Firebase console.");
         }
         // This is the error that will be displayed in the toast on failure.
         throw new Error("Failed to save the story. Please try again.");

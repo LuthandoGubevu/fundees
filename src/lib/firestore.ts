@@ -163,8 +163,9 @@ export async function toggleLikeStory(storyId: string, authorId: string, likerId
 
     const storyRef = doc(db, 'stories', storyId);
     const likeRef = doc(db, 'stories', storyId, 'likes', likerId);
-    // User might not exist in a test environment
-    const authorRef = authorId ? doc(db, 'users', authorId) : null;
+    
+    // Note: The author's totalLikes count is no longer updated here
+    // to simplify security rules. This could be handled by a Cloud Function.
 
     try {
         await runTransaction(db, async (transaction) => {
@@ -174,23 +175,17 @@ export async function toggleLikeStory(storyId: string, authorId: string, likerId
                 // User has already liked, so unlike
                 transaction.delete(likeRef);
                 transaction.update(storyRef, { likes: increment(-1) });
-                if (authorRef) {
-                  transaction.update(authorRef, { totalLikes: increment(-1) });
-                }
             } else {
                 // User has not liked, so like
                 transaction.set(likeRef, { createdAt: serverTimestamp(), userId: likerId });
                 transaction.update(storyRef, { likes: increment(1) });
-                if (authorRef) {
-                  transaction.update(authorRef, { totalLikes: increment(1) });
-                }
             }
         });
 
     } catch (error: any) {
         console.error("Transaction failed: ", error);
         if (error.code === 'permission-denied') {
-            throw new Error("Could not like story. Please make sure the Firestore API is enabled in your Google Cloud project.");
+            throw new Error("Could not like story. Please make sure the Firestore API is enabled and your rules are correct.");
         }
         throw new Error("Could not update like status.");
     }
