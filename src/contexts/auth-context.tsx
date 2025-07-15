@@ -1,3 +1,4 @@
+
 'use client';
 
 import { createContext, useContext, useState, ReactNode, useEffect, useCallback } from 'react';
@@ -17,6 +18,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 const protectedRoutes = ['/create-story', '/ask-ai', '/dashboard', '/library'];
+const authRoutes = ['/login', '/signup'];
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -27,23 +29,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
       if (firebaseUser) {
-        // User is signed in, fetch profile from Firestore
         const userProfile = await getUserById(firebaseUser.uid);
-        if (userProfile) {
-          setUser(userProfile);
-        } else {
-          // If profile doesn't exist yet, it might be a new sign-up.
-          // Keep user as null for now. Firestore trigger or subsequent action will populate it.
-          setUser(null);
-        }
+        setUser(userProfile); // This can be null if the profile doesn't exist yet.
       } else {
-        // User is signed out
         setUser(null);
       }
       setIsLoading(false);
     });
 
-    // Cleanup subscription on unmount
     return () => unsubscribe();
   }, []);
 
@@ -55,29 +48,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const isAuthenticated = !!user;
 
-  // This effect handles route protection.
+  // This effect handles all route protection and redirection.
   useEffect(() => {
-    // Wait until the initial loading is complete before enforcing routes.
+    // Don't do anything until the initial loading is complete.
     if (isLoading) {
-      return; 
+      return;
     }
 
     const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
-    const isAuthRoute = pathname === '/login' || pathname === '/signup';
+    const isAuthRoute = authRoutes.includes(pathname);
 
+    // If the user is not authenticated and tries to access a protected route, redirect to login.
     if (!isAuthenticated && isProtectedRoute) {
       router.push('/login');
     }
 
+    // If the user IS authenticated and tries to access an auth route (login/signup), redirect to the dashboard.
     if (isAuthenticated && isAuthRoute) {
       router.push('/dashboard');
     }
-
   }, [isLoading, isAuthenticated, pathname, router]);
+
 
   return (
     <AuthContext.Provider value={{ user, logout, isAuthenticated, isLoading }}>
-      {children}
+      {isLoading ? null : children}
     </AuthContext.Provider>
   );
 }

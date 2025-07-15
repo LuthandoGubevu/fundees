@@ -82,6 +82,9 @@ export default function DashboardPage() {
       );
 
       return () => unsubscribe(); // Cleanup listener on unmount
+    } else {
+        // If there's no user, there's no need to try and fetch stories.
+        setIsStoriesLoading(false);
     }
   }, [user]);
 

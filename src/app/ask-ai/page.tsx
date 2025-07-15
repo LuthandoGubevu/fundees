@@ -1,12 +1,11 @@
 'use client';
 
-import { useState, type FormEvent, useEffect } from 'react';
+import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Lightbulb, Send, Sparkles } from 'lucide-react';
-import { useAuth } from '@/contexts/auth-context';
 
 const mockResponses: Record<string, string> = {
   'why is the sky blue?': "That's a fantastic question! The sky looks blue because of how the sun's light spreads out. Sunlight is made of all the colors of the rainbow, but the blue light gets scattered more than other colors by the tiny little molecules in the air. So, when we look up, we see a beautiful blue sky!",
@@ -15,18 +14,10 @@ const mockResponses: Record<string, string> = {
 };
 
 export default function AskAiPage() {
-  const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
   const router = useRouter();
   const [question, setQuestion] = useState('');
   const [response, setResponse] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    if (!isAuthLoading && !isAuthenticated) {
-      router.push('/login');
-    }
-  }, [isAuthLoading, isAuthenticated, router]);
-
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -44,10 +35,6 @@ export default function AskAiPage() {
   const useAsIdea = () => {
     router.push(`/create-story?theme=${encodeURIComponent(question)}`);
   };
-
-  if (isAuthLoading || !isAuthenticated) {
-    return null; // Or a loading spinner
-  }
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-3xl">

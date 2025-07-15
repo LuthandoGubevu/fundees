@@ -1,28 +1,13 @@
 'use client';
 import { CreateStoryForm } from '@/components/story/create-story-form';
 import { PencilRuler } from 'lucide-react';
-import { useAuth } from '@/contexts/auth-context';
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 
 export default function CreateStoryPage({
   searchParams,
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  const { isAuthenticated, isLoading } = useAuth();
-  const router = useRouter();
   const initialTheme = typeof searchParams.theme === 'string' ? searchParams.theme : undefined;
-
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      router.push('/login');
-    }
-  }, [isLoading, isAuthenticated, router]);
-
-  if (isLoading || !isAuthenticated) {
-    return null; // or a loading spinner
-  }
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
