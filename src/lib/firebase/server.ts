@@ -12,14 +12,16 @@ let db: Firestore;
 let storage: ReturnType<Storage['bucket']>;
 
 try {
-  const serviceAccount = serviceAccountString
-    ? JSON.parse(serviceAccountString)
-    : undefined;
+  if (!serviceAccountString) {
+      throw new Error("FIREBASE_SERVICE_ACCOUNT_KEY is not set in the environment variables. Server-side Firebase features will not work.");
+  }
+
+  const serviceAccount = JSON.parse(serviceAccountString);
 
   app = getApps().length
     ? getApp()
     : initializeApp({
-        credential: serviceAccount ? cert(serviceAccount) : undefined,
+        credential: cert(serviceAccount),
         storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
       });
 
@@ -29,7 +31,8 @@ try {
 
 } catch (error: any) {
     if (process.env.NODE_ENV === 'development') {
-        console.warn('Firebase Admin SDK initialization failed in development. This is expected if you have not set up server-side credentials. Certain server-side Firebase features will not be available.');
+        console.error('Firebase Admin SDK initialization failed:', error.message);
+        console.warn('This is expected if you have not set up server-side credentials in your .env.local file. Certain server-side Firebase features will not be available.');
     } else if (process.env.NODE_ENV === 'production') {
         console.error('CRITICAL: Firebase Admin SDK initialization failed in production.', error);
     }
