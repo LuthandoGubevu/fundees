@@ -1,11 +1,8 @@
 import type {Metadata} from 'next';
 import './globals.css';
 import { cn } from "@/lib/utils";
-import { SiteHeader } from '@/components/layout/site-header';
 import { Toaster } from '@/components/ui/toaster';
 import { AuthProvider } from '@/contexts/auth-context';
-import { Sidebar } from '@/components/layout/sidebar';
-import { SidebarProvider } from '@/components/ui/sidebar';
 
 export const metadata: Metadata = {
   title: 'Fundees',
@@ -26,14 +23,8 @@ export default function RootLayout({
       </head>
       <body className={cn("font-body antialiased min-h-screen")}>
         <AuthProvider>
-          <SidebarProvider>
-            <Sidebar />
-            <div className="relative flex min-h-screen flex-col sm:ml-12">
-              <SiteHeader />
-              <main className="flex-1 z-10">{children}</main>
-            </div>
+            {children}
             <Toaster />
-          </SidebarProvider>
         </AuthProvider>
       </body>
     </html>

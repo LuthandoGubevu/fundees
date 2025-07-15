@@ -35,7 +35,7 @@ export default async function Home() {
   const isAuthenticated = !!user;
 
   return (
-    <div className="relative flex-1 flex flex-col items-center justify-center p-4 text-center">
+    <div className="relative flex flex-1 flex-col items-center justify-center p-4 text-center">
       <SunIcon />
       <div className="max-w-3xl">
         <Sparkles className="mx-auto h-16 w-16 text-primary animate-pulse" />
@@ -48,34 +48,13 @@ export default async function Home() {
       </div>
 
       {isAuthenticated ? (
-        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl">
-          <FeatureCard
-            icon={<Pencil className="h-10 w-10" />}
-            title="Create a Story"
-            description="Let your imagination run wild! Write your own story with a little help from our AI friend."
-            href="/create-story"
-            buttonText="Start Writing"
-            className="card-gradient text-white"
-          />
-          <FeatureCard
-            icon={<HelpCircle className="h-10 w-10" />}
-            title="Ask a Question"
-            description="Curious about something? Ask our wise AI owl and get fun, kid-friendly answers."
-            href="/ask-ai"
-            buttonText="Ask Away"
-            className="card-gradient-green text-white"
-          />
-          <FeatureCard
-            icon={<BookOpen className="h-10 w-10" />}
-            title="Explore Library"
-            description="Dive into a world of stories! Read amazing tales created by other young authors."
-            href="/library"
-            buttonText="Open Library"
-            className="card-gradient text-white"
-          />
-        </div>
+         <div className="mt-8">
+            <Button asChild size="lg">
+              <Link href="/dashboard">Go to Dashboard</Link>
+            </Button>
+          </div>
       ) : (
-        <div className="mt-16">
+        <div className="mt-8">
           <Button asChild size="lg">
             <Link href="/login">Login to Get Started</Link>
           </Button>
@@ -83,32 +62,4 @@ export default async function Home() {
       )}
     </div>
   );
-}
-
-interface FeatureCardProps {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-  href: string;
-  buttonText: string;
-  className?: string;
-}
-
-function FeatureCard({ icon, title, description, href, buttonText, className }: FeatureCardProps) {
-  return (
-    <Card className={`flex flex-col transform hover:-translate-y-2 transition-transform duration-300 shadow-xl rounded-2xl ${className}`}>
-      <CardHeader className="items-center text-center">
-        <div className="p-4 bg-white/20 rounded-full mb-4">
-          {icon}
-        </div>
-        <CardTitle className="text-2xl font-bold">{title}</CardTitle>
-      </CardHeader>
-      <CardContent className="flex-grow flex flex-col text-center">
-        <p className="flex-grow">{description}</p>
-        <Button asChild size="lg" className="mt-6 w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-lg rounded-xl">
-          <Link href={href}>{buttonText}</Link>
-        </Button>
-      </CardContent>
-    </Card>
-  )
 }
