@@ -24,7 +24,7 @@ export default function LoginPage() {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      // The redirect is handled by the AuthProvider
+      // The redirect is now handled by the AuthProvider
     } catch (error: any) {
       console.error("Login failed:", error);
       let description = 'An unknown error occurred. Please try again.';

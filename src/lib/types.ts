@@ -1,10 +1,10 @@
 export interface User {
   id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  school: string;
-  grade: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  school?: string;
+  grade?: string;
   totalLikes?: number;
 }
 
