@@ -12,15 +12,7 @@ import Link from 'next/link';
 import { Loader2 } from 'lucide-react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-
-function FullPageLoader() {
-    return (
-        <div className="flex flex-1 items-center justify-center">
-            <Loader2 className="h-16 w-16 animate-spin text-primary" />
-        </div>
-    );
-}
-
+import { FullPageLoader } from '@/components/ui/full-page-loader';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');

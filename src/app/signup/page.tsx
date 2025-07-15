@@ -16,6 +16,7 @@ import Link from 'next/link';
 import { Loader2 } from 'lucide-react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
+import { FullPageLoader } from '@/components/ui/full-page-loader';
 
 const formSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
@@ -29,14 +30,6 @@ const formSchema = z.object({
   message: "Passwords don't match",
   path: ['confirmPassword'],
 });
-
-function FullPageLoader() {
-    return (
-        <div className="flex flex-1 items-center justify-center">
-            <Loader2 className="h-16 w-16 animate-spin text-primary" />
-        </div>
-    );
-}
 
 export default function SignUpPage() {
   const { isAuthenticated, isLoading } = useAuth();
