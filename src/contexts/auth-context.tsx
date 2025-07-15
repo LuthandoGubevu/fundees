@@ -38,7 +38,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
       if (firebaseUser) {
-        // User is logged in, now fetch their profile.
         try {
             const userProfile = await getUserById(firebaseUser.uid);
             setUser(userProfile);
@@ -47,7 +46,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setUser(null);
         }
       } else {
-        // User is not logged in.
         setUser(null);
       }
       setIsLoading(false);
@@ -58,7 +56,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = useCallback(() => {
     signOut(auth).then(() => {
-      // After sign out, redirect to home page.
       router.push('/');
     });
   }, [router]);
@@ -67,18 +64,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (isLoading) {
-      return; // Wait until loading is complete before enforcing routes.
+      return; 
     }
 
     const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
     const isAuthRoute = authRoutes.includes(pathname);
 
-    // If not authenticated and trying to access a protected route, redirect to login.
     if (!isAuthenticated && isProtectedRoute) {
       router.push('/login');
     }
 
-    // If authenticated and on an auth route (login/signup), redirect to dashboard.
     if (isAuthenticated && isAuthRoute) {
       router.push('/dashboard');
     }
@@ -86,8 +81,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const contextValue = { user, logout, isAuthenticated, isLoading };
 
-  // While initial authentication is happening, show a loader to prevent race conditions
-  // and content flashing.
   if (isLoading) {
     return <FullPageLoader />;
   }

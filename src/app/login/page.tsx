@@ -9,7 +9,6 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
@@ -29,7 +28,6 @@ export default function LoginPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { isAuthenticated, isLoading } = useAuth();
   const { toast } = useToast();
-  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,9 +47,8 @@ export default function LoginPage() {
         title: 'Login Failed',
         description,
       });
-    } finally {
-        setIsSubmitting(false);
-    }
+      setIsSubmitting(false); // Ensure button is re-enabled on error
+    } 
   };
 
   if (isLoading || isAuthenticated) {
