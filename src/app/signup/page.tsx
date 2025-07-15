@@ -72,7 +72,11 @@ export default function SignUpPage() {
             duration: 10000
         });
       } else {
-        toast({ variant: 'destructive', title: 'Sign Up Failed', description: `An unexpected error occurred: ${error.message}` });
+        toast({ 
+            variant: 'destructive', 
+            title: 'Sign Up Failed', 
+            description: "An unexpected error occurred. Please try again." 
+        });
       }
     }
   }
