@@ -42,7 +42,7 @@ function MissingIndexCard({ link }: { link: string }) {
 
 
 export default function DashboardPage() {
-  const { user, isLoading } = useAuth();
+  const { user } = useAuth();
   const [myStories, setMyStories] = useState<Story[]>([]);
   const [isStoriesLoading, setIsStoriesLoading] = useState(true);
   const [storiesError, setStoriesError] = useState<string | null>(null);
@@ -66,15 +66,15 @@ export default function DashboardPage() {
           setIndexLink(null);
         },
         (error: any) => {
-          if (error.message?.includes('requires an index')) {
+          if (error.code === 'permission-denied') {
+              setStoriesError("Permission Denied: Could not load your stories. Please check your Firestore security rules in the Firebase Console to ensure you have 'list' permissions on the 'stories' collection.");
+          } else if (error.message?.includes('requires an index')) {
               const link = extractIndexCreationLink(error.message);
               if (link) {
                   setIndexLink(link);
               } else {
                   setStoriesError("A database index is required. Please check the browser console for a link to create it.")
               }
-          } else if (error.code === 'permission-denied') {
-              setStoriesError("Permission denied. Please check your Firestore security rules in the Firebase Console to ensure you can query the 'stories' collection.");
           } else {
               console.error("Dashboard stories error:", error);
               setStoriesError("Could not load your stories right now.");
@@ -90,11 +90,11 @@ export default function DashboardPage() {
     }
   }, [user]);
 
-  if (isLoading || !user) {
+  if (isStoriesLoading && !myStories.length && !storiesError && !indexLink) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-5xl space-y-8">
         {/* Banner Skeleton */}
-        <div className="rounded-2xl p-6 shadow-lg flex items-center space-x-4 bg-gray-200">
+        <div className="rounded-2xl p-6 shadow-lg flex items-center space-x-4 bg-gray-200 animate-pulse">
           <Skeleton className="w-16 h-16 rounded-full" />
           <div className="flex-1 space-y-2">
             <Skeleton className="h-8 w-48" />
@@ -125,6 +125,10 @@ export default function DashboardPage() {
         </div>
       </div>
     );
+  }
+  
+  if (!user) {
+      return null; // Or a more specific "not logged in" message. The AuthProvider should handle the redirect.
   }
 
   return (
@@ -157,7 +161,7 @@ export default function DashboardPage() {
                     ) : indexLink ? (
                         <MissingIndexCard link={indexLink} />
                     ) : storiesError ? (
-                         <div className="text-center py-4 text-destructive">{storiesError}</div>
+                         <div className="text-center py-4 px-2 text-destructive bg-destructive/10 rounded-lg">{storiesError}</div>
                     ) : myStories.length > 0 ? (
                         <div className="flex overflow-x-auto space-x-4 pb-2 -mx-4 px-4">
                         {myStories.map(story => (
