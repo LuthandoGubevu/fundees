@@ -19,6 +19,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 const protectedRoutes = ['/dashboard', '/create-story', '/ask-ai', '/library', '/story'];
+const publicRoutes = ['/login', '/signup', '/'];
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -31,34 +32,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
       setIsLoading(true);
       if (fbUser) {
-        try {
-            const token = await fbUser.getIdToken();
-            const res = await fetch('/api/auth/session-login', {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-
-            if (!res.ok) {
-                throw new Error('Session login failed');
-            }
-            
-            setFirebaseUser(fbUser);
-            const userProfile = await getUserById(fbUser.uid);
-            setUser(userProfile);
-        } catch (error) {
-            console.error("Authentication process failed:", error);
-            setUser(null);
-            setFirebaseUser(null);
-            await signOut(auth).catch(err => console.error("Sign out after error failed:", err));
-        }
+        setFirebaseUser(fbUser);
+        const userProfile = await getUserById(fbUser.uid);
+        setUser(userProfile);
       } else {
         setUser(null);
         setFirebaseUser(null);
-        try {
-            await fetch('/api/auth/session-logout', { method: 'POST' });
-        } catch (error) {
-            console.error("Failed to clear server session:", error);
-        }
       }
       setIsLoading(false);
     });
@@ -67,19 +46,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (isLoading) return;
+
     const isProtectedRoute = protectedRoutes.some(p => pathname.startsWith(p));
+    
     if (!user && isProtectedRoute) {
       router.push('/login');
     }
+    
+    if (user && publicRoutes.includes(pathname)) {
+        router.push('/dashboard');
+    }
+
   }, [isLoading, user, pathname, router]);
 
   const logout = async () => {
     setIsLoading(true);
     try {
       await signOut(auth);
+      // No need to call API, onAuthStateChanged will handle the state change
       router.push('/login');
     } catch (error) {
       console.error("Error signing out:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
   
