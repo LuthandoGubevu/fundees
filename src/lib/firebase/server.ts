@@ -38,7 +38,8 @@ try {
 
 } catch (error: any) {
     console.error('Firebase Admin SDK initialization error:', error.message);
-    throw new Error('Failed to initialize Firebase Admin SDK. Please check your Firebase credentials in the .env file.');
+    // We don't re-throw here so the app can start, but server-side auth will fail.
+    // The API route will handle the error.
 }
 
 
