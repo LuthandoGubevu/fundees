@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BookOpen, HelpCircle, Pencil, Sparkles } from "lucide-react";
@@ -35,31 +36,33 @@ export default async function Home() {
   const isAuthenticated = !!user;
 
   return (
-    <div className="relative flex flex-1 flex-col items-center justify-center p-4 text-center">
-      <SunIcon />
-      <div className="max-w-3xl">
-        <Sparkles className="mx-auto h-16 w-16 text-primary animate-pulse" />
-        <h1 className="font-headline text-5xl md:text-7xl font-bold mt-4 text-foreground">
-          Welcome to Fundees!
-        </h1>
-        <p className="mt-6 text-lg md:text-xl text-foreground/80">
-          Your magical place to create amazing stories, get answers to your curious questions, and explore a library full of adventures written by friends like you!
-        </p>
-      </div>
+    <div className="flex h-screen items-center justify-center">
+      <div className="relative flex flex-1 flex-col items-center justify-center p-4 text-center">
+        <SunIcon />
+        <div className="max-w-3xl">
+          <Sparkles className="mx-auto h-16 w-16 text-primary animate-pulse" />
+          <h1 className="font-headline text-5xl md:text-7xl font-bold mt-4 text-foreground">
+            Welcome to Fundees!
+          </h1>
+          <p className="mt-6 text-lg md:text-xl text-foreground/80">
+            Your magical place to create amazing stories, get answers to your curious questions, and explore a library full of adventures written by friends like you!
+          </p>
+        </div>
 
-      {isAuthenticated ? (
-         <div className="mt-8">
+        {isAuthenticated ? (
+          <div className="mt-8">
+              <Button asChild size="lg">
+                <Link href="/dashboard">Go to Dashboard</Link>
+              </Button>
+            </div>
+        ) : (
+          <div className="mt-8">
             <Button asChild size="lg">
-              <Link href="/dashboard">Go to Dashboard</Link>
+              <Link href="/signup">Get Started For Free</Link>
             </Button>
           </div>
-      ) : (
-        <div className="mt-8">
-          <Button asChild size="lg">
-            <Link href="/signup">Get Started For Free</Link>
-          </Button>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
