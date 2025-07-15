@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useAuth } from '@/contexts/auth-context';
@@ -90,8 +91,10 @@ export default function DashboardPage() {
     }
   }, [user]);
 
+  // The AuthProvider handles redirects, so this page should only render for authenticated users.
+  // We can return null if user is not available yet, as AuthProvider shows a loader.
   if (!user) {
-      return null; // The AuthProvider handles redirects
+      return null;
   }
 
   return (

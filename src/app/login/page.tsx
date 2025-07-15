@@ -18,7 +18,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
   const { toast } = useToast();
   const router = useRouter();
 
@@ -29,7 +29,7 @@ export default function LoginPage() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       toast({ title: 'Success!', description: `Welcome back!` });
-      router.push('/dashboard');
+      // The AuthProvider will now handle the redirect automatically.
     } catch (error: any) {
       let description = 'An unknown error occurred.';
       if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
@@ -42,12 +42,13 @@ export default function LoginPage() {
       });
       setIsSubmitting(false); // Ensure button is re-enabled on error
     } 
+    // Do not set isSubmitting to false on success, as the page will be transitioning.
   };
 
-  // The AuthProvider now handles the loading state and redirects for authenticated users.
-  // This page will only render if the user is not authenticated.
-  if (isAuthenticated) {
-    return null;
+  // AuthProvider handles redirects and shows a loader.
+  // We only render the page if the initial load is done and the user is not authenticated.
+  if (isLoading || isAuthenticated) {
+    return null; 
   }
 
   return (

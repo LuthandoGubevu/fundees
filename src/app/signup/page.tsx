@@ -32,7 +32,7 @@ const formSchema = z.object({
 });
 
 export default function SignUpPage() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
   const { toast } = useToast();
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -76,11 +76,12 @@ export default function SignUpPage() {
       } else {
         toast({ variant: 'destructive', title: 'Sign Up Failed', description: 'Could not create account.' });
       }
+      form.reset(undefined, { keepValues: true, keepErrors: true, keepDirty: true, keepIsSubmitted: false, keepTouched: false, keepIsValid: false, keepSubmitCount: false });
     }
   }
   
-  if (isAuthenticated) {
-    return null; // AuthProvider handles redirects
+  if (isLoading || isAuthenticated) {
+    return null; // AuthProvider handles loading and redirects
   }
 
   return (

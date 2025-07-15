@@ -38,9 +38,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
       if (firebaseUser) {
+        // User is logged in, now fetch their profile.
         const userProfile = await getUserById(firebaseUser.uid);
         setUser(userProfile);
       } else {
+        // User is not logged in.
         setUser(null);
       }
       setIsLoading(false);
@@ -51,6 +53,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = useCallback(() => {
     signOut(auth).then(() => {
+      // After sign out, redirect to home page.
       router.push('/');
     });
   }, [router]);
@@ -65,7 +68,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
     const isAuthRoute = authRoutes.includes(pathname);
 
-    // If not authenticated and on a protected route, redirect to login.
+    // If not authenticated and trying to access a protected route, redirect to login.
     if (!isAuthenticated && isProtectedRoute) {
       router.push('/login');
     }
@@ -76,13 +79,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [isLoading, isAuthenticated, pathname, router]);
 
+  const contextValue = { user, logout, isAuthenticated, isLoading };
+
   // While initial authentication is happening, show a loader to prevent race conditions
+  // and content flashing.
   if (isLoading) {
-    return <FullPageLoader />;
+    return (
+        <AuthContext.Provider value={contextValue}>
+            <FullPageLoader />
+        </AuthContext.Provider>
+    )
   }
 
   return (
-    <AuthContext.Provider value={{ user, logout, isAuthenticated, isLoading }}>
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );
