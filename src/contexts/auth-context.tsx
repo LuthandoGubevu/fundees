@@ -19,7 +19,6 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 const protectedRoutes = ['/dashboard', '/create-story', '/ask-ai', '/library', '/story'];
-const publicRoutes = ['/', '/login', '/signup'];
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -30,8 +29,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
+      setIsLoading(true);
       if (fbUser) {
-        // User is signed in.
         try {
             const token = await fbUser.getIdToken();
             const res = await fetch('/api/auth/session-login', {
@@ -48,12 +47,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setUser(userProfile);
         } catch (error) {
             console.error("Authentication process failed:", error);
-            // If session login fails, ensure user is logged out of client state
             setUser(null);
             setFirebaseUser(null);
+            await signOut(auth).catch(err => console.error("Sign out after error failed:", err));
         }
       } else {
-        // User is signed out.
         setUser(null);
         setFirebaseUser(null);
         try {
@@ -69,26 +67,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (isLoading) return;
-
     const isProtectedRoute = protectedRoutes.some(p => pathname.startsWith(p));
-    
     if (!user && isProtectedRoute) {
       router.push('/login');
     }
-
   }, [isLoading, user, pathname, router]);
-
 
   const logout = async () => {
     setIsLoading(true);
     try {
       await signOut(auth);
-      // onAuthStateChanged will handle the rest
       router.push('/login');
     } catch (error) {
       console.error("Error signing out:", error);
     }
-    // We don't set loading to false here, onAuthStateChanged will do it.
   };
   
   const isAuthenticated = !isLoading && !!user;
