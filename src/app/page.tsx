@@ -19,10 +19,6 @@ export default async function Home() {
             priority
           />
           
-          <p className="text-base md:text-lg text-foreground/80">
-            Your magical place to create amazing stories, get answers to your curious questions, and explore a library full of adventures written by friends like you!
-          </p>
-
           <Button asChild size="lg" className="px-6 py-3">
             <Link href="/dashboard">Get Started For Free</Link>
           </Button>
