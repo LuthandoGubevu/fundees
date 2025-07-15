@@ -29,21 +29,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (firebaseUser) {
         // User is signed in, fetch profile from Firestore
         const userProfile = await getUserById(firebaseUser.uid);
+        // The user profile might not be created immediately after sign up
+        // We set the user only if the profile exists.
+        // The signup page is responsible for creating the user document.
         if (userProfile) {
           setUser(userProfile);
-        } else {
-          // Profile doesn't exist yet (e.g., right after signup)
-          // The signup page should create the profile.
-          // For now, we can create a temporary user object.
-          setUser({
-            id: firebaseUser.uid,
-            email: firebaseUser.email!,
-            firstName: 'New',
-            lastName: 'User',
-            school: '',
-            grade: ''
-          });
         }
+        // If profile doesn't exist, we wait. The user will be in a "logged out"
+        // state until their profile is created, at which point onAuthStateChanged
+        // or a subsequent check will pick them up.
       } else {
         // User is signed out
         setUser(null);
