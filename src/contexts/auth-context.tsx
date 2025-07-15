@@ -30,7 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
       if (firebaseUser) {
         const userProfile = await getUserById(firebaseUser.uid);
-        setUser(userProfile); // This can be null if the profile doesn't exist yet.
+        setUser(userProfile);
       } else {
         setUser(null);
       }
@@ -48,9 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const isAuthenticated = !!user;
 
-  // This effect handles all route protection and redirection.
   useEffect(() => {
-    // Don't do anything until the initial loading is complete.
     if (isLoading) {
       return;
     }
@@ -58,12 +56,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
     const isAuthRoute = authRoutes.includes(pathname);
 
-    // If the user is not authenticated and tries to access a protected route, redirect to login.
     if (!isAuthenticated && isProtectedRoute) {
       router.push('/login');
     }
 
-    // If the user IS authenticated and tries to access an auth route (login/signup), redirect to the dashboard.
     if (isAuthenticated && isAuthRoute) {
       router.push('/dashboard');
     }
@@ -72,7 +68,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider value={{ user, logout, isAuthenticated, isLoading }}>
-      {isLoading ? null : children}
+      {children}
     </AuthContext.Provider>
   );
 }

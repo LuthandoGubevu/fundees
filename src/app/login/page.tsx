@@ -34,9 +34,8 @@ export default function LoginPage() {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      // Explicitly redirect after successful login.
       toast({ title: 'Success!', description: `Welcome back!` });
-      router.push('/dashboard');
+      // The redirect is handled by the AuthProvider now
     } catch (error: any) {
       let description = 'An unknown error occurred.';
       if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
@@ -47,20 +46,21 @@ export default function LoginPage() {
         title: 'Login Failed',
         description,
       });
+    } finally {
       setIsSubmitting(false);
     }
   };
 
   if (isAuthLoading || isAuthenticated) {
     return (
-      <div className="container mx-auto flex min-h-[80vh] items-center justify-center">
+      <div className="flex flex-1 items-center justify-center">
         <Loader2 className="h-16 w-16 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto flex min-h-[calc(100vh-4rem)] items-center justify-center py-8">
+    <div className="flex flex-1 items-center justify-center py-8 px-4">
       <Card className="w-full max-w-md bg-card/90 shadow-xl rounded-2xl">
         <CardHeader className="text-center">
           <CardTitle className="text-3xl font-bold font-headline">Login</CardTitle>

@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect } from 'react';
@@ -55,11 +56,9 @@ export default function SignUpPage() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      // 1. Create user in Firebase Auth
       const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
       const user = userCredential.user;
 
-      // 2. Create user profile in Firestore
       await addUser(user.uid, {
         firstName: values.firstName,
         lastName: values.lastName,
@@ -69,7 +68,6 @@ export default function SignUpPage() {
       });
 
       toast({ title: 'Account Created!', description: 'Welcome to Fundees!' });
-      // onAuthStateChanged in AuthProvider will handle redirect
     } catch (error: any) {
       console.error("Sign up error:", error);
       if (error.code === 'auth/email-already-in-use') {
@@ -82,14 +80,14 @@ export default function SignUpPage() {
   
   if (isAuthLoading || isAuthenticated) {
     return (
-        <div className="container mx-auto flex min-h-[80vh] items-center justify-center">
+        <div className="flex flex-1 items-center justify-center">
             <Loader2 className="h-16 w-16 animate-spin text-primary" />
         </div>
     );
   }
 
   return (
-     <div className="container mx-auto flex items-center justify-center py-8 min-h-[calc(100vh-4rem)]">
+     <div className="flex flex-1 items-center justify-center py-8 px-4">
       <Card className="w-full max-w-lg bg-card/90 shadow-xl rounded-2xl">
         <CardHeader className="text-center">
           <CardTitle className="text-3xl font-bold font-headline">Create an Account</CardTitle>
