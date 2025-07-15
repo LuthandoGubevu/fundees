@@ -4,10 +4,6 @@
 import { createContext, useContext, useState, ReactNode, useEffect, useCallback } from 'react';
 import type { User } from '@/lib/types';
 import { useRouter, usePathname } from 'next/navigation';
-import { onAuthStateChanged, signOut, type User as FirebaseUser } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
-import { getUserById } from '@/lib/firestore';
-import { Loader2 } from 'lucide-react';
 
 interface AuthContextType {
   user: User | null;
@@ -18,78 +14,29 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-const protectedRoutes = ['/create-story', '/ask-ai', '/dashboard', '/library', '/story'];
-const authRoutes = ['/login', '/signup'];
-
-function FullPageLoader() {
-    return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
-            <Loader2 className="h-16 w-16 animate-spin text-primary" />
-        </div>
-    );
-}
+const mockUser: User = {
+    id: '1',
+    firstName: 'Amina',
+    lastName: 'Chike',
+    email: 'amina@school.com',
+    school: 'Sunshine Primary',
+    grade: '3rd Grade',
+    totalLikes: 42,
+};
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const router = useRouter();
-  const pathname = usePathname();
+  const [user] = useState<User | null>(mockUser);
+  const isLoading = false; // Always false as we are not fetching anything
+  const isAuthenticated = true; // Always true
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
-      if (firebaseUser) {
-        try {
-            const userProfile = await getUserById(firebaseUser.uid);
-            setUser(userProfile);
-        } catch (error) {
-            console.error("Failed to fetch user profile:", error);
-            setUser(null);
-        }
-      } else {
-        setUser(null);
-      }
-      setIsLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  const logout = useCallback(() => {
-    signOut(auth).then(() => {
-      // No need to push here, the effect below will handle it
-    });
-  }, []);
-
-  const isAuthenticated = !!user;
-
-  useEffect(() => {
-    // Only run redirect logic after the initial auth check is complete
-    if (isLoading) {
-      return; 
-    }
-
-    const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
-    const isAuthRoute = authRoutes.includes(pathname);
-
-    if (!isAuthenticated && isProtectedRoute) {
-      router.push('/login');
-    }
-
-    if (isAuthenticated && isAuthRoute) {
-      router.push('/dashboard');
-    }
-  }, [isLoading, isAuthenticated, pathname, router]);
-
-  const contextValue = { user, logout, isAuthenticated, isLoading };
-
-  // While the initial authentication is happening, show a loader
-  // This prevents the redirect logic from firing with an incomplete auth state
-  if (isLoading) {
-    return <FullPageLoader />;
-  }
+  const logout = () => {
+    // In a real app, this would clear the user session.
+    // For now, it does nothing as auth is disabled.
+    console.log("Logout function called, but authentication is disabled.");
+  };
 
   return (
-    <AuthContext.Provider value={contextValue}>
+    <AuthContext.Provider value={{ user, logout, isAuthenticated, isLoading }}>
       {children}
     </AuthContext.Provider>
   );

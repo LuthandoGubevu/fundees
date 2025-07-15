@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -12,9 +13,8 @@ import {
   SidebarTrigger,
   SidebarFooter,
 } from '@/components/ui/sidebar';
-import { Button } from '../ui/button';
 import { useAuth } from '@/contexts/auth-context';
-import { BookHeart, Home, Pencil, Sparkles, Library, LogOut, UserCircle } from 'lucide-react';
+import { BookHeart, Home, Pencil, Sparkles, Library, UserCircle } from 'lucide-react';
 import { Skeleton } from '../ui/skeleton';
 
 const navLinks = [
@@ -25,12 +25,8 @@ const navLinks = [
 ];
 
 export function Sidebar() {
-  const { isAuthenticated, user, logout, isLoading } = useAuth();
+  const { user } = useAuth();
   const pathname = usePathname();
-
-  if (!isAuthenticated) {
-    return null; // Don't render sidebar if not logged in
-  }
 
   return (
     <SidebarPrimitive side="left" collapsible="icon" className="hidden md:flex">
@@ -60,28 +56,18 @@ export function Sidebar() {
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter>
-        {isLoading ? (
+        {user ? (
+            <Link href="/dashboard">
+                <SidebarMenuButton tooltip={{children: `${user.firstName}'s Profile`}}>
+                    <UserCircle />
+                    <span>{user.firstName}</span>
+                </SidebarMenuButton>
+            </Link>
+        ) : (
           <div className="flex items-center gap-2 p-2">
             <Skeleton className="size-8 rounded-full" />
             <Skeleton className="h-6 w-20" />
           </div>
-        ) : user ? (
-            <>
-                <Link href="/dashboard">
-                    <SidebarMenuButton tooltip={{children: `${user.firstName}'s Profile`}}>
-                        <UserCircle />
-                        <span>{user.firstName}</span>
-                    </SidebarMenuButton>
-                </Link>
-                <SidebarMenuButton onClick={logout} tooltip={{children: "Logout"}}>
-                    <LogOut />
-                    <span>Logout</span>
-                </SidebarMenuButton>
-            </>
-        ) : (
-          <Link href="/login">
-            <Button className="w-full">Login</Button>
-          </Link>
         )}
       </SidebarFooter>
     </SidebarPrimitive>

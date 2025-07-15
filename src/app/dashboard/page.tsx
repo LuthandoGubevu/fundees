@@ -51,48 +51,42 @@ export default function DashboardPage() {
 
 
   useEffect(() => {
-    if (user) {
-      setIsStoriesLoading(true);
-      setStoriesError(null);
-      setIndexLink(null);
-      
-      const storiesCol = collection(db, 'stories');
-      const q = query(storiesCol, where('authorId', '==', user.id), orderBy('createdAt', 'desc'));
+    // Since auth is disabled, we fetch all stories instead of user-specific ones.
+    setIsStoriesLoading(true);
+    setStoriesError(null);
+    setIndexLink(null);
+    
+    const storiesCol = collection(db, 'stories');
+    const q = query(storiesCol, orderBy('createdAt', 'desc'));
 
-      const unsubscribe = onSnapshot(q, 
-        (snapshot) => {
-          setMyStories(snapshot.docs.map(transformStoryDoc));
-          setIsStoriesLoading(false);
-          setStoriesError(null);
-          setIndexLink(null);
-        },
-        (error: any) => {
-          if (error.code === 'permission-denied') {
-              setStoriesError("Permission Denied: Could not load your stories. Please check your Firestore security rules in the Firebase Console to ensure you have 'list' permissions on the 'stories' collection.");
-          } else if (error.code === 'failed-precondition' && error.message?.includes('requires an index')) {
-              const link = extractIndexCreationLink(error.message);
-              if (link) {
-                  setIndexLink(link);
-              } else {
-                  setStoriesError("A database index is required. Please check the browser console for a link to create it.")
-              }
-          } else {
-              console.error("Dashboard stories error:", error);
-              setStoriesError("Could not load your stories right now.");
-          }
-          setIsStoriesLoading(false);
-        }
-      );
-
-      return () => unsubscribe(); // Cleanup listener on unmount
-    } else {
-        // If there's no user, there's no need to try and fetch stories.
+    const unsubscribe = onSnapshot(q, 
+      (snapshot) => {
+        setMyStories(snapshot.docs.map(transformStoryDoc));
         setIsStoriesLoading(false);
-    }
-  }, [user]);
+        setStoriesError(null);
+        setIndexLink(null);
+      },
+      (error: any) => {
+        if (error.code === 'permission-denied') {
+            setStoriesError("Permission Denied: Could not load your stories. Please check your Firestore security rules in the Firebase Console to ensure you have 'list' permissions on the 'stories' collection.");
+        } else if (error.code === 'failed-precondition' && error.message?.includes('requires an index')) {
+            const link = extractIndexCreationLink(error.message);
+            if (link) {
+                setIndexLink(link);
+            } else {
+                setStoriesError("A database index is required. Please check the browser console for a link to create it.")
+            }
+        } else {
+            console.error("Dashboard stories error:", error);
+            setStoriesError("Could not load stories right now.");
+        }
+        setIsStoriesLoading(false);
+      }
+    );
 
-  // The AuthProvider handles redirects, so this page should only render for authenticated users.
-  // We can return null if user is not available yet, as AuthProvider shows a loader.
+    return () => unsubscribe(); // Cleanup listener on unmount
+  }, []);
+
   if (!user) {
       return null;
   }
@@ -117,7 +111,7 @@ export default function DashboardPage() {
             <div className="lg:col-span-2 space-y-8">
                 {/* Your Story Creations */}
                 <section className="bg-blue-50 rounded-xl p-4 shadow-md">
-                    <h2 className="text-xl font-bold mb-4 text-gray-800">Your Story Creations</h2>
+                    <h2 className="text-xl font-bold mb-4 text-gray-800">Recent Stories</h2>
                     {isStoriesLoading ? (
                         <div className="flex overflow-x-auto space-x-4 pb-2 -mx-4 px-4">
                             <Skeleton className="w-40 h-48 rounded-lg" />
@@ -142,9 +136,9 @@ export default function DashboardPage() {
                         </div>
                     ) : (
                         <div className="text-center py-4">
-                            <p className="text-gray-600 mb-4">You haven't created any stories yet.</p>
+                            <p className="text-gray-600 mb-4">No stories have been created yet.</p>
                             <Button asChild>
-                                <Link href="/create-story">Start Your First Story</Link>
+                                <Link href="/create-story">Start The First Story</Link>
                             </Button>
                         </div>
                     )}

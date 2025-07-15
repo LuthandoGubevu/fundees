@@ -2,7 +2,6 @@
 import { Button } from "@/components/ui/button";
 import { Sparkles } from "lucide-react";
 import Link from "next/link";
-import { getAuthenticatedUser } from "@/lib/auth";
 
 const SunIcon = ({ className }: { className?: string }) => (
     <svg
@@ -29,9 +28,6 @@ const SunIcon = ({ className }: { className?: string }) => (
 
 
 export default async function Home() {
-  const user = await getAuthenticatedUser();
-  const isAuthenticated = !!user;
-
   return (
     <div className="h-screen flex items-center justify-center px-4">
       <div className="max-w-md w-full text-center space-y-6">
@@ -49,15 +45,9 @@ export default async function Home() {
           Your magical place to create amazing stories, get answers to your curious questions, and explore a library full of adventures written by friends like you!
         </p>
 
-        {isAuthenticated ? (
-          <Button asChild size="lg" className="px-6 py-3">
-            <Link href="/dashboard">Go to Dashboard</Link>
-          </Button>
-        ) : (
-          <Button asChild size="lg" className="px-6 py-3">
-            <Link href="/signup">Get Started For Free</Link>
-          </Button>
-        )}
+        <Button asChild size="lg" className="px-6 py-3">
+          <Link href="/dashboard">Get Started For Free</Link>
+        </Button>
       </div>
     </div>
   );

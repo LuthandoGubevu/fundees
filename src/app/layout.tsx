@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { Toaster } from '@/components/ui/toaster';
 import { AuthProvider } from '@/contexts/auth-context';
 import { SiteHeader } from '@/components/layout/site-header';
+import { SidebarProvider } from '@/components/ui/sidebar';
 
 export const metadata: Metadata = {
   title: 'Fundees',
@@ -24,11 +25,13 @@ export default function RootLayout({
       </head>
       <body className={cn("font-body antialiased min-h-screen")}>
         <AuthProvider>
+          <SidebarProvider>
             <div className="relative flex min-h-screen flex-col">
               <SiteHeader />
               <main className="flex-1">{children}</main>
             </div>
             <Toaster />
+          </SidebarProvider>
         </AuthProvider>
       </body>
     </html>
