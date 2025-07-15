@@ -100,20 +100,20 @@ export function CreateStoryForm() {
   }
 
   return (
-    <Card className="p-4 sm:p-8 bg-sky-blue/60 shadow-2xl rounded-2xl">
+    <Card className="p-4 sm:p-8 bg-sky-blue/60 shadow-2xl rounded-2xl text-white">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Left side: Story Creation */}
         <div className="space-y-6">
           <div>
             <Label htmlFor="title" className="text-lg font-semibold">Story Title</Label>
-            <Input id="title" placeholder="The Amazing Adventure of..." value={title} onChange={e => setTitle(e.target.value)} className="mt-2 text-base h-12" />
+            <Input id="title" placeholder="The Amazing Adventure of..." value={title} onChange={e => setTitle(e.target.value)} className="mt-2 text-base h-12 text-black" />
           </div>
           <div>
             <Label htmlFor="content" className="text-lg font-semibold">Your Story</Label>
             <Textarea
               id="content"
               placeholder="Once upon a time, in a land filled with sunshine..."
-              className="mt-2 min-h-[300px] text-base"
+              className="mt-2 min-h-[300px] text-base text-black"
               value={content}
               onChange={(e) => setContent(e.target.value)}
             />
@@ -127,18 +127,18 @@ export function CreateStoryForm() {
         {/* Right side: AI Helper */}
         <div className="space-y-6">
           <form action={formAction} className="space-y-4 p-4 border rounded-lg bg-background/50">
-            <h3 className="text-lg font-semibold flex items-center gap-2"><Wand2 className="h-5 w-5 text-primary"/>AI Story Helper</h3>
+            <h3 className="text-lg font-semibold flex items-center gap-2 text-foreground"><Wand2 className="h-5 w-5 text-primary"/>AI Story Helper</h3>
             <div>
-              <Label htmlFor="theme">Choose a theme or type your own!</Label>
+              <Label htmlFor="theme" className="text-foreground">Choose a theme or type your own!</Label>
                 <Select onValueChange={setTheme} value={theme}>
-                    <SelectTrigger id="theme" className="mt-2 h-12">
+                    <SelectTrigger id="theme" className="mt-2 h-12 text-black">
                         <SelectValue placeholder="Select a theme..." />
                     </SelectTrigger>
                     <SelectContent>
                         {storyThemes.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
                     </SelectContent>
                 </Select>
-                <Input name="theme" value={theme} onChange={e => setTheme(e.target.value)} className="mt-2 h-12" placeholder="Or type a custom theme"/>
+                <Input name="theme" value={theme} onChange={e => setTheme(e.target.value)} className="mt-2 h-12 text-black" placeholder="Or type a custom theme"/>
             </div>
             <Button type="submit" className="w-full">
               <Lightbulb className="mr-2 h-4 w-4" />
@@ -168,7 +168,7 @@ export function CreateStoryForm() {
 function StructureHint({ title, hint, onClick }: { title: string, hint: string, onClick: () => void }) {
     return (
         <div className="p-3 border rounded-md bg-background/50">
-            <h4 className="font-semibold">{title}</h4>
+            <h4 className="font-semibold text-foreground">{title}</h4>
             <p className="text-sm text-muted-foreground my-1">{hint}</p>
             <Button variant="link" size="sm" className="p-0 h-auto" onClick={onClick}>
                 <BookUp className="mr-2 h-4 w-4" />

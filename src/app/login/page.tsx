@@ -61,20 +61,20 @@ export default function LoginPage() {
       style={{ backgroundImage: "url('/fundee-1.jpg')" }}
     >
       <div className="min-h-screen w-full bg-background/60 backdrop-blur-sm flex items-center justify-center py-8 px-4">
-        <Card className="w-full max-w-md bg-sky-blue/60 shadow-xl rounded-2xl">
+        <Card className="w-full max-w-md bg-sky-blue/60 shadow-xl rounded-2xl text-white">
           <CardHeader className="text-center">
             <CardTitle className="text-3xl font-bold font-headline">Login</CardTitle>
-            <CardDescription>Enter your credentials to access your account.</CardDescription>
+            <CardDescription className="text-white/80">Enter your credentials to access your account.</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" placeholder="you@school.com" value={email} onChange={(e) => setEmail(e.target.value)} required className="h-12"/>
+                <Input id="email" type="email" placeholder="you@school.com" value={email} onChange={(e) => setEmail(e.target.value)} required className="h-12 text-black"/>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
-                <Input id="password" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required className="h-12"/>
+                <Input id="password" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required className="h-12 text-black"/>
               </div>
               <Button type="submit" className="w-full h-12 text-lg" disabled={isSubmitting}>
                 {isSubmitting ? <Loader2 className="animate-spin" /> : 'Login'}
@@ -82,7 +82,7 @@ export default function LoginPage() {
             </form>
             <p className="mt-4 text-center text-sm">
               Don't have an account?{' '}
-              <Link href="/signup" className="font-bold text-primary hover:underline">
+              <Link href="/signup" className="font-bold text-white hover:underline">
                 Sign up
               </Link>
             </p>

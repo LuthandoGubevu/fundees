@@ -35,22 +35,22 @@ export default async function StoryPage({ params }: { params: { id: string } }) 
             </Button>
           </div>
 
-          <Card className="overflow-hidden shadow-2xl rounded-2xl bg-sky-blue/60">
+          <Card className="overflow-hidden shadow-2xl rounded-2xl bg-sky-blue/60 text-white">
             <CardHeader className="p-6">
               <CardTitle className="text-4xl md:text-5xl font-bold font-headline mb-4">{story.title}</CardTitle>
-              <div className="flex flex-wrap gap-2 text-sm text-muted-foreground mb-4">
+              <div className="flex flex-wrap gap-2 text-sm text-white/80 mb-4">
                 <span>by {story.author}</span>
                 <span>&middot;</span>
                 <span>{formattedDate}</span>
               </div>
                <div className="flex flex-wrap gap-2 mb-2">
-                  <Badge variant="outline" className="border-orange-400 text-orange-600">{story.age} yrs</Badge>
-                  <Badge variant="outline" className="border-blue-400 text-blue-600">{story.grade}</Badge>
-                  <Badge variant="secondary">{story.theme}</Badge>
+                  <Badge variant="outline" className="border-orange-400 text-orange-600 bg-white/80">{story.age} yrs</Badge>
+                  <Badge variant="outline" className="border-blue-400 text-blue-600 bg-white/80">{story.grade}</Badge>
+                  <Badge variant="secondary" className="bg-white/80 text-secondary-foreground">{story.theme}</Badge>
               </div>
             </CardHeader>
             <CardContent className="p-6">
-                <div className="text-lg text-foreground/90 whitespace-pre-wrap leading-relaxed">
+                <div className="text-lg text-white whitespace-pre-wrap leading-relaxed">
                     {story.content}
                 </div>
             </CardContent>

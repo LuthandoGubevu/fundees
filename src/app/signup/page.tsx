@@ -94,10 +94,10 @@ export default function SignUpPage() {
       style={{ backgroundImage: "url('/fundee-2.jpg')" }}
     >
       <div className="min-h-screen w-full bg-background/60 backdrop-blur-sm flex items-center justify-center py-8 px-4">
-        <Card className="w-full max-w-lg bg-sky-blue/60 shadow-xl rounded-2xl">
+        <Card className="w-full max-w-lg bg-sky-blue/60 shadow-xl rounded-2xl text-white">
           <CardHeader className="text-center">
             <CardTitle className="text-3xl font-bold font-headline">Create an Account</CardTitle>
-            <CardDescription>Join Fundees to start your creative journey.</CardDescription>
+            <CardDescription className="text-white/80">Join Fundees to start your creative journey.</CardDescription>
           </CardHeader>
           <CardContent>
             <Form {...form}>
@@ -107,7 +107,7 @@ export default function SignUpPage() {
                     <FormItem>
                       <FormLabel>First Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Ada" {...field} />
+                        <Input placeholder="Ada" {...field} className="text-black"/>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -116,7 +116,7 @@ export default function SignUpPage() {
                     <FormItem>
                       <FormLabel>Last Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Lovelace" {...field} />
+                        <Input placeholder="Lovelace" {...field} className="text-black"/>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -127,7 +127,7 @@ export default function SignUpPage() {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="ada@school.com" {...field} />
+                      <Input placeholder="ada@school.com" {...field} className="text-black"/>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -138,7 +138,7 @@ export default function SignUpPage() {
                       <FormItem>
                         <FormLabel>School</FormLabel>
                         <FormControl>
-                          <Input placeholder="Innovation Academy" {...field} />
+                          <Input placeholder="Innovation Academy" {...field} className="text-black"/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -148,7 +148,7 @@ export default function SignUpPage() {
                         <FormLabel>Grade</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
-                            <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                            <SelectTrigger className="text-black"><SelectValue placeholder="Select" /></SelectTrigger>
                           </FormControl>
                           <SelectContent>
                             {Array.from({ length: 9 }, (_, i) => i + 1).map(g => (
@@ -165,7 +165,7 @@ export default function SignUpPage() {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input type="password" {...field} />
+                      <Input type="password" {...field} className="text-black"/>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -174,7 +174,7 @@ export default function SignUpPage() {
                   <FormItem>
                     <FormLabel>Confirm Password</FormLabel>
                     <FormControl>
-                      <Input type="password" {...field} />
+                      <Input type="password" {...field} className="text-black"/>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -187,7 +187,7 @@ export default function SignUpPage() {
             </Form>
             <p className="mt-4 text-center text-sm">
               Already have an account?{' '}
-              <Link href="/login" className="font-bold text-primary hover:underline">
+              <Link href="/login" className="font-bold text-white hover:underline">
                 Login
               </Link>
             </p>

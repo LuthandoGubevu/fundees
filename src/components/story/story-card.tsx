@@ -73,13 +73,13 @@ export function StoryCard({ story }: { story: Story }) {
   };
 
   return (
-    <Card className="flex flex-col overflow-hidden rounded-xl shadow-md bg-sky-blue/60 max-w-xs sm:max-w-sm w-full mx-auto transform hover:-translate-y-1 transition-transform duration-300">
+    <Card className="flex flex-col overflow-hidden rounded-xl shadow-md bg-sky-blue/60 max-w-xs sm:max-w-sm w-full mx-auto transform hover:-translate-y-1 transition-transform duration-300 text-white">
       <Link href={`/story/${story.id}`} className="flex flex-col flex-grow no-underline text-current p-4 space-y-2">
         <CardHeader className="p-0">
            <CardTitle className="font-semibold text-lg truncate">{story.title}</CardTitle>
         </CardHeader>
         <CardContent className="p-0 flex-grow space-y-2">
-            <div className="text-sm text-muted-foreground space-y-1">
+            <div className="text-sm text-white/80 space-y-1">
                 <p className="truncate">by {story.author}</p>
                  {story.school && (
                     <p className="flex items-center gap-1.5 truncate">
@@ -87,10 +87,10 @@ export function StoryCard({ story }: { story: Story }) {
                     </p>
                 )}
             </div>
-          <p className="text-sm text-foreground/80 line-clamp-3">{story.excerpt}</p>
+          <p className="text-sm text-white line-clamp-3">{story.excerpt}</p>
           <div className="flex flex-wrap gap-1.5 pt-1">
-              <Badge variant="outline" className="text-xs">{story.age} yrs</Badge>
-              <Badge variant="outline" className="text-xs">{story.grade}</Badge>
+              <Badge variant="outline" className="text-xs bg-white/20 border-white/50">{story.age} yrs</Badge>
+              <Badge variant="outline" className="text-xs bg-white/20 border-white/50">{story.grade}</Badge>
           </div>
         </CardContent>
       </Link>
@@ -104,7 +104,7 @@ export function StoryCard({ story }: { story: Story }) {
           aria-label={hasLiked ? "Unlike story" : "Like story"}
         >
           <Heart className={cn("h-5 w-5", hasLiked ? "fill-current" : "")} />
-          <span className="text-sm font-medium">{likes}</span>
+          <span className="text-sm font-medium text-white">{likes}</span>
         </Button>
       </CardFooter>
     </Card>

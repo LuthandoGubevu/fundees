@@ -67,7 +67,7 @@ export default function AskAiPage() {
 
           {isLoading && (
             <Card className="p-6 text-center animate-pulse bg-sky-blue/60">
-                <p className="text-muted-foreground">Our AI friend is thinking hard...</p>
+                <p className="text-white/80">Our AI friend is thinking hard...</p>
             </Card>
           )}
 
@@ -80,7 +80,7 @@ export default function AskAiPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-lg text-foreground/90 leading-relaxed">{response}</p>
+                <p className="text-lg text-white leading-relaxed">{response}</p>
 
                 <Button onClick={useAsIdea} className="mt-6">
                   Use as a Story Idea

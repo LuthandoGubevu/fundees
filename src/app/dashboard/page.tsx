@@ -98,12 +98,12 @@ export default function DashboardPage() {
       <div className="min-h-screen w-full bg-background/60 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-8 max-w-5xl">
           <div className="flex flex-col space-y-8">
-            <div className="bg-sky-blue/60 rounded-2xl p-4 md:p-6 shadow-lg flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6">
+            <div className="bg-sky-blue/60 rounded-2xl p-4 md:p-6 shadow-lg flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6 text-white">
                 <div className="flex-1">
-                    <h1 className="text-3xl font-bold text-gray-800">Hi, {user.firstName}!</h1>
-                    <p className="text-sm text-gray-700 mt-1">Ready for a new adventure today?</p>
+                    <h1 className="text-3xl font-bold">Hi, {user.firstName}!</h1>
+                    <p className="text-sm text-white/80 mt-1">Ready for a new adventure today?</p>
                 </div>
-                <div className="flex items-center gap-x-6 gap-y-2 text-sm font-semibold text-gray-800 self-start md:self-center pt-2 md:pt-0">
+                <div className="flex items-center gap-x-6 gap-y-2 text-sm font-semibold self-start md:self-center pt-2 md:pt-0">
                     <span className="flex items-center gap-1.5"><Heart className="w-5 h-5 text-red-500" /> {user.totalLikes || 0} Likes</span>
                     <span className="flex items-center gap-1.5"><Users className="w-5 h-5" /> 0 Followers</span>
                 </div>
@@ -111,8 +111,8 @@ export default function DashboardPage() {
 
             <div className="grid lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-2 space-y-8">
-                    <section className="bg-sky-blue/60 rounded-xl p-4 shadow-md">
-                        <h2 className="text-xl font-bold mb-4 text-gray-800">Recent Stories</h2>
+                    <section className="bg-sky-blue/60 rounded-xl p-4 shadow-md text-white">
+                        <h2 className="text-xl font-bold mb-4">Recent Stories</h2>
                         {isStoriesLoading ? (
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <Skeleton className="w-full h-24 rounded-lg" />
@@ -126,9 +126,9 @@ export default function DashboardPage() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {myStories.map(story => (
                                 <Link href={`/story/${story.id}`} key={story.id} className="block">
-                                    <Card className="bg-sky-blue/60 rounded-lg p-4 h-full shadow hover:shadow-xl transition-shadow">
-                                        <h3 className="font-bold text-lg text-foreground truncate">{story.title}</h3>
-                                        <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{story.excerpt}</p>
+                                    <Card className="bg-sky-blue/60 rounded-lg p-4 h-full shadow hover:shadow-xl transition-shadow text-white">
+                                        <h3 className="font-bold text-lg truncate">{story.title}</h3>
+                                        <p className="text-sm text-white/80 mt-1 line-clamp-2">{story.excerpt}</p>
                                         <span className="text-xs bg-yellow-100 text-yellow-800 rounded-full px-2 py-0.5 mt-2 inline-block">Published</span>
                                     </Card>
                                 </Link>
@@ -136,7 +136,7 @@ export default function DashboardPage() {
                             </div>
                         ) : (
                             <div className="text-center py-4">
-                                <p className="text-gray-600 mb-4">No stories have been created yet.</p>
+                                <p className="text-white/80 mb-4">No stories have been created yet.</p>
                                 <Button asChild>
                                     <Link href="/create-story">Start The First Story</Link>
                                 </Button>
@@ -145,18 +145,18 @@ export default function DashboardPage() {
                     </section>
                 </div>
                 <div className="space-y-8">
-                    <section className="bg-pink/60 rounded-xl p-4 shadow-md">
-                        <h2 className="text-lg font-bold text-gray-800 mb-2">Spark Your Imagination</h2>
-                        <p className="italic text-sm text-gray-700">"What if animals could talk? What would they say?"</p>
+                    <section className="bg-pink/60 rounded-xl p-4 shadow-md text-white">
+                        <h2 className="text-lg font-bold mb-2">Spark Your Imagination</h2>
+                        <p className="italic text-sm text-white/80">"What if animals could talk? What would they say?"</p>
                         <Button size="sm" className="bg-peach-orange/80 hover:bg-peach-orange text-white rounded-lg mt-3" asChild>
                            <Link href="/create-story?theme=What%20if%20animals%20could%20talk?">Use this prompt</Link>
                         </Button>
                     </section>
 
-                    <section className="bg-sky-blue/60 rounded-xl p-4 shadow-md">
+                    <section className="bg-sky-blue/60 rounded-xl p-4 shadow-md text-white">
                         <div className="flex justify-between items-center">
-                            <h2 className="text-lg font-bold text-gray-800">Your Awards</h2>
-                            <span className="font-bold text-gray-700">150 Coins</span>
+                            <h2 className="text-lg font-bold">Your Awards</h2>
+                            <span className="font-bold">150 Coins</span>
                         </div>
                         <div className="grid grid-cols-3 gap-2 mt-4 text-center">
                             <AwardBadge icon={<Star />} label="First Story" />

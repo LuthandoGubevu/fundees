@@ -27,7 +27,7 @@ export default function LibraryPage() {
           <div className="mb-8 p-4 bg-sky-blue/60 rounded-xl shadow-md">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
                 <div className="relative lg:col-span-2">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-white/80" />
                     <Input placeholder="Search for stories..." className="pl-10 bg-white/90" />
                 </div>
               <FilterSelect placeholder="Filter by Grade" options={["1st Grade", "2nd Grade", "3rd Grade"]} />
