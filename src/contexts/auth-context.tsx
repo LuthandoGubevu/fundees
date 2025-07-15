@@ -30,25 +30,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
-      setIsLoading(true);
       if (fbUser) {
-        setFirebaseUser(fbUser);
-        const token = await fbUser.getIdToken();
-        const userProfile = await getUserById(fbUser.uid);
-        setUser(userProfile);
-        
+        // User is signed in.
         try {
-          await fetch('/api/auth/session-login', {
-            method: 'POST',
-            headers: { 'Authorization': `Bearer ${token}` }
-          });
-        } catch (error) {
-            console.error("Failed to sync server session:", error);
-        }
+            const token = await fbUser.getIdToken();
+            const res = await fetch('/api/auth/session-login', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
 
+            if (!res.ok) {
+                throw new Error('Session login failed');
+            }
+            
+            setFirebaseUser(fbUser);
+            const userProfile = await getUserById(fbUser.uid);
+            setUser(userProfile);
+        } catch (error) {
+            console.error("Authentication process failed:", error);
+            // If session login fails, ensure user is logged out of client state
+            setUser(null);
+            setFirebaseUser(null);
+        }
       } else {
-        setFirebaseUser(null);
+        // User is signed out.
         setUser(null);
+        setFirebaseUser(null);
         try {
             await fetch('/api/auth/session-logout', { method: 'POST' });
         } catch (error) {
@@ -64,8 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (isLoading) return;
 
     const isProtectedRoute = protectedRoutes.some(p => pathname.startsWith(p));
-    const isPublicRoute = publicRoutes.includes(pathname);
-
+    
     if (!user && isProtectedRoute) {
       router.push('/login');
     }
@@ -74,12 +80,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 
   const logout = async () => {
+    setIsLoading(true);
     try {
       await signOut(auth);
+      // onAuthStateChanged will handle the rest
       router.push('/login');
     } catch (error) {
       console.error("Error signing out:", error);
     }
+    // We don't set loading to false here, onAuthStateChanged will do it.
   };
   
   const isAuthenticated = !isLoading && !!user;
