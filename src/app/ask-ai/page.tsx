@@ -42,7 +42,7 @@ export default function AskAiPage() {
       className="min-h-screen bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: "url('/fundee-4.jpg')" }}
     >
-      <div className="min-h-screen bg-background/80 backdrop-blur-sm flex flex-col items-center justify-center">
+      <div className="min-h-screen bg-background/60 backdrop-blur-sm flex flex-col items-center justify-center">
         <div className="container mx-auto px-4 py-8 max-w-3xl">
           <div className="text-center mb-12">
             <h1 className="font-headline text-5xl md:text-6xl font-bold text-foreground mt-4">Ask a Question</h1>

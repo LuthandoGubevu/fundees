@@ -24,7 +24,7 @@ export default async function StoryPage({ params }: { params: { id: string } }) 
       className="min-h-screen w-full bg-cover bg-center"
       style={{ backgroundImage: "url('/fundee-6.jpg')" }}
     >
-      <div className="min-h-screen w-full bg-background/80 backdrop-blur-sm py-8">
+      <div className="min-h-screen w-full bg-background/60 backdrop-blur-sm py-8">
         <div className="container mx-auto px-4 max-w-4xl">
           <div className="mb-8">
             <Button asChild variant="outline">

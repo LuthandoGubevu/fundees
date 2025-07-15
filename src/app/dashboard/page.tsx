@@ -95,7 +95,7 @@ export default function DashboardPage() {
       className="min-h-screen w-full bg-cover bg-center"
       style={{ backgroundImage: "url('/fundee-2.jpg')" }}
     >
-      <div className="min-h-screen w-full bg-background/80 backdrop-blur-sm">
+      <div className="min-h-screen w-full bg-background/60 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-8 max-w-5xl">
           <div className="flex flex-col space-y-8">
             <div className="bg-sky-100/90 rounded-2xl p-4 md:p-6 shadow-lg flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6">
