@@ -51,7 +51,7 @@ export function MobileNav() {
           )}
         >
           <Wand2 className="h-8 w-8" />
-          <span className="mt-1">Create</span>
+          <span className="mt-1 pb-1">Create</span>
         </Link>
 
         {navLinksRight.map((link) => (
