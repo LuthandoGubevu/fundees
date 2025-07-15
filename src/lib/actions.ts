@@ -1,11 +1,9 @@
 'use server';
 
 import { suggestStoryStructure } from '@/ai/flows/suggest-story-structure';
-import { generateStoryImage } from '@/ai/flows/generate-story-image';
 import { z } from 'zod';
 import { addStory, getNewStoryId } from './firestore';
 import { revalidatePath } from 'next/cache';
-import { storage } from './firebase/server'; // Use server storage
 
 const structureSchema = z.object({
   theme: z.string().min(3, 'Theme must be at least 3 characters'),
@@ -50,29 +48,6 @@ export async function saveStoryAction(data: z.infer<typeof saveStorySchema>) {
     
     const { title, content, theme, author } = validatedFields.data;
     const storyId = await getNewStoryId();
-    let downloadURL: string | undefined;
-
-    try {
-        const imagePrompt = `A child-friendly, vibrant illustration for a story titled "${title}" with the theme "${theme}". The story is about: ${content.substring(0, 500)}`;
-        const imageResult = await generateStoryImage({ prompt: imagePrompt });
-
-        if (imageResult?.imageUrl) {
-            const imagePath = `stories/${storyId}.png`;
-            const file = storage.file(imagePath);
-            const buffer = Buffer.from(imageResult.imageUrl.split(',')[1], 'base64');
-            await file.save(buffer, {
-                metadata: {
-                    contentType: 'image/png'
-                }
-            });
-            await file.makePublic();
-            downloadURL = file.publicUrl();
-        } else {
-            console.warn("AI image generation failed or returned no image. Proceeding to save story without an image.");
-        }
-    } catch (e) {
-        console.error("An error occurred during image generation/upload, story will be saved without an image:", e);
-    }
 
     try {
         const excerpt = content.length > 100 ? content.substring(0, 100) + '...' : content;
@@ -82,7 +57,6 @@ export async function saveStoryAction(data: z.infer<typeof saveStorySchema>) {
             content,
             theme,
             excerpt,
-            imageUrl: downloadURL || '',
             author: author.name,
             authorId: author.id,
             school: author.school,

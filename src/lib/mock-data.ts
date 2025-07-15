@@ -14,7 +14,6 @@ export const users: User[] = [
         email: 'amina@school.com',
         school: 'Sunshine Primary',
         grade: '3rd Grade',
-        password: 'password123',
         totalLikes: 42,
     },
     {
@@ -24,7 +23,6 @@ export const users: User[] = [
         email: 'luthando@school.com',
         school: 'Future Stars Academy',
         grade: '5th Grade',
-        password: 'password123',
         totalLikes: 15,
     }
   ];
@@ -38,12 +36,11 @@ export const stories: Story[] = [
     grade: '2nd Grade',
     subject: 'Creativity',
     language: 'English',
-    excerpt: "The story of Fundees itself! A magical place where a little sunbeam's idea for a story turned into a grand adventure with a beautiful, AI-generated picture...",
-    content: "In a world shimmering with imagination, a new friend was born: Fundee! Fundee wasn't a person, but a magical place on a screen where stories could come to life. Its first-ever story was about a brave little sunbeam who wanted to paint the whole world with happy colors. With a little help from a friendly AI, the sunbeam's story got a beautiful picture, showing everyone that even the smallest idea can become a grand adventure.",
+    excerpt: "The story of Fundees itself! A magical place where a little sunbeam's idea for a story turned into a grand adventure...",
+    content: "In a world shimmering with imagination, a new friend was born: Fundee! Fundee wasn't a person, but a magical place on a screen where stories could come to life. Its first-ever story was about a brave little sunbeam who wanted to paint the whole world with happy colors. With a little help from a friendly AI, the sunbeam's story showed everyone that even the smallest idea can become a grand adventure.",
     likes: 30,
     age: '7-8',
     theme: 'Creativity',
-    imageUrl: 'https://placehold.co/600x400.png',
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 1).toISOString(),
   },
   {
@@ -60,7 +57,6 @@ export const stories: Story[] = [
     likes: 42,
     age: '8-9',
     theme: 'Folklore',
-    imageUrl: 'https://placehold.co/600x400.png',
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 5).toISOString(),
   },
   {
@@ -77,7 +73,6 @@ export const stories: Story[] = [
     likes: 15,
     age: '9-10',
     theme: 'Nature',
-    imageUrl: 'https://placehold.co/600x400.png',
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2).toISOString(),
   }
 ];
@@ -86,7 +81,7 @@ export const getUserByEmail = async (email: string): Promise<User | undefined> =
     throw new Error("Deprecated: Use functions from /lib/firestore.ts instead.");
 };
 
-export const addUser = async (user: Omit<User, 'id'>): Promise<User> => {
+export const addUser = async (user: Omit<User, 'id' | 'totalLikes'>): Promise<User> => {
     throw new Error("Deprecated: Use functions from /lib/firestore.ts instead.");
 };
 

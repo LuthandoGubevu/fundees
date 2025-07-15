@@ -22,6 +22,5 @@ export interface Story {
   likes: number;
   age: string;
   theme: string;
-  imageUrl?: string;
   createdAt: any; // Can be Timestamp from Firebase or string
 }

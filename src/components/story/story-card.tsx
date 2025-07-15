@@ -2,7 +2,6 @@
 
 import type { Story } from "@/lib/types";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Heart, School } from "lucide-react";
@@ -74,35 +73,27 @@ export function StoryCard({ story }: { story: Story }) {
 
   return (
     <Card className="flex flex-col overflow-hidden rounded-xl shadow-md bg-white max-w-xs sm:max-w-sm w-full mx-auto transform hover:-translate-y-1 transition-transform duration-300">
-      <Link href={`/story/${story.id}`} className="flex flex-col flex-grow no-underline text-current p-3 space-y-2">
+      <Link href={`/story/${story.id}`} className="flex flex-col flex-grow no-underline text-current p-4 space-y-2">
         <CardHeader className="p-0">
-          <div className="relative h-32 w-full">
-              <Image
-                  src={story.imageUrl || "https://placehold.co/600x400.png"}
-                  alt={story.title}
-                  fill
-                  className="object-cover rounded-lg"
-                  data-ai-hint={story.theme.toLowerCase()}
-              />
-          </div>
+           <CardTitle className="font-semibold text-lg truncate">{story.title}</CardTitle>
         </CardHeader>
-        <CardContent className="p-0 flex-grow space-y-1.5">
-          <CardTitle className="font-semibold text-lg truncate">{story.title}</CardTitle>
-          <div className="text-sm text-muted-foreground space-y-1">
-            <p className="truncate">by {story.author}</p>
-            {story.school && (
-                <p className="flex items-center gap-1.5 truncate">
-                    <School className="h-4 w-4 flex-shrink-0"/> {story.school}
-                </p>
-            )}
-          </div>
+        <CardContent className="p-0 flex-grow space-y-2">
+            <div className="text-sm text-muted-foreground space-y-1">
+                <p className="truncate">by {story.author}</p>
+                 {story.school && (
+                    <p className="flex items-center gap-1.5 truncate">
+                        <School className="h-4 w-4 flex-shrink-0"/> {story.school}
+                    </p>
+                )}
+            </div>
+          <p className="text-sm text-foreground/80 line-clamp-3">{story.excerpt}</p>
           <div className="flex flex-wrap gap-1.5 pt-1">
               <Badge variant="outline" className="text-xs">{story.age} yrs</Badge>
               <Badge variant="outline" className="text-xs">{story.grade}</Badge>
           </div>
         </CardContent>
       </Link>
-      <CardFooter className="p-3 pt-1 flex justify-between items-center">
+      <CardFooter className="p-4 pt-2 flex justify-between items-center">
         <Button
           variant="ghost"
           size="sm"

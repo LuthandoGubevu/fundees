@@ -1,6 +1,5 @@
 import { getStoryById } from '@/lib/firestore';
 import { notFound } from 'next/navigation';
-import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
@@ -31,28 +30,17 @@ export default async function StoryPage({ params }: { params: { id: string } }) 
       </div>
 
       <Card className="overflow-hidden shadow-2xl rounded-2xl bg-card/90">
-        <CardHeader className="p-0">
-          <div className="relative h-64 md:h-96 w-full">
-            <Image
-              src={story.imageUrl || 'https://placehold.co/800x400.png'}
-              alt={story.title}
-              fill
-              className="object-cover"
-              data-ai-hint={story.theme.toLowerCase()}
-            />
+        <CardHeader className="p-6">
+          <CardTitle className="text-4xl md:text-5xl font-bold font-headline mb-4">{story.title}</CardTitle>
+          <div className="flex flex-wrap gap-2 text-sm text-muted-foreground mb-4">
+            <span>by {story.author}</span>
+            <span>&middot;</span>
+            <span>{formattedDate}</span>
           </div>
-          <div className="p-6">
-            <CardTitle className="text-4xl md:text-5xl font-bold font-headline mb-4">{story.title}</CardTitle>
-            <div className="flex flex-wrap gap-2 text-sm text-muted-foreground mb-4">
-              <span>by {story.author}</span>
-              <span>&middot;</span>
-              <span>{formattedDate}</span>
-            </div>
-             <div className="flex flex-wrap gap-2 mb-2">
-                <Badge variant="outline" className="border-orange-400 text-orange-600">{story.age} yrs</Badge>
-                <Badge variant="outline" className="border-blue-400 text-blue-600">{story.grade}</Badge>
-                <Badge variant="secondary">{story.theme}</Badge>
-            </div>
+           <div className="flex flex-wrap gap-2 mb-2">
+              <Badge variant="outline" className="border-orange-400 text-orange-600">{story.age} yrs</Badge>
+              <Badge variant="outline" className="border-blue-400 text-blue-600">{story.grade}</Badge>
+              <Badge variant="secondary">{story.theme}</Badge>
           </div>
         </CardHeader>
         <CardContent className="p-6">

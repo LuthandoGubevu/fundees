@@ -118,23 +118,22 @@ export default function DashboardPage() {
                 <section className="bg-blue-50 rounded-xl p-4 shadow-md">
                     <h2 className="text-xl font-bold mb-4 text-gray-800">Recent Stories</h2>
                     {isStoriesLoading ? (
-                        <div className="flex overflow-x-auto space-x-4 pb-2 -mx-4 px-4">
-                            <Skeleton className="w-40 h-48 rounded-lg" />
-                            <Skeleton className="w-40 h-48 rounded-lg" />
-                            <Skeleton className="w-40 h-48 rounded-lg" />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <Skeleton className="w-full h-24 rounded-lg" />
+                            <Skeleton className="w-full h-24 rounded-lg" />
                         </div>
                     ) : indexLink ? (
                         <MissingIndexCard link={indexLink} />
                     ) : storiesError ? (
                          <div className="text-center py-4 px-2 text-destructive bg-destructive/10 rounded-lg">{storiesError}</div>
                     ) : myStories.length > 0 ? (
-                        <div className="flex overflow-x-auto space-x-4 pb-2 -mx-4 px-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {myStories.map(story => (
-                            <Link href={`/story/${story.id}`} key={story.id} className="block flex-shrink-0">
-                                <Card className="bg-white rounded-lg p-2 w-[160px] text-center shadow hover:shadow-xl transition-shadow">
-                                    <Image src={story.imageUrl || 'https://placehold.co/400x300.png'} alt={story.title} width={400} height={300} className="w-full h-24 object-cover rounded-md mb-2" data-ai-hint={story.theme.toLowerCase()} />
-                                    <h3 className="text-sm font-medium truncate">{story.title}</h3>
-                                    <span className="text-xs bg-yellow-100 text-yellow-800 rounded-full px-2 py-0.5 mt-1 inline-block">Published</span>
+                            <Link href={`/story/${story.id}`} key={story.id} className="block">
+                                <Card className="bg-white rounded-lg p-4 h-full shadow hover:shadow-xl transition-shadow">
+                                    <h3 className="font-bold text-lg text-foreground truncate">{story.title}</h3>
+                                    <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{story.excerpt}</p>
+                                    <span className="text-xs bg-yellow-100 text-yellow-800 rounded-full px-2 py-0.5 mt-2 inline-block">Published</span>
                                 </Card>
                             </Link>
                         ))}
