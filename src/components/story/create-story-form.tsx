@@ -1,7 +1,7 @@
 'use client';
 
 import { useActionState, useEffect, useState, useTransition } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { getStoryStructure, saveStoryAction } from '@/lib/actions';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -24,8 +24,11 @@ const storyThemes = [
   "A folktale about Anansi the Spider",
 ];
 
-export function CreateStoryForm({ initialTheme }: { initialTheme?: string }) {
-  const [theme, setTheme] = useState(initialTheme || '');
+export function CreateStoryForm() {
+  const searchParams = useSearchParams();
+  const initialTheme = searchParams.get('theme') || '';
+
+  const [theme, setTheme] = useState(initialTheme);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [structure, setStructure] = useState<SuggestStoryStructureOutput | null>(null);

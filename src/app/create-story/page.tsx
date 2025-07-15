@@ -2,13 +2,7 @@
 import { CreateStoryForm } from '@/components/story/create-story-form';
 import { PencilRuler } from 'lucide-react';
 
-export default function CreateStoryPage({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined };
-}) {
-  const initialTheme = typeof searchParams.theme === 'string' ? searchParams.theme : undefined;
-
+export default function CreateStoryPage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <div className="text-center mb-12">
@@ -18,7 +12,7 @@ export default function CreateStoryPage({
           Pick a theme, get some ideas from our AI helper, and write your masterpiece!
         </p>
       </div>
-      <CreateStoryForm initialTheme={initialTheme} />
+      <CreateStoryForm />
     </div>
   );
 }
