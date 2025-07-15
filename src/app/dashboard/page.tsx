@@ -98,7 +98,7 @@ export default function DashboardPage() {
       <div className="min-h-screen w-full bg-background/60 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-8 max-w-5xl">
           <div className="flex flex-col space-y-8">
-            <div className="bg-sky-100/60 rounded-2xl p-4 md:p-6 shadow-lg flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6">
+            <div className="bg-sky-blue/60 rounded-2xl p-4 md:p-6 shadow-lg flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6">
                 <div className="flex-1">
                     <h1 className="text-3xl font-bold text-gray-800">Hi, {user.firstName}!</h1>
                     <p className="text-sm text-gray-700 mt-1">Ready for a new adventure today?</p>
@@ -111,7 +111,7 @@ export default function DashboardPage() {
 
             <div className="grid lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-2 space-y-8">
-                    <section className="bg-sky-100/60 rounded-xl p-4 shadow-md">
+                    <section className="bg-sky-blue/60 rounded-xl p-4 shadow-md">
                         <h2 className="text-xl font-bold mb-4 text-gray-800">Recent Stories</h2>
                         {isStoriesLoading ? (
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -126,7 +126,7 @@ export default function DashboardPage() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {myStories.map(story => (
                                 <Link href={`/story/${story.id}`} key={story.id} className="block">
-                                    <Card className="bg-sky-100/60 rounded-lg p-4 h-full shadow hover:shadow-xl transition-shadow">
+                                    <Card className="bg-sky-blue/60 rounded-lg p-4 h-full shadow hover:shadow-xl transition-shadow">
                                         <h3 className="font-bold text-lg text-foreground truncate">{story.title}</h3>
                                         <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{story.excerpt}</p>
                                         <span className="text-xs bg-yellow-100 text-yellow-800 rounded-full px-2 py-0.5 mt-2 inline-block">Published</span>
@@ -145,18 +145,18 @@ export default function DashboardPage() {
                     </section>
                 </div>
                 <div className="space-y-8">
-                    <section className="bg-sky-100/60 rounded-xl p-4 shadow-md">
-                        <h2 className="text-lg font-bold text-yellow-800 mb-2">Spark Your Imagination</h2>
-                        <p className="italic text-sm text-yellow-700">"What if animals could talk? What would they say?"</p>
-                        <Button size="sm" className="bg-orange-400 hover:bg-orange-500 text-white rounded-lg mt-3" asChild>
+                    <section className="bg-pink/60 rounded-xl p-4 shadow-md">
+                        <h2 className="text-lg font-bold text-gray-800 mb-2">Spark Your Imagination</h2>
+                        <p className="italic text-sm text-gray-700">"What if animals could talk? What would they say?"</p>
+                        <Button size="sm" className="bg-peach-orange/80 hover:bg-peach-orange text-white rounded-lg mt-3" asChild>
                            <Link href="/create-story?theme=What%20if%20animals%20could%20talk?">Use this prompt</Link>
                         </Button>
                     </section>
 
-                    <section className="bg-sky-100/60 rounded-xl p-4 shadow-md">
+                    <section className="bg-sky-blue/60 rounded-xl p-4 shadow-md">
                         <div className="flex justify-between items-center">
-                            <h2 className="text-lg font-bold text-purple-800">Your Awards</h2>
-                            <span className="font-bold text-yellow-600">150 Coins</span>
+                            <h2 className="text-lg font-bold text-gray-800">Your Awards</h2>
+                            <span className="font-bold text-gray-700">150 Coins</span>
                         </div>
                         <div className="grid grid-cols-3 gap-2 mt-4 text-center">
                             <AwardBadge icon={<Star />} label="First Story" />
@@ -175,11 +175,11 @@ export default function DashboardPage() {
 
 function AwardBadge({ icon, label, locked=false }: { icon: React.ReactNode, label: string, locked?: boolean}) {
     return (
-        <div className={`flex flex-col items-center space-y-1 p-2 rounded-lg ${locked ? 'bg-gray-200/70' : 'bg-purple-200/70'}`}>
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${locked ? 'bg-gray-400 text-white/50' : 'bg-purple-400 text-white'}`}>
+        <div className={`flex flex-col items-center space-y-1 p-2 rounded-lg ${locked ? 'bg-gray-200/70' : 'bg-pale-yellow/80'}`}>
+            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${locked ? 'bg-gray-400 text-white/50' : 'bg-mint-green'}`}>
                 {icon}
             </div>
-            <span className={`text-xs font-medium ${locked ? 'text-gray-500' : 'text-purple-800'}`}>{label}</span>
+            <span className={`text-xs font-medium ${locked ? 'text-gray-500' : 'text-gray-800'}`}>{label}</span>
         </div>
     )
 }

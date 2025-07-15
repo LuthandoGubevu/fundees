@@ -24,6 +24,14 @@ export default {
       colors: {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
+        border: 'hsl(var(--border))',
+        input: 'hsl(var(--input))',
+        ring: 'hsl(var(--ring))',
+        pink: 'hsl(var(--pink))',
+        'peach-orange': 'hsl(var(--peach-orange))',
+        'pale-yellow': 'hsl(var(--pale-yellow))',
+        'mint-green': 'hsl(var(--mint-green))',
+        'sky-blue': 'hsl(var(--sky-blue))',
         card: {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
@@ -52,9 +60,6 @@ export default {
           DEFAULT: 'hsl(var(--destructive))',
           foreground: 'hsl(var(--destructive-foreground))',
         },
-        border: 'hsl(var(--border))',
-        input: 'hsl(var(--input))',
-        ring: 'hsl(var(--ring))',
         chart: {
           '1': 'hsl(var(--chart-1))',
           '2': 'hsl(var(--chart-2))',

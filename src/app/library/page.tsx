@@ -24,7 +24,7 @@ export default function LibraryPage() {
             </p>
           </div>
 
-          <div className="mb-8 p-4 bg-sky-100/60 rounded-xl shadow-md">
+          <div className="mb-8 p-4 bg-sky-blue/60 rounded-xl shadow-md">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
                 <div className="relative lg:col-span-2">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />

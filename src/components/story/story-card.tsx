@@ -73,7 +73,7 @@ export function StoryCard({ story }: { story: Story }) {
   };
 
   return (
-    <Card className="flex flex-col overflow-hidden rounded-xl shadow-md bg-sky-100/60 max-w-xs sm:max-w-sm w-full mx-auto transform hover:-translate-y-1 transition-transform duration-300">
+    <Card className="flex flex-col overflow-hidden rounded-xl shadow-md bg-sky-blue/60 max-w-xs sm:max-w-sm w-full mx-auto transform hover:-translate-y-1 transition-transform duration-300">
       <Link href={`/story/${story.id}`} className="flex flex-col flex-grow no-underline text-current p-4 space-y-2">
         <CardHeader className="p-0">
            <CardTitle className="font-semibold text-lg truncate">{story.title}</CardTitle>
