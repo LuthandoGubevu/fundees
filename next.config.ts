@@ -1,3 +1,4 @@
+
 import type {NextConfig} from 'next';
 require('dotenv').config();
 
@@ -24,12 +25,6 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
-  },
-   webpack: (config, { isServer }) => {
-    if (isServer) {
-      config.externals.push('pino-pretty', 'lokijs', 'encoding');
-    }
-    return config;
   },
 };
 

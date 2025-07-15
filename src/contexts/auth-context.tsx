@@ -19,7 +19,6 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 const protectedRoutes = ['/dashboard', '/create-story', '/ask-ai', '/library', '/story'];
-const publicRoutes = ['/', '/login', '/signup'];
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -30,16 +29,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
-        setIsLoading(true);
-        if (fbUser) {
-            setFirebaseUser(fbUser);
-            const userProfile = await getUserById(fbUser.uid);
-            setUser(userProfile);
-        } else {
-            setFirebaseUser(null);
-            setUser(null);
+      setIsLoading(true);
+      if (fbUser) {
+        setFirebaseUser(fbUser);
+        const token = await fbUser.getIdToken();
+        const userProfile = await getUserById(fbUser.uid);
+        setUser(userProfile);
+        
+        // Sync with server session
+        try {
+          await fetch('/api/auth/session-login', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+        } catch (error) {
+            console.error("Failed to sync server session:", error);
         }
-        setIsLoading(false);
+
+      } else {
+        setFirebaseUser(null);
+        setUser(null);
+        // Clean up server session
+        try {
+            await fetch('/api/auth/session-logout', { method: 'POST' });
+        } catch (error) {
+            console.error("Failed to clear server session:", error);
+        }
+      }
+      setIsLoading(false);
     });
     return () => unsubscribe();
   }, []);
@@ -59,6 +76,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = async () => {
     try {
       await signOut(auth);
+      // The onAuthStateChanged listener will handle clearing the server session
       router.push('/login');
     } catch (error) {
       console.error("Error signing out:", error);
