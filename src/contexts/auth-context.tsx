@@ -19,7 +19,6 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 const protectedRoutes = ['/dashboard', '/create-story', '/ask-ai', '/library', '/story'];
-const publicRoutes = ['/login', '/signup', '/'];
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -30,7 +29,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
-      setIsLoading(true);
       if (fbUser) {
         setFirebaseUser(fbUser);
         const userProfile = await getUserById(fbUser.uid);
@@ -47,19 +45,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (isLoading) return;
 
-    const isAuthPage = publicRoutes.includes(pathname);
     const isProtectedRoute = protectedRoutes.some(p => pathname.startsWith(p));
     
     // If we are on a protected route and there's no user, redirect to login.
     if (!user && isProtectedRoute) {
       router.push('/login');
     }
-    
-    // If we have a user and they are on a public-only page (like login/signup), redirect to dashboard.
-    if (user && isAuthPage) {
-        router.push('/dashboard');
-    }
-
   }, [isLoading, user, pathname, router]);
 
   const logout = async () => {
