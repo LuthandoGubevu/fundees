@@ -94,7 +94,7 @@ export default function SignUpPage() {
       style={{ backgroundImage: "url('/fundee-2.jpg')" }}
     >
       <div className="min-h-screen w-full bg-background/60 backdrop-blur-sm flex items-center justify-center py-8 px-4">
-        <Card className="w-full max-w-lg bg-sky-100/90 shadow-xl rounded-2xl">
+        <Card className="w-full max-w-lg bg-sky-100/60 shadow-xl rounded-2xl">
           <CardHeader className="text-center">
             <CardTitle className="text-3xl font-bold font-headline">Create an Account</CardTitle>
             <CardDescription>Join Fundees to start your creative journey.</CardDescription>

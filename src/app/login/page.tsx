@@ -61,7 +61,7 @@ export default function LoginPage() {
       style={{ backgroundImage: "url('/fundee-1.jpg')" }}
     >
       <div className="min-h-screen w-full bg-background/60 backdrop-blur-sm flex items-center justify-center py-8 px-4">
-        <Card className="w-full max-w-md bg-sky-100/90 shadow-xl rounded-2xl">
+        <Card className="w-full max-w-md bg-sky-100/60 shadow-xl rounded-2xl">
           <CardHeader className="text-center">
             <CardTitle className="text-3xl font-bold font-headline">Login</CardTitle>
             <CardDescription>Enter your credentials to access your account.</CardDescription>

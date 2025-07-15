@@ -66,13 +66,13 @@ export default function AskAiPage() {
           </form>
 
           {isLoading && (
-            <Card className="p-6 text-center animate-pulse bg-sky-100/90">
+            <Card className="p-6 text-center animate-pulse bg-sky-100/60">
                 <p className="text-muted-foreground">Our AI friend is thinking hard...</p>
             </Card>
           )}
 
           {response && (
-            <Card className="bg-sky-100/90 shadow-xl transition-all duration-500 animate-in fade-in-50">
+            <Card className="bg-sky-100/60 shadow-xl transition-all duration-500 animate-in fade-in-50">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Sparkles className="h-6 w-6 text-primary" />
@@ -81,6 +81,7 @@ export default function AskAiPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-lg text-foreground/90 leading-relaxed">{response}</p>
+
                 <Button onClick={useAsIdea} className="mt-6">
                   Use as a Story Idea
                 </Button>
