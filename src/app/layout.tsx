@@ -22,6 +22,10 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet" />
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="apple-touch-icon" href="/icons/192x192.png" />
+        <meta name="theme-color" content="#9226b3" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
       <body className={cn("font-body antialiased min-h-screen pb-20 md:pb-0")}>
         <AuthProvider>
