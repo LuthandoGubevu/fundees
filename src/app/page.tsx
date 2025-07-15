@@ -1,32 +1,29 @@
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookOpen, HelpCircle, Pencil, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import Link from "next/link";
 import { getAuthenticatedUser } from "@/lib/auth";
 
-const SunIcon = () => (
+const SunIcon = ({ className }: { className?: string }) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 100 100"
-      className="absolute top-8 right-8 w-24 h-24 text-yellow-400 drop-shadow-lg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
     >
-      <circle cx="50" cy="50" r="30" fill="currentColor" />
-      <g transform="translate(50,50)">
-        {[...Array(8)].map((_, i) => (
-          <line
-            key={i}
-            x1="35"
-            y1="0"
-            x2="45"
-            y2="0"
-            stroke="currentColor"
-            strokeWidth="5"
-            strokeLinecap="round"
-            transform={`rotate(${i * 45})`}
-          />
-        ))}
-      </g>
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2v2" />
+      <path d="M12 20v2" />
+      <path d="m4.93 4.93 1.41 1.41" />
+      <path d="m17.66 17.66 1.41 1.41" />
+      <path d="M2 12h2" />
+      <path d="M20 12h2" />
+      <path d="m6.34 17.66-1.41 1.41" />
+      <path d="m19.07 4.93-1.41 1.41" />
     </svg>
 );
 
@@ -36,31 +33,30 @@ export default async function Home() {
   const isAuthenticated = !!user;
 
   return (
-    <div className="flex h-screen items-center justify-center">
-      <div className="relative flex flex-1 flex-col items-center justify-center p-4 text-center">
-        <SunIcon />
-        <div className="max-w-3xl">
-          <Sparkles className="mx-auto h-16 w-16 text-primary animate-pulse" />
-          <h1 className="font-headline text-5xl md:text-7xl font-bold mt-4 text-foreground">
-            Welcome to Fundees!
-          </h1>
-          <p className="mt-6 text-lg md:text-xl text-foreground/80">
-            Your magical place to create amazing stories, get answers to your curious questions, and explore a library full of adventures written by friends like you!
-          </p>
+    <div className="h-screen flex items-center justify-center px-4">
+      <div className="max-w-md w-full text-center space-y-6">
+        
+        <div className="flex justify-center items-center space-x-4">
+            <Sparkles className="w-12 h-12 text-primary" />
+            <SunIcon className="w-12 h-12 text-yellow-500" />
         </div>
 
+        <h1 className="text-4xl md:text-5xl font-bold font-headline text-foreground">
+          Welcome to Fundees!
+        </h1>
+        
+        <p className="text-base md:text-lg text-foreground/80">
+          Your magical place to create amazing stories, get answers to your curious questions, and explore a library full of adventures written by friends like you!
+        </p>
+
         {isAuthenticated ? (
-          <div className="mt-8">
-              <Button asChild size="lg">
-                <Link href="/dashboard">Go to Dashboard</Link>
-              </Button>
-            </div>
+          <Button asChild size="lg" className="px-6 py-3">
+            <Link href="/dashboard">Go to Dashboard</Link>
+          </Button>
         ) : (
-          <div className="mt-8">
-            <Button asChild size="lg">
-              <Link href="/signup">Get Started For Free</Link>
-            </Button>
-          </div>
+          <Button asChild size="lg" className="px-6 py-3">
+            <Link href="/signup">Get Started For Free</Link>
+          </Button>
         )}
       </div>
     </div>
