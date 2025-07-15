@@ -9,7 +9,7 @@ export default async function Home() {
       className="h-screen w-full flex items-center justify-center bg-cover bg-center"
       style={{ backgroundImage: "url('/fundee-1.jpg')" }}
     >
-      <div className="h-screen w-full flex items-center justify-center bg-background/60 backdrop-blur-sm px-8">
+      <div className="h-screen w-full flex items-center justify-center bg-background/60 backdrop-blur-sm px-12">
         <div className="max-w-md w-full text-center space-y-6 flex flex-col items-center">
           <Image
             src="/Fundees-Logo.png"
