@@ -1,5 +1,6 @@
 
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 import Link from "next/link";
 
 export default async function Home() {
@@ -9,10 +10,14 @@ export default async function Home() {
       style={{ backgroundImage: "url('/fundee-1.jpg')" }}
     >
       <div className="h-screen w-full flex items-center justify-center bg-background/60 backdrop-blur-sm px-4">
-        <div className="max-w-md w-full text-center space-y-6">
-          <h1 className="text-4xl md:text-5xl font-bold font-headline text-foreground">
-            Welcome to Fundees!
-          </h1>
+        <div className="max-w-md w-full text-center space-y-6 flex flex-col items-center">
+          <Image
+            src="/Fundees-Logo.png"
+            alt="Fundees Logo"
+            width={300}
+            height={150}
+            priority
+          />
           
           <p className="text-base md:text-lg text-foreground/80">
             Your magical place to create amazing stories, get answers to your curious questions, and explore a library full of adventures written by friends like you!
