@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, BookHeart, Sparkles, UserCircle, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
@@ -95,6 +95,9 @@ export function SiteHeader() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="right">
+                <SheetHeader>
+                  <SheetTitle className="sr-only">Main Menu</SheetTitle>
+                </SheetHeader>
                 <div className="flex flex-col space-y-4 p-4">
                   <Link href="/" className="mr-6 flex items-center space-x-2 mb-4">
                      <BookHeart className="h-8 w-8 text-primary" />
