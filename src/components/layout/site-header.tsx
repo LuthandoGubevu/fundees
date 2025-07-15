@@ -2,27 +2,55 @@
 "use client";
 
 import { useAuth } from "@/contexts/auth-context";
-import { SidebarTrigger } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { BookHeart } from "lucide-react";
+import { usePathname } from 'next/navigation';
+import { BookHeart, Home, Pencil, Sparkles, Library, UserCircle } from 'lucide-react';
+import { cn } from "@/lib/utils";
+
+const navLinks = [
+  { href: '/dashboard', label: 'Dashboard', icon: Home },
+  { href: '/create-story', label: 'Create Story', icon: Pencil },
+  { href: '/ask-ai', label: 'Ask AI', icon: Sparkles },
+  { href: '/library', label: 'Library', icon: Library },
+];
 
 export function SiteHeader() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
+  const pathname = usePathname();
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur-md">
       <div className="container flex h-16 items-center">
         <div className="flex items-center space-x-4">
-          {isAuthenticated && (
-            <div className="md:hidden">
-              <SidebarTrigger />
-            </div>
-          )}
           <Link href="/" className="flex items-center space-x-2">
             <BookHeart className="h-6 w-6 text-primary" />
             <span className="font-bold inline-block">Fundees</span>
           </Link>
         </div>
+
+        {isAuthenticated && (
+          <>
+            <nav className="hidden md:flex flex-1 items-center justify-center space-x-6">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={cn(
+                    "flex items-center text-sm font-medium transition-colors hover:text-primary",
+                    pathname === link.href ? "text-primary" : "text-muted-foreground"
+                  )}
+                >
+                  <link.icon className="mr-2 h-4 w-4" />
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+            <div className="hidden md:flex items-center space-x-2">
+              <span className="text-sm font-medium text-foreground">{user?.firstName}</span>
+              <UserCircle className="h-6 w-6 text-muted-foreground" />
+            </div>
+          </>
+        )}
       </div>
     </header>
   );
