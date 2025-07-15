@@ -1,36 +1,24 @@
-
 rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // USERS
+    // Users can only be created by new users, and can only be read/updated by themselves.
     match /users/{userId} {
-      // Any logged-in user can read another user's public profile data.
-      allow read: if request.auth != null;
-      // A user can create their own profile document if their UID matches.
-      allow create: if request.auth != null && request.auth.uid == userId;
-      // A user can only update or delete their own profile.
-      allow update, delete: if request.auth != null && request.auth.uid == userId;
+      allow read, update: if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null;
     }
 
-    // STORIES
+    // Stories can be read by any authenticated user.
+    // Stories can only be created, updated, or deleted by their author.
     match /stories/{storyId} {
-      // Anyone can read a single story, and logged-in users can query the list.
-      allow get;
-      allow list: if request.auth != null;
+      allow read: if request.auth != null;
+      allow create, update, delete: if request.auth != null && request.auth.uid == resource.data.authorId;
 
-      // Logged-in users can create stories for themselves.
-      allow create: if request.auth != null && request.resource.data.authorId == request.auth.uid;
-
-      // Only the story author can update or delete their story.
-      allow update, delete: if request.auth != null && resource.data.authorId == request.auth.uid;
-    }
-    
-    // LIKES SUBCOLLECTION
-    match /stories/{storyId}/likes/{likerId} {
-        // A logged-in user can create or delete their own like document.
-        allow read, write: if request.auth != null && request.auth.uid == likerId;
+      // Likes can be created or deleted by any authenticated user.
+      match /likes/{userId} {
+        allow create, delete: if request.auth != null && request.auth.uid == userId;
+      }
     }
   }
 }
