@@ -19,6 +19,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 const protectedRoutes = ['/dashboard', '/create-story', '/ask-ai', '/library', '/story'];
+const publicRoutes = ['/', '/login', '/signup'];
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -28,7 +29,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
   useEffect(() => {
-    const handleAuthStateChanged = async (fbUser: FirebaseUser | null) => {
+    const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
+        setIsLoading(true);
         if (fbUser) {
             setFirebaseUser(fbUser);
             const userProfile = await getUserById(fbUser.uid);
@@ -38,9 +40,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setUser(null);
         }
         setIsLoading(false);
-    };
-
-    const unsubscribe = onAuthStateChanged(auth, handleAuthStateChanged);
+    });
     return () => unsubscribe();
   }, []);
 

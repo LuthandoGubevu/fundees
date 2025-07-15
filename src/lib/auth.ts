@@ -5,7 +5,7 @@ import type { User } from './types';
 
 export async function getAuthenticatedUser(): Promise<User | null> {
   try {
-    const sessionCookie = cookies().get('session')?.value;
+    const sessionCookie = await cookies().get('session')?.value;
     if (!sessionCookie) return null;
 
     const decodedToken = await auth.verifySessionCookie(sessionCookie, true);
