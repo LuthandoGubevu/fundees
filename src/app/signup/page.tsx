@@ -13,11 +13,9 @@ import { useAuth } from '@/contexts/auth-context';
 import { addUser } from '@/lib/firestore';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import Image from 'next/image';
 
 const formSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
@@ -43,7 +41,6 @@ function FullPageLoader() {
 export default function SignUpPage() {
   const { isAuthenticated, isLoading } = useAuth();
   const { toast } = useToast();
-  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -70,7 +67,6 @@ export default function SignUpPage() {
       });
 
       toast({ title: 'Account Created!', description: 'Welcome to Fundees!' });
-      // The AuthProvider will handle the redirect to the dashboard
     } catch (error: any) {
       console.error("Sign up error:", error);
       if (error.code === 'auth/email-already-in-use') {
@@ -93,109 +89,111 @@ export default function SignUpPage() {
   }
 
   return (
-     <div className="flex flex-1 items-center justify-center py-8 px-4">
-      <Card className="w-full max-w-lg bg-card/90 shadow-xl rounded-2xl">
-        <CardHeader className="text-center">
-          <div className="flex justify-center mb-4">
-              <Image src="/fundee-2.jpg" alt="Character waving hello" width={100} height={100} className="rounded-full" />
-          </div>
-          <CardTitle className="text-3xl font-bold font-headline">Create an Account</CardTitle>
-          <CardDescription>Join Fundees to start your creative journey.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <FormField control={form.control} name="firstName" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>First Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Ada" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )} />
-                <FormField control={form.control} name="lastName" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Last Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Lovelace" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )} />
-              </div>
-
-              <FormField control={form.control} name="email" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input placeholder="ada@school.com" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <FormField control={form.control} name="school" render={({ field }) => (
+    <div
+      className="min-h-screen w-full bg-cover bg-center flex items-center justify-center"
+      style={{ backgroundImage: "url('/fundee-2.jpg')" }}
+    >
+      <div className="min-h-screen w-full bg-background/60 backdrop-blur-sm flex items-center justify-center py-8 px-4">
+        <Card className="w-full max-w-lg bg-card/90 shadow-xl rounded-2xl">
+          <CardHeader className="text-center">
+            <CardTitle className="text-3xl font-bold font-headline">Create an Account</CardTitle>
+            <CardDescription>Join Fundees to start your creative journey.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <FormField control={form.control} name="firstName" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>School</FormLabel>
+                      <FormLabel>First Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Innovation Academy" {...field} />
+                        <Input placeholder="Ada" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
-                  <FormField control={form.control} name="grade" render={({ field }) => (
+                  <FormField control={form.control} name="lastName" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Grade</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {Array.from({ length: 9 }, (_, i) => i + 1).map(g => (
-                            <SelectItem key={g} value={`Grade ${g}`}>{`Grade ${g}`}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <FormLabel>Last Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Lovelace" {...field} />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
-              </div>
+                </div>
 
-              <FormField control={form.control} name="password" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input type="password" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
-              <FormField control={form.control} name="confirmPassword" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Confirm Password</FormLabel>
-                  <FormControl>
-                    <Input type="password" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
+                <FormField control={form.control} name="email" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input placeholder="ada@school.com" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <FormField control={form.control} name="school" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>School</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Innovation Academy" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                    <FormField control={form.control} name="grade" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Grade</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {Array.from({ length: 9 }, (_, i) => i + 1).map(g => (
+                              <SelectItem key={g} value={`Grade ${g}`}>{`Grade ${g}`}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                </div>
 
-              <Button type="submit" className="w-full h-12 text-lg" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? <Loader2 className="animate-spin" /> : 'Sign Up'}
-              </Button>
-            </form>
-          </Form>
-          <p className="mt-4 text-center text-sm">
-            Already have an account?{' '}
-            <Link href="/login" className="font-bold text-primary hover:underline">
-              Login
-            </Link>
-          </p>
-        </CardContent>
-      </Card>
+                <FormField control={form.control} name="password" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input type="password" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+                <FormField control={form.control} name="confirmPassword" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Confirm Password</FormLabel>
+                    <FormControl>
+                      <Input type="password" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+
+                <Button type="submit" className="w-full h-12 text-lg" disabled={form.formState.isSubmitting}>
+                  {form.formState.isSubmitting ? <Loader2 className="animate-spin" /> : 'Sign Up'}
+                </Button>
+              </form>
+            </Form>
+            <p className="mt-4 text-center text-sm">
+              Already have an account?{' '}
+              <Link href="/login" className="font-bold text-primary hover:underline">
+                Login
+              </Link>
+            </p>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

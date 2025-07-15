@@ -12,7 +12,6 @@ import Link from 'next/link';
 import { Loader2 } from 'lucide-react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import Image from 'next/image';
 
 function FullPageLoader() {
     return (
@@ -37,7 +36,6 @@ export default function LoginPage() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       toast({ title: 'Success!', description: `Welcome back!` });
-      // The AuthProvider will now handle the redirect automatically.
     } catch (error: any) {
       let description = 'An unknown error occurred.';
       if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
@@ -49,7 +47,7 @@ export default function LoginPage() {
         description,
       });
     } finally {
-        setIsSubmitting(false); // Ensure button is re-enabled on error or success
+        setIsSubmitting(false);
     }
   };
 
@@ -58,37 +56,39 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex flex-1 items-center justify-center py-8 px-4">
-      <Card className="w-full max-w-md bg-card/90 shadow-xl rounded-2xl">
-        <CardHeader className="text-center">
-            <div className="flex justify-center mb-4">
-                <Image src="/fundee-1.jpg" alt="Welcoming character" width={100} height={100} className="rounded-full" />
-            </div>
-          <CardTitle className="text-3xl font-bold font-headline">Login</CardTitle>
-          <CardDescription>Enter your credentials to access your account.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="you@school.com" value={email} onChange={(e) => setEmail(e.target.value)} required className="h-12"/>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required className="h-12"/>
-            </div>
-            <Button type="submit" className="w-full h-12 text-lg" disabled={isSubmitting}>
-              {isSubmitting ? <Loader2 className="animate-spin" /> : 'Login'}
-            </Button>
-          </form>
-          <p className="mt-4 text-center text-sm">
-            Don't have an account?{' '}
-            <Link href="/signup" className="font-bold text-primary hover:underline">
-              Sign up
-            </Link>
-          </p>
-        </CardContent>
-      </Card>
+    <div
+      className="min-h-screen w-full bg-cover bg-center flex items-center justify-center"
+      style={{ backgroundImage: "url('/fundee-1.jpg')" }}
+    >
+      <div className="min-h-screen w-full bg-background/60 backdrop-blur-sm flex items-center justify-center py-8 px-4">
+        <Card className="w-full max-w-md bg-card/90 shadow-xl rounded-2xl">
+          <CardHeader className="text-center">
+            <CardTitle className="text-3xl font-bold font-headline">Login</CardTitle>
+            <CardDescription>Enter your credentials to access your account.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input id="email" type="email" placeholder="you@school.com" value={email} onChange={(e) => setEmail(e.target.value)} required className="h-12"/>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input id="password" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required className="h-12"/>
+              </div>
+              <Button type="submit" className="w-full h-12 text-lg" disabled={isSubmitting}>
+                {isSubmitting ? <Loader2 className="animate-spin" /> : 'Login'}
+              </Button>
+            </form>
+            <p className="mt-4 text-center text-sm">
+              Don't have an account?{' '}
+              <Link href="/signup" className="font-bold text-primary hover:underline">
+                Sign up
+              </Link>
+            </p>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
