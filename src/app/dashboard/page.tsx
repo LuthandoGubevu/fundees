@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
-import { AlertTriangle, Award, BookOpen, Heart, Pencil, Sparkles, Star, Users } from 'lucide-react';
+import { AlertTriangle, Award, BookOpen, Heart, Users } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import type { Story } from '@/lib/types';
@@ -101,7 +101,7 @@ export default function DashboardPage() {
       <div className="flex flex-col space-y-8">
         {/* Top Banner */}
         <div className="bg-gradient-to-r from-blue-300 to-cyan-400 rounded-2xl p-4 md:p-6 shadow-lg flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6">
-            <Image src="https://placehold.co/100x100.png" alt="User Avatar" width={64} height={64} className="w-16 h-16 rounded-full border-2 border-white flex-shrink-0" data-ai-hint="avatar profile" />
+            <Image src="/fundee-2.jpg" alt="User Avatar" width={64} height={64} className="w-16 h-16 rounded-full border-2 border-white flex-shrink-0" />
             <div className="flex-1">
                 <h1 className="text-3xl font-bold text-gray-800">Hi, {user.firstName}!</h1>
                 <p className="text-sm text-gray-700 mt-1">Ready for a new adventure today?</p>

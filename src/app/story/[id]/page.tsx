@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
+import Image from 'next/image';
 
 export default async function StoryPage({ params }: { params: { id: string } }) {
   const story = await getStoryById(params.id);
@@ -30,6 +31,7 @@ export default async function StoryPage({ params }: { params: { id: string } }) 
       </div>
 
       <Card className="overflow-hidden shadow-2xl rounded-2xl bg-card/90">
+         <Image src="/fundee-6.jpg" alt="Story banner" width={800} height={400} className="w-full h-48 object-cover" />
         <CardHeader className="p-6">
           <CardTitle className="text-4xl md:text-5xl font-bold font-headline mb-4">{story.title}</CardTitle>
           <div className="flex flex-wrap gap-2 text-sm text-muted-foreground mb-4">

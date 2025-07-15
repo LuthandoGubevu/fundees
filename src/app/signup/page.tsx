@@ -17,6 +17,7 @@ import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
+import Image from 'next/image';
 
 const formSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
@@ -95,6 +96,9 @@ export default function SignUpPage() {
      <div className="flex flex-1 items-center justify-center py-8 px-4">
       <Card className="w-full max-w-lg bg-card/90 shadow-xl rounded-2xl">
         <CardHeader className="text-center">
+          <div className="flex justify-center mb-4">
+              <Image src="/fundee-2.jpg" alt="Character waving hello" width={100} height={100} className="rounded-full" />
+          </div>
           <CardTitle className="text-3xl font-bold font-headline">Create an Account</CardTitle>
           <CardDescription>Join Fundees to start your creative journey.</CardDescription>
         </CardHeader>

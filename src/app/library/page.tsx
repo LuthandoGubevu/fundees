@@ -7,11 +7,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import type { Story } from "@/lib/types";
+import Image from "next/image";
 
 export default function LibraryPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="text-center mb-12">
+        <div className="flex justify-center mb-4">
+            <Image src="/fundee-5.jpg" alt="A friendly character reading a book" width={150} height={150} className="rounded-full" />
+        </div>
         <h1 className="font-headline text-5xl md:text-6xl font-bold text-foreground">Story Library</h1>
         <p className="mt-4 text-lg text-foreground/80 max-w-2xl mx-auto">
           Explore a universe of wonderful stories created by young authors just like you!

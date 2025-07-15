@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Lightbulb, Send, Sparkles } from 'lucide-react';
+import { Send, Sparkles } from 'lucide-react';
+import Image from 'next/image';
 
 const mockResponses: Record<string, string> = {
   'why is the sky blue?': "That's a fantastic question! The sky looks blue because of how the sun's light spreads out. Sunlight is made of all the colors of the rainbow, but the blue light gets scattered more than other colors by the tiny little molecules in the air. So, when we look up, we see a beautiful blue sky!",
@@ -39,7 +40,9 @@ export default function AskAiPage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-3xl">
       <div className="text-center mb-12">
-        <Lightbulb className="mx-auto h-16 w-16 text-yellow-400 drop-shadow-lg" />
+        <div className="flex justify-center mb-4">
+            <Image src="/fundee-4.jpg" alt="Friendly character with a lightbulb" width={150} height={150} className="rounded-full" />
+        </div>
         <h1 className="font-headline text-5xl md:text-6xl font-bold text-foreground mt-4">Ask a Question</h1>
         <p className="mt-4 text-lg text-foreground/80">
           Got a tricky question? Our wise AI friend is here to help you find the answer!

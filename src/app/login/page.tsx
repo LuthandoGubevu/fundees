@@ -12,6 +12,7 @@ import Link from 'next/link';
 import { Loader2 } from 'lucide-react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
+import Image from 'next/image';
 
 function FullPageLoader() {
     return (
@@ -60,6 +61,9 @@ export default function LoginPage() {
     <div className="flex flex-1 items-center justify-center py-8 px-4">
       <Card className="w-full max-w-md bg-card/90 shadow-xl rounded-2xl">
         <CardHeader className="text-center">
+            <div className="flex justify-center mb-4">
+                <Image src="/fundee-1.jpg" alt="Welcoming character" width={100} height={100} className="rounded-full" />
+            </div>
           <CardTitle className="text-3xl font-bold font-headline">Login</CardTitle>
           <CardDescription>Enter your credentials to access your account.</CardDescription>
         </CardHeader>
