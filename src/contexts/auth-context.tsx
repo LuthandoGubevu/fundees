@@ -49,6 +49,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const isAuthenticated = !!user;
 
   useEffect(() => {
+    // Wait until the initial loading is complete before enforcing routes.
     if (isLoading) {
       return;
     }
@@ -56,10 +57,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
     const isAuthRoute = authRoutes.includes(pathname);
 
+    // If not authenticated and on a protected route, redirect to login.
     if (!isAuthenticated && isProtectedRoute) {
       router.push('/login');
     }
 
+    // If authenticated and on an auth route (login/signup), redirect to dashboard.
     if (isAuthenticated && isAuthRoute) {
       router.push('/dashboard');
     }
