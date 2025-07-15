@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BookOpen, HelpCircle, Pencil, Sparkles } from "lucide-react";
 import Link from "next/link";
+import { getAuthenticatedUser } from "@/lib/auth";
 
 const SunIcon = () => (
     <svg
@@ -29,7 +30,10 @@ const SunIcon = () => (
 );
 
 
-export default function Home() {
+export default async function Home() {
+  const user = await getAuthenticatedUser();
+  const isAuthenticated = !!user;
+
   return (
     <div className="relative container mx-auto px-4 py-16 text-center">
       <SunIcon />
@@ -43,32 +47,40 @@ export default function Home() {
         </p>
       </div>
 
-      <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-        <FeatureCard
-          icon={<Pencil className="h-10 w-10" />}
-          title="Create a Story"
-          description="Let your imagination run wild! Write your own story with a little help from our AI friend."
-          href="/create-story"
-          buttonText="Start Writing"
-          className="card-gradient text-white"
-        />
-        <FeatureCard
-          icon={<HelpCircle className="h-10 w-10" />}
-          title="Ask a Question"
-          description="Curious about something? Ask our wise AI owl and get fun, kid-friendly answers."
-          href="/ask-ai"
-          buttonText="Ask Away"
-          className="card-gradient-green text-white"
-        />
-        <FeatureCard
-          icon={<BookOpen className="h-10 w-10" />}
-          title="Explore Library"
-          description="Dive into a world of stories! Read amazing tales created by other young authors."
-          href="/library"
-          buttonText="Open Library"
-          className="card-gradient text-white"
-        />
-      </div>
+      {isAuthenticated ? (
+        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <FeatureCard
+            icon={<Pencil className="h-10 w-10" />}
+            title="Create a Story"
+            description="Let your imagination run wild! Write your own story with a little help from our AI friend."
+            href="/create-story"
+            buttonText="Start Writing"
+            className="card-gradient text-white"
+          />
+          <FeatureCard
+            icon={<HelpCircle className="h-10 w-10" />}
+            title="Ask a Question"
+            description="Curious about something? Ask our wise AI owl and get fun, kid-friendly answers."
+            href="/ask-ai"
+            buttonText="Ask Away"
+            className="card-gradient-green text-white"
+          />
+          <FeatureCard
+            icon={<BookOpen className="h-10 w-10" />}
+            title="Explore Library"
+            description="Dive into a world of stories! Read amazing tales created by other young authors."
+            href="/library"
+            buttonText="Open Library"
+            className="card-gradient text-white"
+          />
+        </div>
+      ) : (
+        <div className="mt-16">
+          <Button asChild size="lg">
+            <Link href="/login">Login to Get Started</Link>
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

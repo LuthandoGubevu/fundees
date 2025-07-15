@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --background: 202 85% 84%; /* light blue #B2E4F9 */
+    --background: 202 85% 95%; /* lighter blue #E6F6FE */
     --foreground: 0 0% 26%; /* dark gray #424242 */
     --card: 0 0% 100%;
     --card-foreground: 0 0% 26%;
@@ -29,6 +29,13 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+
+    --sidebar-background: 202 85% 84%; /* light blue #B2E4F9 */
+    --sidebar-foreground: 0 0% 20%;
+    --sidebar-border: 202 70% 75%;
+    --sidebar-accent: 202 90% 90%;
+    --sidebar-accent-foreground: 0 0% 15%;
+    --sidebar-ring: 36 100% 59%;
   }
 
   .dark {
@@ -51,6 +58,13 @@
     --border: 217 33% 17%;
     --input: 217 33% 17%;
     --ring: 212 90% 61%;
+    
+    --sidebar-background: 222 47% 13%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-border: 217 33% 20%;
+    --sidebar-accent: 217 33% 23%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-ring: 212 90% 61%;
   }
 }
 
@@ -60,7 +74,6 @@
   }
   body {
     @apply bg-background text-foreground;
-    background-image: linear-gradient(to bottom, #B2E4F9, #85D1F5);
   }
 }
 
