@@ -2,65 +2,38 @@
 'use client';
 
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import Image from "next/image";
 
 export default function Home() {
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
-  const [showInstallPrompt, setShowInstallPrompt] = useState(false);
-
-  useEffect(() => {
-    const handler = (e: any) => {
-      e.preventDefault(); // Prevent automatic prompt
-      setDeferredPrompt(e); // Store the event
-      setShowInstallPrompt(true); // Show custom button
-    };
-
-    window.addEventListener("beforeinstallprompt", handler);
-
-    return () => window.removeEventListener("beforeinstallprompt", handler);
-  }, []);
-
-  const handleInstallClick = async () => {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      const result = await deferredPrompt.userChoice;
-      if (result.outcome === "accepted") {
-        console.log("User accepted the A2HS prompt");
-      } else {
-        console.log("User dismissed the A2HS prompt");
-      }
-      setDeferredPrompt(null);
-      setShowInstallPrompt(false);
-    }
-  };
-
-
   return (
     <div
-      className="h-screen w-full flex items-center justify-center bg-cover bg-center"
+      className="min-h-screen w-full bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: "url('/fundee-1.jpg')" }}
     >
-      <div className="h-screen w-full flex items-center justify-center bg-background/60 backdrop-blur-sm px-12">
-        <div className="max-w-md w-full text-center space-y-6 flex flex-col items-center">
-          <Image
-            src="/Fundees-Logo.png"
-            alt="Fundees Logo"
-            width={300}
-            height={150}
-            priority
-          />
-          
-          <Button asChild size="lg" className="px-6 py-3">
-            <Link href="/dashboard">Get Started For Free</Link>
-          </Button>
-
-          {showInstallPrompt && (
-            <button onClick={handleInstallClick} className="install-button">
-              Install Fundees App
-            </button>
-          )}
+      <div className="min-h-screen w-full bg-background/60 backdrop-blur-sm flex items-center justify-center">
+        <div className="container mx-auto flex flex-col items-center justify-center px-4 py-16 text-center">
+          <div className="max-w-3xl">
+            <Image
+              src="/Fundees-Logo.png"
+              alt="Fundees Logo"
+              width={300}
+              height={150}
+              className="mx-auto mb-6"
+              priority
+            />
+            <h1 className="text-4xl font-bold tracking-tight text-accent sm:text-5xl md:text-6xl font-headline">
+              Welcome to Fundees
+            </h1>
+            <p className="mt-6 text-lg leading-8 text-foreground/80 sm:text-xl">
+              A creative platform for young storytellers to spark their imagination.
+            </p>
+            <div className="mt-10 flex items-center justify-center gap-x-6">
+              <Button asChild size="lg">
+                <Link href="/signup">Get Started</Link>
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
