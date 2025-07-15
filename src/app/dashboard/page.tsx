@@ -15,7 +15,7 @@ import { extractIndexCreationLink, transformStoryDoc } from '@/lib/firestore-uti
 
 function MissingIndexCard({ link }: { link: string }) {
   return (
-    <Card className="bg-destructive/10 border-destructive text-destructive p-4">
+    <Card className="bg-destructive/10 border-destructive text-destructive">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-destructive">
           <AlertTriangle className="h-6 w-6" />
@@ -68,7 +68,7 @@ export default function DashboardPage() {
         (error: any) => {
           if (error.code === 'permission-denied') {
               setStoriesError("Permission Denied: Could not load your stories. Please check your Firestore security rules in the Firebase Console to ensure you have 'list' permissions on the 'stories' collection.");
-          } else if (error.message?.includes('requires an index')) {
+          } else if (error.code === 'failed-precondition' && error.message?.includes('requires an index')) {
               const link = extractIndexCreationLink(error.message);
               if (link) {
                   setIndexLink(link);
@@ -90,45 +90,8 @@ export default function DashboardPage() {
     }
   }, [user]);
 
-  if (isStoriesLoading && !myStories.length && !storiesError && !indexLink) {
-    return (
-      <div className="container mx-auto px-4 py-8 max-w-5xl space-y-8">
-        {/* Banner Skeleton */}
-        <div className="rounded-2xl p-6 shadow-lg flex items-center space-x-4 bg-gray-200 animate-pulse">
-          <Skeleton className="w-16 h-16 rounded-full" />
-          <div className="flex-1 space-y-2">
-            <Skeleton className="h-8 w-48" />
-            <Skeleton className="h-4 w-64" />
-            <div className="flex space-x-4 mt-2">
-              <Skeleton className="h-6 w-20" />
-              <Skeleton className="h-6 w-20" />
-            </div>
-          </div>
-        </div>
-        {/* Sections Skeleton */}
-        <div className="grid md:grid-cols-2 gap-8">
-            <div className="space-y-4">
-                <Skeleton className="h-8 w-1/3 mb-2" />
-                <div className="flex space-x-4">
-                    <Skeleton className="w-32 h-40 rounded-lg" />
-                    <Skeleton className="w-32 h-40 rounded-lg" />
-                    <Skeleton className="w-32 h-40 rounded-lg" />
-                </div>
-            </div>
-            <div className="space-y-4">
-                <Skeleton className="h-8 w-1/3 mb-2" />
-                <div className="grid grid-cols-2 gap-4">
-                    <Skeleton className="h-20 rounded-lg" />
-                    <Skeleton className="h-20 rounded-lg" />
-                </div>
-            </div>
-        </div>
-      </div>
-    );
-  }
-  
   if (!user) {
-      return null; // Or a more specific "not logged in" message. The AuthProvider should handle the redirect.
+      return null; // The AuthProvider handles redirects
   }
 
   return (
