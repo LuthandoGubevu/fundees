@@ -37,7 +37,7 @@ export default async function Home() {
   return (
     <div className="relative flex-1 flex flex-col items-center justify-center p-4 text-center">
       <SunIcon />
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-3xl">
         <Sparkles className="mx-auto h-16 w-16 text-primary animate-pulse" />
         <h1 className="font-headline text-5xl md:text-7xl font-bold mt-4 text-foreground">
           Welcome to Fundees!
@@ -48,7 +48,7 @@ export default async function Home() {
       </div>
 
       {isAuthenticated ? (
-        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl">
           <FeatureCard
             icon={<Pencil className="h-10 w-10" />}
             title="Create a Story"
