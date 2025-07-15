@@ -35,7 +35,7 @@ export function MobileNav() {
             href={link.href}
             className={cn(
               "flex flex-col items-center justify-center w-full h-full text-xs font-medium transition-colors",
-              pathname === link.href ? "text-primary" : "text-muted-foreground hover:text-primary"
+              pathname === link.href ? "text-accent" : "text-muted-foreground hover:text-accent"
             )}
           >
             <link.icon className="h-6 w-6 mb-1" />
@@ -46,7 +46,7 @@ export function MobileNav() {
         <Link
           href={createLink.href}
           className={cn(
-            "flex items-center justify-center h-16 w-16 rounded-full bg-primary text-white -mt-8 shadow-lg",
+            "flex items-center justify-center h-16 w-16 rounded-full bg-primary text-primary-foreground -mt-8 shadow-lg",
             pathname === createLink.href ? "ring-2 ring-white" : ""
           )}
         >
@@ -60,7 +60,7 @@ export function MobileNav() {
             href={link.href}
             className={cn(
               "flex flex-col items-center justify-center w-full h-full text-xs font-medium transition-colors",
-              pathname === link.href ? "text-primary" : "text-muted-foreground hover:text-primary"
+              pathname === link.href ? "text-accent" : "text-muted-foreground hover:text-accent"
             )}
           >
             <link.icon className="h-6 w-6 mb-1" />
@@ -70,7 +70,7 @@ export function MobileNav() {
          <button
             onClick={logout}
             className={cn(
-              "flex flex-col items-center justify-center w-full h-full text-xs font-medium transition-colors text-muted-foreground hover:text-primary"
+              "flex flex-col items-center justify-center w-full h-full text-xs font-medium transition-colors text-muted-foreground hover:text-accent"
             )}
           >
             <LogOut className="h-6 w-6 mb-1" />

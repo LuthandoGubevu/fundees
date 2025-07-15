@@ -18,7 +18,7 @@ export default function LibraryPage() {
       <div className="min-h-screen w-full bg-background/60 backdrop-blur-sm py-8">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h1 className="font-headline text-5xl md:text-6xl font-bold text-foreground">Story Library</h1>
+            <h1 className="font-headline text-5xl md:text-6xl font-bold text-accent">Story Library</h1>
             <p className="mt-4 text-lg text-foreground/80 max-w-2xl mx-auto">
               Explore a universe of wonderful stories created by young authors just like you!
             </p>
@@ -27,7 +27,7 @@ export default function LibraryPage() {
           <div className="mb-8 p-4 bg-sky-blue/60 rounded-xl shadow-md">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
                 <div className="relative lg:col-span-2">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-white/80" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <Input placeholder="Search for stories..." className="pl-10 bg-white/90" />
                 </div>
               <FilterSelect placeholder="Filter by Grade" options={["1st Grade", "2nd Grade", "3rd Grade"]} />

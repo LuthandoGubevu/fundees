@@ -13,7 +13,7 @@ export default function CreateStoryPage() {
         <div className="container mx-auto px-4 max-w-4xl">
           <Card className="text-center mb-12 bg-sky-blue/60 shadow-xl rounded-2xl border-none">
             <CardHeader>
-                <CardTitle className="font-headline text-5xl md:text-6xl font-bold text-white mt-4">Create Your Story</CardTitle>
+                <CardTitle className="font-headline text-5xl md:text-6xl font-bold text-accent mt-4">Create Your Story</CardTitle>
             </CardHeader>
             <CardContent>
                 <p className="mt-4 text-lg text-white/80">

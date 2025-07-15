@@ -45,7 +45,7 @@ export default function AskAiPage() {
       <div className="min-h-screen bg-background/60 backdrop-blur-sm flex flex-col items-center justify-center">
         <div className="container mx-auto px-4 py-8 max-w-3xl">
           <div className="text-center mb-12">
-            <h1 className="font-headline text-5xl md:text-6xl font-bold text-foreground mt-4">Ask a Question</h1>
+            <h1 className="font-headline text-5xl md:text-6xl font-bold text-accent mt-4">Ask a Question</h1>
             <p className="mt-4 text-lg text-foreground/80">
               Got a tricky question? Our wise AI friend is here to help you find the answer!
             </p>
@@ -74,7 +74,7 @@ export default function AskAiPage() {
           {response && (
             <Card className="bg-sky-blue/60 shadow-xl transition-all duration-500 animate-in fade-in-50">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-white">
                   <Sparkles className="h-6 w-6 text-primary" />
                   Here's a thought...
                 </CardTitle>

@@ -105,11 +105,11 @@ export function CreateStoryForm() {
         {/* Left side: Story Creation */}
         <div className="space-y-6">
           <div>
-            <Label htmlFor="title" className="text-lg font-semibold">Story Title</Label>
+            <Label htmlFor="title" className="text-lg font-semibold text-white">Story Title</Label>
             <Input id="title" placeholder="The Amazing Adventure of..." value={title} onChange={e => setTitle(e.target.value)} className="mt-2 text-base h-12 text-black" />
           </div>
           <div>
-            <Label htmlFor="content" className="text-lg font-semibold">Your Story</Label>
+            <Label htmlFor="content" className="text-lg font-semibold text-white">Your Story</Label>
             <Textarea
               id="content"
               placeholder="Once upon a time, in a land filled with sunshine..."
@@ -127,7 +127,7 @@ export function CreateStoryForm() {
         {/* Right side: AI Helper */}
         <div className="space-y-6">
           <form action={formAction} className="space-y-4 p-4 border rounded-lg bg-background/50">
-            <h3 className="text-lg font-semibold flex items-center gap-2 text-foreground"><Wand2 className="h-5 w-5 text-primary"/>AI Story Helper</h3>
+            <h3 className="text-lg font-semibold flex items-center gap-2 text-accent"><Wand2 className="h-5 w-5 text-accent"/>AI Story Helper</h3>
             <div>
               <Label htmlFor="theme" className="text-foreground">Choose a theme or type your own!</Label>
                 <Select onValueChange={setTheme} value={theme}>
@@ -150,7 +150,7 @@ export function CreateStoryForm() {
           {structure && (
             <Card className="animate-in fade-in-50 bg-sky-blue/60">
               <CardHeader>
-                <CardTitle>Story Structure Ideas</CardTitle>
+                <CardTitle className="text-white">Story Structure Ideas</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <StructureHint title="Beginning" hint={structure.beginning} onClick={() => useStructure('beginning')} />
@@ -170,7 +170,7 @@ function StructureHint({ title, hint, onClick }: { title: string, hint: string, 
         <div className="p-3 border rounded-md bg-background/50">
             <h4 className="font-semibold text-foreground">{title}</h4>
             <p className="text-sm text-muted-foreground my-1">{hint}</p>
-            <Button variant="link" size="sm" className="p-0 h-auto" onClick={onClick}>
+            <Button variant="link" size="sm" className="p-0 h-auto text-accent" onClick={onClick}>
                 <BookUp className="mr-2 h-4 w-4" />
                 Use this part
             </Button>

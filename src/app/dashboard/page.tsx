@@ -109,8 +109,8 @@ export default function DashboardPage() {
 
             <div className="grid lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-2 space-y-8">
-                    <section className="bg-sky-blue/60 rounded-xl p-4 shadow-md text-white">
-                        <h2 className="text-xl font-bold mb-4">Recent Stories</h2>
+                    <section className="bg-sky-blue/60 rounded-xl p-4 shadow-md">
+                        <h2 className="text-xl font-bold mb-4 text-white">Recent Stories</h2>
                         {isStoriesLoading ? (
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <Skeleton className="w-full h-24 rounded-lg" />
@@ -146,7 +146,7 @@ export default function DashboardPage() {
                     <section className="bg-pink/60 rounded-xl p-4 shadow-md text-white">
                         <h2 className="text-lg font-bold mb-2">Spark Your Imagination</h2>
                         <p className="italic text-sm text-white/80">"What if animals could talk? What would they say?"</p>
-                        <Button size="sm" className="bg-peach-orange/80 hover:bg-peach-orange text-white rounded-lg mt-3" asChild>
+                        <Button size="sm" className="bg-peach-orange/80 hover:bg-peach-orange rounded-lg mt-3" asChild>
                            <Link href="/create-story?theme=What%20if%20animals%20could%20talk?">Use this prompt</Link>
                         </Button>
                     </section>
@@ -154,10 +154,10 @@ export default function DashboardPage() {
                     <section className="bg-sky-blue/60 rounded-xl p-4 shadow-md text-white">
                         <div className="flex justify-between items-center">
                             <h2 className="text-lg font-bold">Your Awards</h2>
-                            <span className="font-bold">150 Coins</span>
+                            <span className="font-bold text-accent">150 Coins</span>
                         </div>
                         <div className="grid grid-cols-3 gap-2 mt-4 text-center">
-                            <AwardBadge icon={<Star className="text-gray-800" />} label="First Story" />
+                            <AwardBadge icon={<Star className="text-primary-foreground" />} label="First Story" />
                             <AwardBadge icon={<Heart />} label="10 Likes" locked />
                             <AwardBadge icon={<BookOpen />} label="5 Reads" locked />
                         </div>
@@ -177,7 +177,7 @@ function AwardBadge({ icon, label, locked=false }: { icon: React.ReactNode, labe
             <div className={`w-10 h-10 rounded-full flex items-center justify-center ${locked ? 'bg-gray-400 text-white/50' : 'bg-mint-green'}`}>
                 {icon}
             </div>
-            <span className={`text-xs font-medium ${locked ? 'text-gray-500' : 'text-gray-800'}`}>{label}</span>
+            <span className={`text-xs font-medium ${locked ? 'text-gray-500' : 'text-primary-foreground'}`}>{label}</span>
         </div>
     )
 }
