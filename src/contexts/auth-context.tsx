@@ -19,6 +19,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 const protectedRoutes = ['/dashboard', '/create-story', '/ask-ai', '/library', '/story'];
+const publicRoutes = ['/', '/login', '/signup'];
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -36,7 +37,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const userProfile = await getUserById(fbUser.uid);
         setUser(userProfile);
         
-        // Sync with server session
         try {
           await fetch('/api/auth/session-login', {
             method: 'POST',
@@ -49,7 +49,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } else {
         setFirebaseUser(null);
         setUser(null);
-        // Clean up server session
         try {
             await fetch('/api/auth/session-logout', { method: 'POST' });
         } catch (error) {
@@ -62,21 +61,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (!isLoading) {
-      const isProtectedRoute = protectedRoutes.some(p => pathname.startsWith(p));
-      
-      if (!user && isProtectedRoute) {
-        router.push('/login');
-      } else if (user && (pathname === '/login' || pathname === '/signup')) {
-        router.push('/dashboard');
-      }
+    if (isLoading) return;
+
+    const isProtectedRoute = protectedRoutes.some(p => pathname.startsWith(p));
+    const isPublicRoute = publicRoutes.includes(pathname);
+
+    if (!user && isProtectedRoute) {
+      router.push('/login');
     }
+
   }, [isLoading, user, pathname, router]);
+
 
   const logout = async () => {
     try {
       await signOut(auth);
-      // The onAuthStateChanged listener will handle clearing the server session
       router.push('/login');
     } catch (error) {
       console.error("Error signing out:", error);

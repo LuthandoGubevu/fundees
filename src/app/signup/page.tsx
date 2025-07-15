@@ -17,6 +17,7 @@ import { Loader2 } from 'lucide-react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { FullPageLoader } from '@/components/ui/full-page-loader';
+import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
@@ -34,6 +35,7 @@ const formSchema = z.object({
 export default function SignUpPage() {
   const { isAuthenticated, isLoading } = useAuth();
   const { toast } = useToast();
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -60,6 +62,7 @@ export default function SignUpPage() {
       });
 
       toast({ title: 'Account Created!', description: 'Welcome to Fundees!' });
+      router.push('/dashboard');
     } catch (error: any) {
       console.error("Sign up error:", error);
       if (error.code === 'auth/email-already-in-use') {
