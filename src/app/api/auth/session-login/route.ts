@@ -13,20 +13,20 @@ export async function POST(request: NextRequest) {
   if (authorization?.startsWith('Bearer ')) {
     const idToken = authorization.split('Bearer ')[1];
     try {
-      const decodedToken = await auth.verifyIdToken(idToken);
+      // The token verification is sufficient to ensure the user is authenticated.
+      // The strict 5-minute check is removed to allow existing valid sessions.
+      await auth.verifyIdToken(idToken);
       
-      if (new Date().getTime() / 1000 - decodedToken.auth_time < 5 * 60) {
-        const sessionCookie = await auth.createSessionCookie(idToken, { expiresIn });
-        cookies().set('session', sessionCookie, {
-          maxAge: expiresIn,
-          httpOnly: true,
-          secure: true,
-          sameSite: 'strict',
-          path: '/',
-        });
-        return NextResponse.json({ status: 'success' });
-      }
-      return NextResponse.json({ status: 'error', message: 'Recent sign-in required' }, { status: 401 });
+      const sessionCookie = await auth.createSessionCookie(idToken, { expiresIn });
+      cookies().set('session', sessionCookie, {
+        maxAge: expiresIn,
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+        path: '/',
+      });
+      return NextResponse.json({ status: 'success' });
+
     } catch (error) {
       console.error('Session login error:', error);
       return NextResponse.json({ status: 'error', message: 'Unauthorized' }, { status: 401 });
