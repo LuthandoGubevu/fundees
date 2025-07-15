@@ -100,8 +100,6 @@ export default function DashboardPage() {
           <div className="flex flex-col space-y-8">
             <div className="bg-sky-blue/60 rounded-2xl p-4 md:p-6 shadow-lg flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6 text-white">
                 <div className="flex-1">
-                    <h1 className="text-3xl font-bold">Hi, {user.firstName}!</h1>
-                    <p className="text-sm text-white/80 mt-1">Ready for a new adventure today?</p>
                 </div>
                 <div className="flex items-center gap-x-6 gap-y-2 text-sm font-semibold self-start md:self-center pt-2 md:pt-0">
                     <span className="flex items-center gap-1.5"><Heart className="w-5 h-5 text-red-500" /> {user.totalLikes || 0} Likes</span>
@@ -159,7 +157,7 @@ export default function DashboardPage() {
                             <span className="font-bold">150 Coins</span>
                         </div>
                         <div className="grid grid-cols-3 gap-2 mt-4 text-center">
-                            <AwardBadge icon={<Star />} label="First Story" />
+                            <AwardBadge icon={<Star className="text-gray-800" />} label="First Story" />
                             <AwardBadge icon={<Heart />} label="10 Likes" locked />
                             <AwardBadge icon={<BookOpen />} label="5 Reads" locked />
                         </div>
