@@ -1,11 +1,30 @@
 
-import { auth } from '@/lib/firebase/server';
+import { initializeApp, getApp, getApps, cert } from 'firebase-admin/app';
+import { getAuth } from 'firebase-admin/auth';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-// 7 days
-const expiresIn = 60 * 60 * 24 * 7 * 1000;
+const expiresIn = 60 * 60 * 24 * 7 * 1000; // 7 days
+
+const serviceAccount = {
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+  privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+};
+
+if (getApps().length === 0) {
+  try {
+    initializeApp({
+      credential: cert(serviceAccount),
+      storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+    });
+  } catch (e) {
+    console.error('Firebase Admin Init Error in session-login route:', e);
+  }
+}
+
+const auth = getAuth();
 
 export async function POST(request: NextRequest) {
   const authorization = request.headers.get('Authorization');
