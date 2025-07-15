@@ -13,8 +13,6 @@ export async function POST(request: NextRequest) {
   if (authorization?.startsWith('Bearer ')) {
     const idToken = authorization.split('Bearer ')[1];
     try {
-      // The token verification is sufficient to ensure the user is authenticated.
-      // The strict 5-minute check is removed to allow existing valid sessions.
       await auth.verifyIdToken(idToken);
       
       const sessionCookie = await auth.createSessionCookie(idToken, { expiresIn });
