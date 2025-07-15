@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
-import { AlertTriangle, Award, BookOpen, Heart, Users } from 'lucide-react';
+import { AlertTriangle, Award, BookOpen, Heart, Users, Star } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import type { Story } from '@/lib/types';
