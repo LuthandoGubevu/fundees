@@ -76,23 +76,3 @@ export const stories: Story[] = [
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2).toISOString(),
   }
 ];
-
-export const getUserByEmail = async (email: string): Promise<User | undefined> => {
-    throw new Error("Deprecated: Use functions from /lib/firestore.ts instead.");
-};
-
-export const addUser = async (user: Omit<User, 'id' | 'totalLikes'>): Promise<User> => {
-    throw new Error("Deprecated: Use functions from /lib/firestore.ts instead.");
-};
-
-export const getStories = async (): Promise<Story[]> => {
-  throw new Error("Deprecated: Use functions from /lib/firestore.ts instead.");
-};
-
-export const getStoryById = async (id: string): Promise<Story | undefined> => {
-    throw new Error("Deprecated: Use functions from /lib/firestore.ts instead.");
-};
-
-export const addStory = async (story: Omit<Story, 'id' | 'createdAt' | 'likes'>): Promise<Story> => {
-  throw new Error("Deprecated: Use functions from /lib/firestore.ts instead.");
-};
