@@ -28,9 +28,7 @@ export default function RootLayout({
           <SidebarProvider>
             <div className="relative flex min-h-screen flex-col">
               <SiteHeader />
-              <div className="flex-1 flex">
-                <main className="flex-1">{children}</main>
-              </div>
+              <main className="flex-1 flex">{children}</main>
             </div>
             <Toaster />
           </SidebarProvider>

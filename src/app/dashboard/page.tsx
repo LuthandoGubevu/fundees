@@ -51,13 +51,18 @@ export default function DashboardPage() {
 
 
   useEffect(() => {
-    // Since auth is disabled, we fetch all stories instead of user-specific ones.
+    if (!user?.id) {
+        setIsStoriesLoading(false);
+        // If there's no user, we don't need to fetch stories.
+        return;
+    }
+    
     setIsStoriesLoading(true);
     setStoriesError(null);
     setIndexLink(null);
     
     const storiesCol = collection(db, 'stories');
-    const q = query(storiesCol, orderBy('createdAt', 'desc'));
+    const q = query(storiesCol, where('authorId', '==', user.id), orderBy('createdAt', 'desc'));
 
     const unsubscribe = onSnapshot(q, 
       (snapshot) => {
@@ -85,7 +90,7 @@ export default function DashboardPage() {
     );
 
     return () => unsubscribe(); // Cleanup listener on unmount
-  }, []);
+  }, [user?.id]);
 
   if (!user) {
       return null;
@@ -107,7 +112,7 @@ export default function DashboardPage() {
             </div>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-8">
                 {/* Your Story Creations */}
                 <section className="bg-blue-50 rounded-xl p-4 shadow-md">
@@ -136,22 +141,12 @@ export default function DashboardPage() {
                         </div>
                     ) : (
                         <div className="text-center py-4">
-                            <p className="text-gray-600 mb-4">No stories have been created yet.</p>
+                            <p className="text-gray-600 mb-4">You haven't created any stories yet.</p>
                             <Button asChild>
-                                <Link href="/create-story">Start The First Story</Link>
+                                <Link href="/create-story">Start Your First Story</Link>
                             </Button>
                         </div>
                     )}
-                </section>
-                 {/* Creative Toolbox */}
-                <section>
-                    <h2 className="text-xl font-bold mb-4 text-gray-800">Creative Toolbox</h2>
-                    <div className="grid grid-cols-2 gap-4">
-                        <ToolboxButton href="/create-story" icon={<Pencil className="w-8 h-8"/>} label="Write Story" className="from-green-300 to-green-400" />
-                        <ToolboxButton href="/ask-ai" icon={<Sparkles className="w-8 h-8"/>} label="Ask AI" className="from-blue-300 to-blue-400" />
-                        <ToolboxButton href="/library" icon={<BookOpen className="w-8 h-8"/>} label="Library" className="from-orange-300 to-orange-400" />
-                        <ToolboxButton href="#" icon={<Award className="w-8 h-8"/>} label="Goals" className="from-purple-300 to-purple-400" />
-                    </div>
                 </section>
             </div>
             <div className="space-y-8">
@@ -159,8 +154,8 @@ export default function DashboardPage() {
                 <section className="bg-yellow-100 rounded-xl p-4 shadow-md">
                     <h2 className="text-lg font-bold text-yellow-800 mb-2">Spark Your Imagination</h2>
                     <p className="italic text-sm text-yellow-700">"What if animals could talk? What would they say?"</p>
-                    <Button size="sm" className="bg-orange-400 hover:bg-orange-500 text-white rounded-lg mt-3">
-                        Use this prompt
+                    <Button size="sm" className="bg-orange-400 hover:bg-orange-500 text-white rounded-lg mt-3" asChild>
+                       <Link href="/create-story?theme=What%20if%20animals%20could%20talk?">Use this prompt</Link>
                     </Button>
                 </section>
 
@@ -181,15 +176,6 @@ export default function DashboardPage() {
       </div>
     </div>
   );
-}
-
-function ToolboxButton({ href, icon, label, className }: { href: string, icon: React.ReactNode, label: string, className: string }) {
-    return (
-        <Link href={href} className={`bg-gradient-to-br ${className} rounded-lg p-3 shadow text-center text-sm font-semibold text-white hover:opacity-90 transition-opacity flex flex-col items-center justify-center space-y-2 h-28`}>
-            {icon}
-            <span>{label}</span>
-        </Link>
-    )
 }
 
 function AwardBadge({ icon, label, locked=false }: { icon: React.ReactNode, label: string, locked?: boolean}) {
