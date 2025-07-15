@@ -98,7 +98,7 @@ export default function DashboardPage() {
       <div className="min-h-screen w-full bg-background/80 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-8 max-w-5xl">
           <div className="flex flex-col space-y-8">
-            <div className="bg-white/50 rounded-2xl p-4 md:p-6 shadow-lg flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6">
+            <div className="bg-sky-100/90 rounded-2xl p-4 md:p-6 shadow-lg flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6">
                 <div className="flex-1">
                     <h1 className="text-3xl font-bold text-gray-800">Hi, {user.firstName}!</h1>
                     <p className="text-sm text-gray-700 mt-1">Ready for a new adventure today?</p>
@@ -111,7 +111,7 @@ export default function DashboardPage() {
 
             <div className="grid lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-2 space-y-8">
-                    <section className="bg-blue-50/80 rounded-xl p-4 shadow-md">
+                    <section className="bg-sky-100/90 rounded-xl p-4 shadow-md">
                         <h2 className="text-xl font-bold mb-4 text-gray-800">Recent Stories</h2>
                         {isStoriesLoading ? (
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -126,7 +126,7 @@ export default function DashboardPage() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {myStories.map(story => (
                                 <Link href={`/story/${story.id}`} key={story.id} className="block">
-                                    <Card className="bg-white/90 rounded-lg p-4 h-full shadow hover:shadow-xl transition-shadow">
+                                    <Card className="bg-sky-100/90 rounded-lg p-4 h-full shadow hover:shadow-xl transition-shadow">
                                         <h3 className="font-bold text-lg text-foreground truncate">{story.title}</h3>
                                         <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{story.excerpt}</p>
                                         <span className="text-xs bg-yellow-100 text-yellow-800 rounded-full px-2 py-0.5 mt-2 inline-block">Published</span>
@@ -145,7 +145,7 @@ export default function DashboardPage() {
                     </section>
                 </div>
                 <div className="space-y-8">
-                    <section className="bg-yellow-100/80 rounded-xl p-4 shadow-md">
+                    <section className="bg-sky-100/90 rounded-xl p-4 shadow-md">
                         <h2 className="text-lg font-bold text-yellow-800 mb-2">Spark Your Imagination</h2>
                         <p className="italic text-sm text-yellow-700">"What if animals could talk? What would they say?"</p>
                         <Button size="sm" className="bg-orange-400 hover:bg-orange-500 text-white rounded-lg mt-3" asChild>
@@ -153,7 +153,7 @@ export default function DashboardPage() {
                         </Button>
                     </section>
 
-                    <section className="bg-purple-50/80 rounded-xl p-4 shadow-md">
+                    <section className="bg-sky-100/90 rounded-xl p-4 shadow-md">
                         <div className="flex justify-between items-center">
                             <h2 className="text-lg font-bold text-purple-800">Your Awards</h2>
                             <span className="font-bold text-yellow-600">150 Coins</span>

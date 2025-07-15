@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, type FormEvent } from 'react';
@@ -65,13 +66,13 @@ export default function AskAiPage() {
           </form>
 
           {isLoading && (
-            <Card className="p-6 text-center animate-pulse bg-white/90">
+            <Card className="p-6 text-center animate-pulse bg-sky-100/90">
                 <p className="text-muted-foreground">Our AI friend is thinking hard...</p>
             </Card>
           )}
 
           {response && (
-            <Card className="bg-white/90 shadow-xl transition-all duration-500 animate-in fade-in-50">
+            <Card className="bg-sky-100/90 shadow-xl transition-all duration-500 animate-in fade-in-50">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Sparkles className="h-6 w-6 text-primary" />

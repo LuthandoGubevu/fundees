@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useActionState, useEffect, useState, useTransition } from 'react';
@@ -99,7 +100,7 @@ export function CreateStoryForm() {
   }
 
   return (
-    <Card className="p-4 sm:p-8 bg-card/80 shadow-2xl rounded-2xl">
+    <Card className="p-4 sm:p-8 bg-sky-100/90 shadow-2xl rounded-2xl">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Left side: Story Creation */}
         <div className="space-y-6">
@@ -147,7 +148,7 @@ export function CreateStoryForm() {
           </form>
 
           {structure && (
-            <Card className="animate-in fade-in-50">
+            <Card className="animate-in fade-in-50 bg-sky-100/90">
               <CardHeader>
                 <CardTitle>Story Structure Ideas</CardTitle>
               </CardHeader>

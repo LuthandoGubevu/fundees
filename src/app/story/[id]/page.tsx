@@ -1,3 +1,4 @@
+
 import { getStoryById } from '@/lib/firestore';
 import { notFound } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -34,7 +35,7 @@ export default async function StoryPage({ params }: { params: { id: string } }) 
             </Button>
           </div>
 
-          <Card className="overflow-hidden shadow-2xl rounded-2xl bg-card/90">
+          <Card className="overflow-hidden shadow-2xl rounded-2xl bg-sky-100/90">
             <CardHeader className="p-6">
               <CardTitle className="text-4xl md:text-5xl font-bold font-headline mb-4">{story.title}</CardTitle>
               <div className="flex flex-wrap gap-2 text-sm text-muted-foreground mb-4">
