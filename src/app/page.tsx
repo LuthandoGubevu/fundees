@@ -35,7 +35,7 @@ export default async function Home() {
   const isAuthenticated = !!user;
 
   return (
-    <div className="relative container mx-auto px-4 py-16 text-center">
+    <div className="relative flex-1 flex flex-col items-center justify-center p-4 text-center">
       <SunIcon />
       <div className="max-w-3xl mx-auto">
         <Sparkles className="mx-auto h-16 w-16 text-primary animate-pulse" />
