@@ -34,10 +34,9 @@ export default function LoginPage() {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      // The onAuthStateChanged listener in AuthProvider will handle the redirect
+      // Explicitly redirect after successful login.
       toast({ title: 'Success!', description: `Welcome back!` });
-      // Reset submitting state on success as well
-      setIsSubmitting(false);
+      router.push('/dashboard');
     } catch (error: any) {
       let description = 'An unknown error occurred.';
       if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
