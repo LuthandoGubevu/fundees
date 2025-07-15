@@ -14,6 +14,15 @@ import { Loader2 } from 'lucide-react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 
+function FullPageLoader() {
+    return (
+        <div className="flex flex-1 items-center justify-center">
+            <Loader2 className="h-16 w-16 animate-spin text-primary" />
+        </div>
+    );
+}
+
+
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -40,15 +49,13 @@ export default function LoginPage() {
         title: 'Login Failed',
         description,
       });
-      setIsSubmitting(false); // Ensure button is re-enabled on error
-    } 
-    // Do not set isSubmitting to false on success, as the page will be transitioning.
+    } finally {
+        setIsSubmitting(false);
+    }
   };
 
-  // AuthProvider handles redirects and shows a loader.
-  // We only render the page if the initial load is done and the user is not authenticated.
   if (isLoading || isAuthenticated) {
-    return null; 
+    return <FullPageLoader />; 
   }
 
   return (

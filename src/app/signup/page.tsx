@@ -31,6 +31,14 @@ const formSchema = z.object({
   path: ['confirmPassword'],
 });
 
+function FullPageLoader() {
+    return (
+        <div className="flex flex-1 items-center justify-center">
+            <Loader2 className="h-16 w-16 animate-spin text-primary" />
+        </div>
+    );
+}
+
 export default function SignUpPage() {
   const { isAuthenticated, isLoading } = useAuth();
   const { toast } = useToast();
@@ -76,12 +84,11 @@ export default function SignUpPage() {
       } else {
         toast({ variant: 'destructive', title: 'Sign Up Failed', description: 'Could not create account.' });
       }
-      form.reset(undefined, { keepValues: true, keepErrors: true, keepDirty: true, keepIsSubmitted: false, keepTouched: false, keepIsValid: false, keepSubmitCount: false });
     }
   }
   
   if (isLoading || isAuthenticated) {
-    return null; // AuthProvider handles loading and redirects
+    return <FullPageLoader />;
   }
 
   return (

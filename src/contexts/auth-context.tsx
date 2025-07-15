@@ -39,8 +39,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
       if (firebaseUser) {
         // User is logged in, now fetch their profile.
-        const userProfile = await getUserById(firebaseUser.uid);
-        setUser(userProfile);
+        try {
+            const userProfile = await getUserById(firebaseUser.uid);
+            setUser(userProfile);
+        } catch (error) {
+            console.error("Failed to fetch user profile:", error);
+            setUser(null);
+        }
       } else {
         // User is not logged in.
         setUser(null);
@@ -84,11 +89,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // While initial authentication is happening, show a loader to prevent race conditions
   // and content flashing.
   if (isLoading) {
-    return (
-        <AuthContext.Provider value={contextValue}>
-            <FullPageLoader />
-        </AuthContext.Provider>
-    )
+    return <FullPageLoader />;
   }
 
   return (
