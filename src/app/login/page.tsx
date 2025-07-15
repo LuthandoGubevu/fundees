@@ -30,7 +30,7 @@ export default function LoginPage() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       toast({ title: 'Success!', description: `Welcome back!` });
-      router.push('/dashboard');
+      // The redirect is now handled by the AuthProvider
     } catch (error: any) {
       console.error("Login failed:", error);
       let description = 'An unknown error occurred. Please try again.';

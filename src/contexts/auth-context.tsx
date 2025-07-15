@@ -19,6 +19,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 const protectedRoutes = ['/dashboard', '/create-story', '/ask-ai', '/library', '/story'];
+const publicRoutes = ['/login', '/signup'];
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -46,9 +47,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (isLoading) return;
 
     const isProtectedRoute = protectedRoutes.some(p => pathname.startsWith(p));
-    
-    // If we are on a protected route and there's no user, redirect to login.
-    if (!user && isProtectedRoute) {
+    const isPublicRoute = publicRoutes.includes(pathname);
+    const isAuthenticated = !!user;
+
+    if (isAuthenticated && isPublicRoute) {
+      // User is logged in and on a public page like /login, redirect to dashboard
+      router.push('/dashboard');
+    } else if (!isAuthenticated && isProtectedRoute) {
+      // User is not logged in and trying to access a protected page, redirect to login
       router.push('/login');
     }
   }, [isLoading, user, pathname, router]);
