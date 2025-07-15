@@ -63,16 +63,16 @@ export default function SignUpPage() {
     } catch (error: any) {
       console.error("Sign up error:", error);
       if (error.code === 'auth/email-already-in-use') {
-        form.setError('email', { type: 'manual', message: 'This email is already in use.' });
+        form.setError('email', { type: 'manual', message: 'This email is already registered.' });
       } else if (error.code === 'permission-denied' || error.message?.includes('PERMISSION_DENIED') || error.message?.includes('Missing or insufficient permissions')) {
         toast({
             variant: 'destructive',
             title: 'Sign Up Failed',
-            description: "Could not save user profile. Please check your Firestore security rules to allow new user documents to be created.",
+            description: "Could not save user profile. This is a permissions issue with the database. Please check your Firestore security rules in the Firebase Console.",
             duration: 10000
         });
       } else {
-        toast({ variant: 'destructive', title: 'Sign Up Failed', description: 'Could not create your account.' });
+        toast({ variant: 'destructive', title: 'Sign Up Failed', description: `An unexpected error occurred: ${error.message}` });
       }
     }
   }
