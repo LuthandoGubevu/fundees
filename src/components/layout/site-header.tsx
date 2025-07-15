@@ -4,8 +4,9 @@
 import { useAuth } from "@/contexts/auth-context";
 import Link from "next/link";
 import { usePathname } from 'next/navigation';
-import { BookHeart, Home, Pencil, Sparkles, Library, UserCircle } from 'lucide-react';
+import { BookHeart, Home, Pencil, Sparkles, Library, UserCircle, LogOut } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import { Button } from "../ui/button";
 
 const navLinks = [
   { href: '/dashboard', label: 'Dashboard', icon: Home },
@@ -15,7 +16,7 @@ const navLinks = [
 ];
 
 export function SiteHeader() {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, logout } = useAuth();
   const pathname = usePathname();
 
   return (
@@ -45,9 +46,12 @@ export function SiteHeader() {
                 </Link>
               ))}
             </nav>
-            <div className="hidden md:flex items-center space-x-2">
+            <div className="hidden md:flex items-center space-x-4">
               <span className="text-sm font-medium text-foreground">{user?.firstName}</span>
               <UserCircle className="h-6 w-6 text-muted-foreground" />
+               <Button variant="ghost" size="icon" onClick={logout} aria-label="Logout">
+                  <LogOut className="h-5 w-5"/>
+               </Button>
             </div>
           </>
         )}

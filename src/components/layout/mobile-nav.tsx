@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Sparkles, Library, UserCircle, Plus } from 'lucide-react';
+import { Home, Sparkles, Library, LogOut, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/auth-context';
 
@@ -14,14 +14,13 @@ const navLinksLeft = [
 
 const navLinksRight = [
   { href: '/ask-ai', label: 'Ask AI', icon: Sparkles },
-  { href: '/dashboard', label: 'Profile', icon: UserCircle },
 ];
 
 const createLink = { href: '/create-story' };
 
 export function MobileNav() {
   const pathname = usePathname();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
 
   if (!isAuthenticated) {
     return null;
@@ -61,13 +60,22 @@ export function MobileNav() {
             href={link.href}
             className={cn(
               "flex flex-col items-center justify-center w-full h-full text-xs font-medium transition-colors",
-              pathname === link.href && link.label !== 'Profile' ? "text-primary" : "text-muted-foreground hover:text-primary"
+              pathname === link.href ? "text-primary" : "text-muted-foreground hover:text-primary"
             )}
           >
             <link.icon className="h-6 w-6 mb-1" />
             <span>{link.label}</span>
           </Link>
         ))}
+         <button
+            onClick={logout}
+            className={cn(
+              "flex flex-col items-center justify-center w-full h-full text-xs font-medium transition-colors text-muted-foreground hover:text-primary"
+            )}
+          >
+            <LogOut className="h-6 w-6 mb-1" />
+            <span>Logout</span>
+          </button>
       </div>
     </nav>
   );

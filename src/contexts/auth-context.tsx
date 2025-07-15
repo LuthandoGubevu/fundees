@@ -2,11 +2,15 @@
 'use client';
 
 import { createContext, useContext, useState, ReactNode, useEffect, useCallback } from 'react';
+import { onAuthStateChanged, signOut, type User as FirebaseUser } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
+import { getUserById } from '@/lib/firestore';
 import type { User } from '@/lib/types';
 import { useRouter, usePathname } from 'next/navigation';
 
 interface AuthContextType {
   user: User | null;
+  firebaseUser: FirebaseUser | null;
   logout: () => void;
   isAuthenticated: boolean;
   isLoading: boolean;
@@ -14,29 +18,54 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-const mockUser: User = {
-    id: '1',
-    firstName: 'Amina',
-    lastName: 'Chike',
-    email: 'amina@school.com',
-    school: 'Sunshine Primary',
-    grade: '3rd Grade',
-    totalLikes: 42,
-};
+const protectedRoutes = ['/dashboard', '/create-story', '/ask-ai', '/library', '/story'];
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user] = useState<User | null>(mockUser);
-  const isLoading = false; // Always false as we are not fetching anything
-  const isAuthenticated = true; // Always true
+  const [user, setUser] = useState<User | null>(null);
+  const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
+  const pathname = usePathname();
 
-  const logout = () => {
-    // In a real app, this would clear the user session.
-    // For now, it does nothing as auth is disabled.
-    console.log("Logout function called, but authentication is disabled.");
+  const handleAuthStateChanged = useCallback(async (user: FirebaseUser | null) => {
+    setIsLoading(true);
+    if (user) {
+      setFirebaseUser(user);
+      const userProfile = await getUserById(user.uid);
+      setUser(userProfile);
+    } else {
+      setFirebaseUser(null);
+      setUser(null);
+    }
+    setIsLoading(false);
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, handleAuthStateChanged);
+    return () => unsubscribe();
+  }, [handleAuthStateChanged]);
+
+  useEffect(() => {
+    if (!isLoading && !user && protectedRoutes.some(p => pathname.startsWith(p))) {
+      router.push('/login');
+    }
+  }, [isLoading, user, pathname, router]);
+
+  const logout = async () => {
+    try {
+      await signOut(auth);
+      setUser(null);
+      setFirebaseUser(null);
+      router.push('/login');
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
   };
+  
+  const isAuthenticated = !isLoading && !!user;
 
   return (
-    <AuthContext.Provider value={{ user, logout, isAuthenticated, isLoading }}>
+    <AuthContext.Provider value={{ user, firebaseUser, logout, isAuthenticated, isLoading }}>
       {children}
     </AuthContext.Provider>
   );
