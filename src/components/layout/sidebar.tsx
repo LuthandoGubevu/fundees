@@ -29,7 +29,7 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <SidebarPrimitive side="left" collapsible="icon" className="hidden md:flex">
+    <SidebarPrimitive side="left" collapsible="icon" className="hidden md:flex bg-sidebar-background">
       <SidebarContent>
         <SidebarHeader>
             <SidebarTrigger>
