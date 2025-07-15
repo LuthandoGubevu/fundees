@@ -5,31 +5,32 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     // USERS
-    // Users can read their own profile.
-    // Users can create their own profile upon signup.
-    // Users can update their own profile.
     match /users/{userId} {
-      allow read, update, create: if request.auth != null && request.auth.uid == userId;
+      // Any logged-in user can read another user's public profile data.
+      allow read: if request.auth != null;
+      // A user can create their own profile document if their UID matches.
+      allow create: if request.auth != null && request.auth.uid == userId;
+      // A user can only update or delete their own profile.
+      allow update, delete: if request.auth != null && request.auth.uid == userId;
     }
 
     // STORIES
-    // Anyone can read stories.
-    // Logged-in users can create stories for themselves.
     match /stories/{storyId} {
-      allow read: if true;
-      allow create: if request.auth != null && request.resource.data.authorId == request.auth.uid;
-      
-      // Allow a logged-in user to update the 'likes' count of any story.
-      // Do not allow other fields to be updated.
-      allow update: if request.auth != null 
-                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likes']);
+      // Anyone can read a single story, and logged-in users can query the list.
+      allow get;
+      allow list: if request.auth != null;
 
-      // LIKES SUBCOLLECTION
-      // A user can only create or delete their own like document.
-      match /likes/{likerId} {
-         allow create, delete: if request.auth != null && request.auth.uid == likerId;
-         allow read: if true;
-      }
+      // Logged-in users can create stories for themselves.
+      allow create: if request.auth != null && request.resource.data.authorId == request.auth.uid;
+
+      // Only the story author can update or delete their story.
+      allow update, delete: if request.auth != null && resource.data.authorId == request.auth.uid;
+    }
+    
+    // LIKES SUBCOLLECTION
+    match /stories/{storyId}/likes/{likerId} {
+        // A logged-in user can create or delete their own like document.
+        allow read, write: if request.auth != null && request.auth.uid == likerId;
     }
   }
 }
