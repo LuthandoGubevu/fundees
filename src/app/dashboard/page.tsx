@@ -73,6 +73,8 @@ export default function DashboardPage() {
               } else {
                   setStoriesError("A database index is required. Please check the browser console for a link to create it.")
               }
+          } else if (error.code === 'permission-denied') {
+              setStoriesError("Permission denied. Please check your Firestore security rules in the Firebase Console to ensure you can query the 'stories' collection.");
           } else {
               console.error("Dashboard stories error:", error);
               setStoriesError("Could not load your stories right now.");
