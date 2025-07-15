@@ -47,13 +47,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (isLoading) return;
 
+    const isAuthPage = publicRoutes.includes(pathname);
     const isProtectedRoute = protectedRoutes.some(p => pathname.startsWith(p));
     
+    // If we are on a protected route and there's no user, redirect to login.
     if (!user && isProtectedRoute) {
       router.push('/login');
     }
     
-    if (user && publicRoutes.includes(pathname)) {
+    // If we have a user and they are on a public-only page (like login/signup), redirect to dashboard.
+    if (user && isAuthPage) {
         router.push('/dashboard');
     }
 
@@ -63,12 +66,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(true);
     try {
       await signOut(auth);
-      // No need to call API, onAuthStateChanged will handle the state change
       router.push('/login');
     } catch (error) {
       console.error("Error signing out:", error);
     } finally {
-      setIsLoading(false);
+      // onAuthStateChanged will set loading to false
     }
   };
   

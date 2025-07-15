@@ -137,23 +137,24 @@ export async function getStoryById(id: string): Promise<Story | null> {
   }
 }
 
-export async function getNewStoryId(): Promise<string> {
-  const storyRef = doc(collection(db, 'stories'));
-  return storyRef.id;
-}
-
 export async function addStory(story: Omit<Story, 'createdAt'>): Promise<Story> {
-  const { id, ...storyData } = story;
-  const storyRef = doc(db, 'stories', id);
+  const storyRef = doc(collection(db, 'stories'));
+  const newId = story.id || storyRef.id;
 
-  await setDoc(storyRef, {
-    ...storyData,
+  const storyWithId = {
+    ...story,
+    id: newId,
+  };
+
+  await setDoc(doc(db, 'stories', newId), {
+    ...storyWithId,
     createdAt: serverTimestamp(),
   });
   
-  const newStoryDoc = await getDoc(storyRef);
+  const newStoryDoc = await getDoc(doc(db, 'stories', newId));
   return transformStoryDoc(newStoryDoc);
 }
+
 
 // --- Like Functionality ---
 export async function toggleLikeStory(storyId: string, authorId: string, likerId: string) {
