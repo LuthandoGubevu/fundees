@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Sparkles, Library, LogOut, Plus } from 'lucide-react';
+import { Home, Sparkles, Library, LogOut, Wand2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/auth-context';
 
@@ -46,12 +46,12 @@ export function MobileNav() {
         <Link
           href={createLink.href}
           className={cn(
-            "flex items-center justify-center h-16 w-16 rounded-full bg-primary text-primary-foreground -mt-8 shadow-lg",
+            "flex flex-col items-center justify-center h-16 w-16 rounded-full bg-primary text-primary-foreground -mt-8 shadow-lg text-xs font-medium",
             pathname === createLink.href ? "ring-2 ring-white" : ""
           )}
         >
-          <Plus className="h-8 w-8" />
-          <span className="sr-only">Create Story</span>
+          <Wand2 className="h-8 w-8" />
+          <span className="mt-1">Create</span>
         </Link>
 
         {navLinksRight.map((link) => (
