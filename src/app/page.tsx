@@ -56,7 +56,7 @@ export default async function Home() {
       ) : (
         <div className="mt-8">
           <Button asChild size="lg">
-            <Link href="/login">Login to Get Started</Link>
+            <Link href="/signup">Get Started For Free</Link>
           </Button>
         </div>
       )}

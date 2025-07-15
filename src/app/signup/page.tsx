@@ -89,7 +89,7 @@ export default function SignUpPage() {
   }
 
   return (
-     <div className="container mx-auto flex items-center justify-center py-8">
+     <div className="container mx-auto flex items-center justify-center py-8 min-h-[calc(100vh-4rem)]">
       <Card className="w-full max-w-lg bg-card/90 shadow-xl rounded-2xl">
         <CardHeader className="text-center">
           <CardTitle className="text-3xl font-bold font-headline">Create an Account</CardTitle>
