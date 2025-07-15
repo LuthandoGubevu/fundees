@@ -5,8 +5,7 @@ import { generateStoryImage } from '@/ai/flows/generate-story-image';
 import { z } from 'zod';
 import { addStory, getNewStoryId } from './firestore';
 import { revalidatePath } from 'next/cache';
-import { storage } from './firebase';
-import { ref, uploadString, getDownloadURL } from 'firebase/storage';
+import { storage } from './firebase/server'; // Use server storage
 
 const structureSchema = z.object({
   theme: z.string().min(3, 'Theme must be at least 3 characters'),
@@ -54,29 +53,28 @@ export async function saveStoryAction(data: z.infer<typeof saveStorySchema>) {
     let downloadURL: string | undefined;
 
     try {
-        // This block handles image generation and upload.
-        // It's wrapped in a try/catch so that if it fails,
-        // the story can still be saved without an image.
         const imagePrompt = `A child-friendly, vibrant illustration for a story titled "${title}" with the theme "${theme}". The story is about: ${content.substring(0, 500)}`;
         const imageResult = await generateStoryImage({ prompt: imagePrompt });
 
         if (imageResult?.imageUrl) {
             const imagePath = `stories/${storyId}.png`;
-            const imageRef = ref(storage, imagePath);
-            await uploadString(imageRef, imageResult.imageUrl, 'data_url');
-            downloadURL = await getDownloadURL(imageRef);
+            const file = storage.file(imagePath);
+            const buffer = Buffer.from(imageResult.imageUrl.split(',')[1], 'base64');
+            await file.save(buffer, {
+                metadata: {
+                    contentType: 'image/png'
+                }
+            });
+            await file.makePublic();
+            downloadURL = file.publicUrl();
         } else {
             console.warn("AI image generation failed or returned no image. Proceeding to save story without an image.");
         }
     } catch (e) {
-        // If image generation or upload fails, we log the error and continue.
-        // The user experience is that the story saves without a picture.
         console.error("An error occurred during image generation/upload, story will be saved without an image:", e);
     }
 
     try {
-        // This block saves the story to Firestore.
-        // This is the critical part. If this fails, the whole action fails.
         const excerpt = content.length > 100 ? content.substring(0, 100) + '...' : content;
         await addStory({
             id: storyId,
@@ -84,7 +82,7 @@ export async function saveStoryAction(data: z.infer<typeof saveStorySchema>) {
             content,
             theme,
             excerpt,
-            imageUrl: downloadURL || '', // Default to empty string if undefined
+            imageUrl: downloadURL || '',
             author: author.name,
             authorId: author.id,
             school: author.school,
@@ -101,10 +99,9 @@ export async function saveStoryAction(data: z.infer<typeof saveStorySchema>) {
 
     } catch (e: any) {
         console.error("Failed to save story to Firestore:", e);
-        if (e.code === 'permission-denied' || (e.message && e.message.includes('permission-denied'))) {
+        if (e.message?.includes('permission-denied') || e.message?.includes('Missing or insufficient permissions')) {
             throw new Error("Permission denied. Could not save story to the database. Please check your Firestore security rules in the Firebase console.");
         }
-        // This is the error that will be displayed in the toast on failure.
         throw new Error("Failed to save the story. Please try again.");
     }
 }
