@@ -5,7 +5,5 @@
   "private": true,
   "author": "Netlify",
   "license": "MIT",
-  "dependencies": {
-    "@netlify/plugin-nextjs": "5.11.6"
-  }
+  "dependencies": {}
 }
