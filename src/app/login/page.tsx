@@ -30,12 +30,14 @@ export default function LoginPage() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       toast({ title: 'Success!', description: `Welcome back!` });
-      // The redirect is now handled by the AuthProvider
+      // The redirect is handled by the AuthProvider
     } catch (error: any) {
       console.error("Login failed:", error);
       let description = 'An unknown error occurred. Please try again.';
       if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
         description = 'Invalid email or password. Please check your credentials and try again.';
+      } else if (error.code === 'auth/too-many-requests') {
+        description = 'Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later.';
       }
       toast({
         variant: 'destructive',

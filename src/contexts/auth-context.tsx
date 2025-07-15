@@ -10,7 +10,6 @@ import { useRouter, usePathname } from 'next/navigation';
 
 interface AuthContextType {
   user: User | null;
-  firebaseUser: FirebaseUser | null;
   logout: () => void;
   isAuthenticated: boolean;
   isLoading: boolean;
@@ -23,7 +22,6 @@ const publicRoutes = ['/login', '/signup'];
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
@@ -31,12 +29,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
       if (fbUser) {
-        setFirebaseUser(fbUser);
         const userProfile = await getUserById(fbUser.uid);
         setUser(userProfile);
       } else {
         setUser(null);
-        setFirebaseUser(null);
       }
       setIsLoading(false);
     });
@@ -50,31 +46,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const isPublicRoute = publicRoutes.includes(pathname);
     const isAuthenticated = !!user;
 
-    if (isAuthenticated && isPublicRoute) {
-      // User is logged in and on a public page like /login, redirect to dashboard
-      router.push('/dashboard');
-    } else if (!isAuthenticated && isProtectedRoute) {
-      // User is not logged in and trying to access a protected page, redirect to login
+    if (!isAuthenticated && isProtectedRoute) {
       router.push('/login');
     }
+    
+    if (isAuthenticated && isPublicRoute) {
+      router.push('/dashboard');
+    }
+
   }, [isLoading, user, pathname, router]);
 
   const logout = async () => {
-    setIsLoading(true);
-    try {
-      await signOut(auth);
-      router.push('/login');
-    } catch (error) {
-      console.error("Error signing out:", error);
-    } finally {
-      // onAuthStateChanged will set loading to false
-    }
+    await signOut(auth);
+    router.push('/login');
   };
   
   const isAuthenticated = !isLoading && !!user;
 
   return (
-    <AuthContext.Provider value={{ user, firebaseUser, logout, isAuthenticated, isLoading }}>
+    <AuthContext.Provider value={{ user, logout, isAuthenticated, isLoading }}>
       {children}
     </AuthContext.Provider>
   );

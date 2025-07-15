@@ -62,7 +62,7 @@ export default function SignUpPage() {
       });
 
       toast({ title: 'Account Created!', description: 'Welcome to Fundees!' });
-      router.push('/dashboard');
+      // The redirect is handled by the AuthProvider
     } catch (error: any) {
       console.error("Sign up error:", error);
       if (error.code === 'auth/email-already-in-use') {
@@ -71,7 +71,7 @@ export default function SignUpPage() {
         toast({
             variant: 'destructive',
             title: 'Sign Up Failed',
-            description: "Could not save user profile. This is a permissions issue with the database. Please check your Firestore security rules in the Firebase Console.",
+            description: "Could not save user profile. Please check your Firestore security rules in the Firebase Console and deploy them.",
             duration: 10000
         });
       } else {
