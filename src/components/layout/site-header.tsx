@@ -24,9 +24,7 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur-md">
       <div className="container flex h-20 items-center">
         <div className="flex items-center space-x-4">
-          <Link href="/" className="flex items-center space-x-2">
-            <Image src="/logo.png" alt="Fundees Logo" width={175} height={70} />
-          </Link>
+          
         </div>
 
         {isAuthenticated && (
