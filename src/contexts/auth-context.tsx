@@ -16,7 +16,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-const protectedRoutes = ['/create-story', '/ask-ai', '/dashboard'];
+const protectedRoutes = ['/create-story', '/ask-ai', '/dashboard', '/library'];
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -29,15 +29,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (firebaseUser) {
         // User is signed in, fetch profile from Firestore
         const userProfile = await getUserById(firebaseUser.uid);
-        // The user profile might not be created immediately after sign up
-        // We set the user only if the profile exists.
-        // The signup page is responsible for creating the user document.
         if (userProfile) {
           setUser(userProfile);
+        } else {
+          // If profile doesn't exist yet, it might be a new sign-up.
+          // Keep user as null for now. Firestore trigger or subsequent action will populate it.
+          setUser(null);
         }
-        // If profile doesn't exist, we wait. The user will be in a "logged out"
-        // state until their profile is created, at which point onAuthStateChanged
-        // or a subsequent check will pick them up.
       } else {
         // User is signed out
         setUser(null);
@@ -59,13 +57,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // This effect handles route protection.
   useEffect(() => {
-    if (isLoading) return; // Wait until the user state is loaded
+    // Wait until the initial loading is complete before enforcing routes.
+    if (isLoading) {
+      return; 
+    }
 
     const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
+    const isAuthRoute = pathname === '/login' || pathname === '/signup';
 
     if (!isAuthenticated && isProtectedRoute) {
       router.push('/login');
     }
+
+    if (isAuthenticated && isAuthRoute) {
+      router.push('/dashboard');
+    }
+
   }, [isLoading, isAuthenticated, pathname, router]);
 
   return (

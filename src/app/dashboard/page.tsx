@@ -12,7 +12,6 @@ import type { Story } from '@/lib/types';
 import { collection, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { extractIndexCreationLink, transformStoryDoc } from '@/lib/firestore-utils';
-import { useRouter } from 'next/navigation';
 
 function MissingIndexCard({ link }: { link: string }) {
   return (
@@ -43,8 +42,7 @@ function MissingIndexCard({ link }: { link: string }) {
 
 
 export default function DashboardPage() {
-  const { user, isLoading, isAuthenticated } = useAuth();
-  const router = useRouter();
+  const { user, isLoading } = useAuth();
   const [myStories, setMyStories] = useState<Story[]>([]);
   const [isStoriesLoading, setIsStoriesLoading] = useState(true);
   const [storiesError, setStoriesError] = useState<string | null>(null);
@@ -86,12 +84,6 @@ export default function DashboardPage() {
       return () => unsubscribe(); // Cleanup listener on unmount
     }
   }, [user]);
-
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      router.push('/login');
-    }
-  }, [isLoading, isAuthenticated, router]);
 
   if (isLoading || !user) {
     return (
