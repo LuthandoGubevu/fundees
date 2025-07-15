@@ -36,7 +36,7 @@ export function MobileNav() {
             href={link.href}
             className={cn(
               "flex flex-col items-center justify-center w-full h-full text-xs font-medium transition-colors",
-              pathname === link.href ? "text-primary" : "text-white/80 hover:text-primary"
+              pathname === link.href ? "text-primary" : "text-muted-foreground hover:text-primary"
             )}
           >
             <link.icon className="h-6 w-6 mb-1" />
@@ -61,7 +61,7 @@ export function MobileNav() {
             href={link.href}
             className={cn(
               "flex flex-col items-center justify-center w-full h-full text-xs font-medium transition-colors",
-              pathname === link.href && link.label !== 'Profile' ? "text-primary" : "text-white/80 hover:text-primary"
+              pathname === link.href && link.label !== 'Profile' ? "text-primary" : "text-muted-foreground hover:text-primary"
             )}
           >
             <link.icon className="h-6 w-6 mb-1" />
