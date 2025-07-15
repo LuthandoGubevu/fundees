@@ -114,3 +114,18 @@
 .card-gradient-green {
     background: linear-gradient(45deg, #81C784, #4FC3F7);
 }
+
+.install-button {
+  background-color: #ffe627;
+  color: #9226b3;
+  font-weight: bold;
+  padding: 12px 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  cursor: pointer;
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+}
