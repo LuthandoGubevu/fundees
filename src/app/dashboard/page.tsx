@@ -12,6 +12,7 @@ import type { Story } from '@/lib/types';
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { extractIndexCreationLink, transformStoryDoc } from '@/lib/firestore-utils';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 function MissingIndexCard({ link }: { link: string }) {
   return (
@@ -99,7 +100,17 @@ export default function DashboardPage() {
         <div className="container mx-auto px-4 py-8 max-w-5xl">
           <div className="flex flex-col space-y-8">
             <div className="bg-sky-blue/60 rounded-2xl p-4 md:p-6 shadow-lg flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6 text-white">
-                <div className="flex-1">
+                <div className="flex-1 flex items-center gap-4">
+                  <Avatar className="h-16 w-16">
+                    <AvatarImage src={user?.photoURL} alt={user?.firstName || 'User'} />
+                    <AvatarFallback className="text-2xl bg-primary text-primary-foreground font-bold">
+                        {user?.firstName?.[0] || 'F'}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <h1 className="text-2xl font-bold">Hi, {user?.firstName || 'Storyteller'}!</h1>
+                    <p className="text-white/80">Welcome back to your creative corner.</p>
+                  </div>
                 </div>
                 <div className="flex items-center gap-x-6 gap-y-2 text-sm font-semibold self-start md:self-center pt-2 md:pt-0">
                     <span className="flex items-center gap-1.5"><Heart className="w-5 h-5 text-red-500" /> {user.totalLikes || 0} Likes</span>

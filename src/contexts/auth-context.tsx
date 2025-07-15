@@ -70,7 +70,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     await signOut(auth);
-    // onAuthStateChanged will handle setting user to null
+    setUser(null);
     router.push('/login');
   };
   

@@ -6,6 +6,7 @@ export interface User {
   school?: string;
   grade?: string;
   totalLikes?: number;
+  photoURL?: string;
 }
 
 export interface Story {
