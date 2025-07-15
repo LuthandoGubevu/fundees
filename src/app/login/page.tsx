@@ -47,8 +47,9 @@ export default function LoginPage() {
         title: 'Login Failed',
         description,
       });
-      setIsSubmitting(false); // Ensure button is re-enabled on error
-    } 
+    } finally {
+        setIsSubmitting(false); // Ensure button is re-enabled on error or success
+    }
   };
 
   if (isLoading || isAuthenticated) {

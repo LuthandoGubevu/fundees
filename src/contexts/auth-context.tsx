@@ -56,13 +56,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = useCallback(() => {
     signOut(auth).then(() => {
-      router.push('/');
+      // No need to push here, the effect below will handle it
     });
-  }, [router]);
+  }, []);
 
   const isAuthenticated = !!user;
 
   useEffect(() => {
+    // Only run redirect logic after the initial auth check is complete
     if (isLoading) {
       return; 
     }
@@ -81,6 +82,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const contextValue = { user, logout, isAuthenticated, isLoading };
 
+  // While the initial authentication is happening, show a loader
+  // This prevents the redirect logic from firing with an incomplete auth state
   if (isLoading) {
     return <FullPageLoader />;
   }

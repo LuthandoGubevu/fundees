@@ -74,7 +74,7 @@ export default function SignUpPage() {
       console.error("Sign up error:", error);
       if (error.code === 'auth/email-already-in-use') {
         form.setError('email', { type: 'manual', message: 'This email is already in use.' });
-      } else if (error.message?.includes('PERMISSION_DENIED')) {
+      } else if (error.message?.includes('PERMISSION_DENIED') || error.message?.includes('Missing or insufficient permissions')) {
         toast({
             variant: 'destructive',
             title: 'Sign Up Failed',
