@@ -20,6 +20,12 @@ export function SiteHeader() {
   const { isAuthenticated, user, logout } = useAuth();
   const pathname = usePathname();
 
+  const hideHeaderOnRoutes = ['/', '/login', '/signup'];
+
+  if (hideHeaderOnRoutes.includes(pathname)) {
+    return null;
+  }
+
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur-md">
       <div className="container flex h-20 items-center">
