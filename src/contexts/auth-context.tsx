@@ -7,6 +7,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { onAuthStateChanged, signOut, type User as FirebaseUser } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { getUserById } from '@/lib/firestore';
+import { Loader2 } from 'lucide-react';
 
 interface AuthContextType {
   user: User | null;
@@ -17,8 +18,16 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-const protectedRoutes = ['/create-story', '/ask-ai', '/dashboard', '/library'];
+const protectedRoutes = ['/create-story', '/ask-ai', '/dashboard', '/library', '/story'];
 const authRoutes = ['/login', '/signup'];
+
+function FullPageLoader() {
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
+            <Loader2 className="h-16 w-16 animate-spin text-primary" />
+        </div>
+    );
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -49,9 +58,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const isAuthenticated = !!user;
 
   useEffect(() => {
-    // Wait until the initial loading is complete before enforcing routes.
     if (isLoading) {
-      return;
+      return; // Wait until loading is complete before enforcing routes.
     }
 
     const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
@@ -68,6 +76,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [isLoading, isAuthenticated, pathname, router]);
 
+  // While initial authentication is happening, show a loader to prevent race conditions
+  if (isLoading) {
+    return <FullPageLoader />;
+  }
 
   return (
     <AuthContext.Provider value={{ user, logout, isAuthenticated, isLoading }}>

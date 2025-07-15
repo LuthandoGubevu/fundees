@@ -1,7 +1,6 @@
 
 'use client';
 
-import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -33,7 +32,7 @@ const formSchema = z.object({
 });
 
 export default function SignUpPage() {
-  const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
+  const { isAuthenticated } = useAuth();
   const { toast } = useToast();
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -47,12 +46,6 @@ export default function SignUpPage() {
       confirmPassword: '',
     },
   });
-
-  useEffect(() => {
-    if (!isAuthLoading && isAuthenticated) {
-        router.push('/dashboard');
-    }
-  }, [isAuthenticated, isAuthLoading, router]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
@@ -68,22 +61,26 @@ export default function SignUpPage() {
       });
 
       toast({ title: 'Account Created!', description: 'Welcome to Fundees!' });
+      // The AuthProvider will handle the redirect to the dashboard
     } catch (error: any) {
       console.error("Sign up error:", error);
       if (error.code === 'auth/email-already-in-use') {
         form.setError('email', { type: 'manual', message: 'This email is already in use.' });
+      } else if (error.message?.includes('PERMISSION_DENIED')) {
+        toast({
+            variant: 'destructive',
+            title: 'Sign Up Failed',
+            description: "Could not save user profile. Please check your Firestore security rules.",
+            duration: 10000
+        });
       } else {
         toast({ variant: 'destructive', title: 'Sign Up Failed', description: 'Could not create account.' });
       }
     }
   }
   
-  if (isAuthLoading || isAuthenticated) {
-    return (
-        <div className="flex flex-1 items-center justify-center">
-            <Loader2 className="h-16 w-16 animate-spin text-primary" />
-        </div>
-    );
+  if (isAuthenticated) {
+    return null; // AuthProvider handles redirects
   }
 
   return (

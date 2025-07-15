@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useAuth } from '@/contexts/auth-context';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -18,15 +18,9 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
+  const { isAuthenticated } = useAuth();
   const { toast } = useToast();
   const router = useRouter();
-
-  useEffect(() => {
-    if (!isAuthLoading && isAuthenticated) {
-      router.push('/dashboard');
-    }
-  }, [isAuthenticated, isAuthLoading, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,7 +29,7 @@ export default function LoginPage() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       toast({ title: 'Success!', description: `Welcome back!` });
-      // The redirect is handled by the AuthProvider now
+      router.push('/dashboard');
     } catch (error: any) {
       let description = 'An unknown error occurred.';
       if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
@@ -46,17 +40,14 @@ export default function LoginPage() {
         title: 'Login Failed',
         description,
       });
-    } finally {
-      setIsSubmitting(false);
-    }
+      setIsSubmitting(false); // Ensure button is re-enabled on error
+    } 
   };
 
-  if (isAuthLoading || isAuthenticated) {
-    return (
-      <div className="flex flex-1 items-center justify-center">
-        <Loader2 className="h-16 w-16 animate-spin text-primary" />
-      </div>
-    );
+  // The AuthProvider now handles the loading state and redirects for authenticated users.
+  // This page will only render if the user is not authenticated.
+  if (isAuthenticated) {
+    return null;
   }
 
   return (
