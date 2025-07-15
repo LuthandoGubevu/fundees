@@ -7,6 +7,7 @@ import { auth } from '@/lib/firebase';
 import { getUserById } from '@/lib/firestore';
 import type { User } from '@/lib/types';
 import { useRouter, usePathname } from 'next/navigation';
+import { FullPageLoader } from '@/components/ui/full-page-loader';
 
 interface AuthContextType {
   user: User | null;
@@ -58,10 +59,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     await signOut(auth);
+    setUser(null); // Explicitly set user to null on logout
     router.push('/login');
   };
   
   const isAuthenticated = !isLoading && !!user;
+
+  // This is the key change: Block rendering until auth state is resolved.
+  if (isLoading) {
+    return <FullPageLoader />;
+  }
 
   return (
     <AuthContext.Provider value={{ user, logout, isAuthenticated, isLoading }}>

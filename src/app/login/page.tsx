@@ -2,7 +2,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useAuth } from '@/contexts/auth-context';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -12,16 +11,12 @@ import Link from 'next/link';
 import { Loader2 } from 'lucide-react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import { FullPageLoader } from '@/components/ui/full-page-loader';
-import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { isAuthenticated, isLoading } = useAuth();
   const { toast } = useToast();
-  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,7 +24,6 @@ export default function LoginPage() {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      toast({ title: 'Success!', description: `Welcome back!` });
       // The redirect is handled by the AuthProvider
     } catch (error: any) {
       console.error("Login failed:", error);
@@ -49,10 +43,6 @@ export default function LoginPage() {
         setIsSubmitting(false);
     }
   };
-
-  if (isLoading || isAuthenticated) {
-    return <FullPageLoader />; 
-  }
 
   return (
     <div

@@ -9,15 +9,12 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useAuth } from '@/contexts/auth-context';
 import { addUser } from '@/lib/firestore';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { Loader2 } from 'lucide-react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import { FullPageLoader } from '@/components/ui/full-page-loader';
-import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
@@ -33,9 +30,7 @@ const formSchema = z.object({
 });
 
 export default function SignUpPage() {
-  const { isAuthenticated, isLoading } = useAuth();
   const { toast } = useToast();
-  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -61,7 +56,6 @@ export default function SignUpPage() {
         grade: values.grade,
       });
 
-      toast({ title: 'Account Created!', description: 'Welcome to Fundees!' });
       // The redirect is handled by the AuthProvider
     } catch (error: any) {
       console.error("Sign up error:", error);
@@ -84,10 +78,6 @@ export default function SignUpPage() {
     }
   }
   
-  if (isLoading || isAuthenticated) {
-    return <FullPageLoader />;
-  }
-
   return (
     <div
       className="min-h-screen w-full bg-cover bg-center flex items-center justify-center"
