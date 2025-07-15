@@ -4,9 +4,10 @@
 import { useAuth } from "@/contexts/auth-context";
 import Link from "next/link";
 import { usePathname } from 'next/navigation';
-import { BookHeart, Home, Pencil, Sparkles, Library, UserCircle, LogOut } from 'lucide-react';
+import { Home, Pencil, Sparkles, Library, UserCircle, LogOut } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
+import Image from "next/image";
 
 const navLinks = [
   { href: '/dashboard', label: 'Dashboard', icon: Home },
@@ -24,8 +25,7 @@ export function SiteHeader() {
       <div className="container flex h-16 items-center">
         <div className="flex items-center space-x-4">
           <Link href="/" className="flex items-center space-x-2">
-            <BookHeart className="h-6 w-6 text-primary" />
-            <span className="font-bold inline-block">Fundees</span>
+            <Image src="/logo.png" alt="Fundees Logo" width={100} height={40} />
           </Link>
         </div>
 
