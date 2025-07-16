@@ -4,8 +4,38 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+    const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [showInstallPrompt, setShowInstallPrompt] = useState(false);
+
+  useEffect(() => {
+    const handler = (e: any) => {
+      e.preventDefault(); // Prevent automatic prompt
+      setDeferredPrompt(e); // Store the event
+      setShowInstallPrompt(true); // Show custom button
+    };
+
+    window.addEventListener("beforeinstallprompt", handler);
+
+    return () => window.removeEventListener("beforeinstallprompt", handler);
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        console.log('User accepted the install prompt');
+      } else {
+        console.log('User dismissed the install prompt');
+      }
+      setDeferredPrompt(null);
+      setShowInstallPrompt(false);
+    }
+  };
+
   return (
     <div
       className="min-h-screen w-full bg-cover bg-center bg-no-repeat"
@@ -22,9 +52,7 @@ export default function Home() {
               className="mx-auto mb-6"
               priority
             />
-            <h1 className="text-4xl font-bold tracking-tight text-accent sm:text-5xl md:text-6xl font-headline">
-              Welcome to Fundees
-            </h1>
+            
             <p className="mt-6 text-lg leading-8 text-foreground/80 sm:text-xl">
               A creative platform for young storytellers to spark their imagination.
             </p>
@@ -33,6 +61,11 @@ export default function Home() {
                 <Link href="/signup">Get Started</Link>
               </Button>
             </div>
+             {showInstallPrompt && (
+                <button onClick={handleInstallClick} className="install-button">
+                Install Fundees App
+                </button>
+            )}
           </div>
         </div>
       </div>
