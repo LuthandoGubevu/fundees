@@ -31,7 +31,7 @@ export default function RootLayout({
         <AuthProvider>
             <div className="relative flex min-h-screen flex-col">
               <SiteHeader />
-              <main className="flex-1 px-4">{children}</main>
+              <main className="flex-1">{children}</main>
             </div>
             <Toaster />
             <MobileNav />
